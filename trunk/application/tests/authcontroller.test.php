@@ -71,15 +71,15 @@ class TestAuthcontroller extends PHPUnit_Framework_TestCase
 //        var_dump($response);
 //    }
 
-    public function testDeactivation()
-    {
-//        Input::$json = (object)$data;
-//
-        Auth::login(16);
-        Request::setMethod('GET');
-        $response = Controller::call('user@deactivate', array());
-        var_dump($response);
-    }
+//    public function testDeactivation()
+//    {
+////        Input::$json = (object)$data;
+////
+//        Auth::login(16);
+//        Request::setMethod('GET');
+//        $response = Controller::call('user@deactivate', array());
+//        var_dump($response);
+//    }
 
 //    public function testDelete()
 //    {
@@ -97,15 +97,27 @@ class TestAuthcontroller extends PHPUnit_Framework_TestCase
 //    public function testForgotten()
 //    {
 //        $data = array(
-//            'email' => 'naveensky@gmail.com'
+//            'email' => 'hitanshumalhotra@gmail.com'
 //        );
 //
 //        Input::$json = (object)$data;
 //
 //        Request::setMethod('POST');
-//        $response = Controller::call('auth@forgotten_password');
+//        $response = Controller::call('user@forgotten_password');
 //        $this->assertNotNull($response);
 //        $this->assertEquals(200, $response->status());
+//    }
+
+//    public function testforgottenComplete()
+//    {
+//        $data = array(
+//            'code' => 'JbMOHszsjRvvrWldvcIGfNUtvFoWBhlkyxixtkmLcahjpKhplAWGdZDIKdaHHsmh',
+//
+//        );
+//
+//        Request::setMethod('GET');
+//        $response = Controller::call('user@reset_password', $data);
+//        var_dump($response);
 //    }
 
 //    public function testMobileVerify()
@@ -124,5 +136,56 @@ class TestAuthcontroller extends PHPUnit_Framework_TestCase
 //        var_dump($response);
 //        $this->assertEquals(200, $response->status());
 //    }
+
+//    public function testRestore()
+//    {
+//        $data = array(
+//            'reactivationCode' => 'OXOrGnmPbXlxsbOTuUWGdgcmnIVQrmuDspRQHFUFzSAvdKkwfDtSLJNctPSQXosr',
+//
+//        );
+//
+//        Request::setMethod('GET');
+//        $response = Controller::call('user@restore_account', $data);
+//        var_dump($response);
+//    }
+
+//    public function testResendSms()
+//    {
+//        Auth::login(16);
+//        Request::setMethod('GET');
+//        $response = Controller::call('user@resend_sms', array());
+//        var_dump($response);
+//    }
+
+//    public function testUpdatePassword()
+//    {
+//        Auth::login(16);
+//        $data = array(
+//            'oldPassword' => 'password',
+//            'newPassword' => 'password'
+//        );
+//        Input::$json = (object)$data;
+//
+//        Request::setMethod('POST');
+//        $response = Controller::call('user@update_password');
+//
+//        $this->assertNotNull($response);
+//        $this->assertEquals(200, $response->status());
+//    }
+
+    public function testUpdateMobile()
+    {
+        Auth::login(16);
+        $data = array(
+            'mobile' => '89684866846'
+        );
+        Input::$json = (object)$data;
+        Request::setMethod('POST');
+        $response = Controller::call('user@update_mobile');
+        var_dump($response);
+        $this->assertNotNull($response);
+        $this->assertEquals(200, $response->status());
+    }
+
 
 }

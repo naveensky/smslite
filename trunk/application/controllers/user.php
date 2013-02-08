@@ -123,8 +123,7 @@ class User_Controller extends Base_Controller
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
         }
 
-        if (!empty($user))
-        {
+        if (!empty($user)) {
             //todo:check how to set events and mail
 //            $response = Event::first('welcome_email', array($user->id));
             $deactivation_message = __('smstemplate.deactivation_message');
@@ -134,6 +133,31 @@ class User_Controller extends Base_Controller
         }
 
         return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+    }
+
+    public function action_restore_Account($reactivationCode)
+    {
+
+        $reactivationCode = isset($reactivationCode) ? $reactivationCode : "";
+
+        if (empty($reactivationCode))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+
+        try {
+            $user = $this->userRepo->restoreAccount($reactivationCode);
+        } catch (InvalidArgumentException $ie) {
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+        }
+
+        if ($user) {
+            $restore_message = __('smstemplate.restore_message');
+            $this->appSmsRepo->createAppSms($user->mobile, $restore_message, Config::get('sms_config.senderId'), $user->id);
+            return Response::make(__('responseerror.activate_success'), HTTPConstants::SUCCESS_CODE);
+        } else {
+            return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
+        }
 
     }
 
@@ -159,12 +183,12 @@ class User_Controller extends Base_Controller
     public function action_forgotten_password()
     {
         $data = Input::json();
-        $data->email = isset($data->email) ? $data->email : "";
-        if (empty($data->email))
+        $email = isset($data->email) ? $data->email : "";
+        if (empty($email))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
         try {
-            $user = $this->userRepo->forgotten_password($data->email);
+            $user = $this->userRepo->forgotten_password($email);
         } catch (InvalidArgumentException $ie) {
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
         }
@@ -183,21 +207,20 @@ class User_Controller extends Base_Controller
     public function action_reset_password($code)
     {
         try {
-            $user = $this->userRepo->forgotten_password_complete($code);
+            $data = $this->userRepo->forgotten_password_complete($code);
         } catch (InvalidArgumentException $ie) {
             Log::exception($ie);
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
         }
 
-        if (empty($password))
+        if (empty($data))
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
         //todo:check how to set events
-        $response = Event::first('welcome_email', array($user->email));
+        $response = Event::first('welcome_email', array($data['user']->id));
         $password_reset_message = __('smstemplate.password_reset_successfully_message');
-        $this->appSmsRepo->createAppSms($user->mobile, $password_reset_message, Config::get('sms_config.senderId'), $user->id);
-        $new_password_message = __('smstemplate.new_password_message', array('code', $user->password));
-        $this->appSmsRepo->createAppSms($user->mobile, $new_password_message, Config::get('sms_config.senderId'), $user->id);
-
+        $this->appSmsRepo->createAppSms($data['user']->mobile, $password_reset_message, Config::get('sms_config.senderId'), $data['user']->id);
+        $new_password_message = __('smstemplate.new_password_message', array('code' => $data['password']));
+        $this->appSmsRepo->createAppSms($data['user']->mobile, $new_password_message, Config::get('sms_config.senderId'), $data['user']->id);
 
     }
 
@@ -207,7 +230,7 @@ class User_Controller extends Base_Controller
         if ($loggedinID) {
 
             $user = $this->userRepo->getUser($loggedinID);
-            if(is_null($user->mobileVerificationCode))
+            if ($user->mobileVerificationCode == NULL)
                 return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
             $welcome_message = __('smstemplate.welcome_message', array('code' => $user->mobileVerificationCode));
@@ -241,24 +264,53 @@ class User_Controller extends Base_Controller
     }
 
 
-    public function function_update_password()
+    public function action_update_password()
     {
         $data = Input::json();
         if (empty($data))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
-        $data->oldPassword = isset($data->oldPassword) ? $data->oldPassword : "";
-        $data->newPassword = isset($data->newPassword) ? $data->newPassword : "";
+        $oldPassword = isset($data->oldPassword) ? $data->oldPassword : "";
+        $newPassword = isset($data->newPassword) ? $data->newPassword : "";
+
         $loggedinID = Auth::user()->id;
+
         if ($loggedinID) {
             try {
-                $this->userRepo->change_password($loggedinID, $data->oldPassword, $data->newPassword);
+                $user = $this->userRepo->change_password($loggedinID, $oldPassword, $newPassword);
             } catch (InvalidArgumentException $ie) {
                 Log::exception($ie);
                 return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
             }
+            if (!empty($user)) {
+                //todo:check how to set events and email code
+                $response = Event::first('welcome_email', array($data['user']->id));
+                $password_update_message = __('smstemplate.password_update_message');
+                $this->appSmsRepo->createAppSms($user->mobile, $password_update_message, Config::get('sms_config.senderId'), $user->id);
+                return Response::make(__('responseerror.activate_success'), HTTPConstants::SUCCESS_CODE);
+            }
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
         }
+        return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+    }
 
+    public function action_update_mobile()
+    {
+        $data = Input::json();
+        if (empty($data))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+        $mobile = isset($data->mobile) ? $data->mobile : "";
+        $loggedinID = Auth::user()->id;
+
+        if ($loggedinID) {
+                $result=$this->userRepo->updateMobile($loggedinID,$mobile);
+            if($result)
+            {
+                return Response::make(__('responseerror.activate_success'), HTTPConstants::SUCCESS_CODE);
+            }
+            return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
+        }
+        return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
     }
 
 }

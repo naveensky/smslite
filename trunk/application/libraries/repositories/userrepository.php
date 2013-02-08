@@ -1,10 +1,6 @@
 <?php
 /**
- * Created by JetBrains PhpStorm.
- * User: naveen
- * Date: 23/1/13
- * Time: 7:23 AM
- * To change this template use File | Settings | File Templates.
+ * user repository
  */
 class UserRepository
 {
@@ -107,7 +103,7 @@ class UserRepository
         $data = array(
 
             'isDeactivated' => 1,
-            'reactivateCode'=>$this->getUniqueReactivationCode()
+            'reactivateCode' => $this->getUniqueReactivationCode()
         );
         try {
             User::update($id, $data);
@@ -165,7 +161,7 @@ class UserRepository
         }
 
         $user = User::where_email($email)->get();
-        $forgotten_password_code = Str::random(64, 'alpha');
+        $forgotten_password_code = $this->getUniqueForgottenPasswordCode();
         $data = array(
             'forgottenPasswordCode' => $forgotten_password_code
         );
@@ -186,7 +182,7 @@ class UserRepository
             throw new InvalidArgumentException("Empty Forgotten Password Code");
         }
 
-        $user = User::where_emailVerificationCode($code)->get();
+        $user = User::where_forgottenPasswordCode($code)->get();
 
         if (empty($user))
             throw new InvalidArgumentException("User Not Found");
@@ -202,7 +198,7 @@ class UserRepository
                 Log::exception($e);
                 return false;
             }
-            return User::find($user[0]->id);
+            return array('user' => User::find($user[0]->id), 'password' => $password);
         }
         return false;
     }
@@ -214,15 +210,43 @@ class UserRepository
             throw new InvalidArgumentException("Empty id or Old Password or New Password");
         }
 
-        $id = Crypter::decrypt($id);
         $user = User::where_id($id)->get();
-        if (Hash::check($old_password, $user->{'password'})) {
+        if (empty($user))
+            return false;
+        if (Hash::check($old_password, $user[0]->password)) {
+
             $user = User::find($id);
             $user->password = Hash::make($new_password);
             $user->save();
             return $user;
         }
+        return false;
+    }
 
+    public function restoreAccount($reactivateCode)
+    {
+        if ($reactivateCode == NULL) {
+            throw new InvalidArgumentException("Empty Reactivate Code");
+        }
+
+        $user = User::where_reactivateCode($reactivateCode)->first();
+
+        if (empty($user))
+            throw new InvalidArgumentException("User Not Found");
+
+        if (count($user) == 1) {
+
+            $updateData = array('reactivateCode' => NULL,
+                'isDeactivated' => false
+            );
+            try {
+                User::update($user->id, $updateData);
+            } catch (Exception $e) {
+                Log::exception($e);
+                return false;
+            }
+            return User::find($user->id);
+        }
         return false;
 
     }
@@ -289,7 +313,6 @@ class UserRepository
     {
         $user = User::find($id);
         return $user;
-
     }
 
     public function checkUniqueVerificationCode($verificationCode)
@@ -299,7 +322,6 @@ class UserRepository
             return true;
 
         return false;
-
     }
 
     public function getUniqueemailVerificationCode()
@@ -329,5 +351,45 @@ class UserRepository
         else
             $this->getUniqueReactivationCode();
     }
-  }
+
+    public function checkUniqueForgottenPasswordCode($forgottenCode)
+    {
+        $user = User::where_forgottenPasswordCode($forgottenCode)->first();
+        if ($user == NULL)
+            return true;
+
+        return false;
+
+    }
+
+    public function getUniqueForgottenPasswordCode()
+    {
+        $forgottenPasswordCode = Str::random(64, 'alpha');
+        if ($this->checkUniqueForgottenPasswordCode($forgottenPasswordCode))
+            return $forgottenPasswordCode;
+        else
+            $this->getUniqueForgottenPasswordCode();
+    }
+
+    public function updateMobile($id, $mobile)
+    {
+        $user = User::where_id($id)->get();
+        if (empty($user))
+            return false;
+        $user = User::find($id);
+        $user->mobile = $mobile;
+        $user->mobileVerificationCode=$this->getUniqueMobileCode();
+        $user->isVerified=false;
+        try {
+            $user->save();
+
+        } catch (Exception $e) {
+            log::exception($e);
+            return false;
+        }
+        return $user;
+
+    }
+
+}
 

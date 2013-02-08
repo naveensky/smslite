@@ -83,8 +83,9 @@ class Test_Controller extends Base_Controller
 
     public function action_checkstatus()
     {
-        Auth::login(4);
-        var_dump(Auth::user()->email);
+        Auth::login(16);
+
+        var_dump(Hash::check("password",  Auth::user()->password));
     }
 
 }
