@@ -83,7 +83,8 @@ class User_Controller extends Base_Controller
 
             $this->appSmsRepo->createAppSms($user->mobile, $welcome_message, Config::get('sms_config.senderId'), $user->id);
 
-            $response = Event::first('welcome_email', array($user->id));
+            //fire user created event 
+            Event::fire('app.user_created', array($user->id));
 
             //make the user as logged in user
             Auth::login($user->id);
@@ -95,9 +96,9 @@ class User_Controller extends Base_Controller
     {
         $activationCode = isset($activationCode) ? $activationCode : "";
 
+        //todo: show error view rather than showing bad error
         if (empty($activationCode))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
-
 
         try {
             $status = $this->userRepo->activate($activationCode);
@@ -105,6 +106,7 @@ class User_Controller extends Base_Controller
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
         }
 
+        //todo: show success page
         if ($status) {
             return Response::make(__('responseerror.activate_success'), HTTPConstants::SUCCESS_CODE);
         } else {
@@ -114,37 +116,43 @@ class User_Controller extends Base_Controller
 
     public function action_deactivate()
     {
+        //todo: this check will already happen on auth filter
+        //todo: remove this
         $loggedinID = Auth::user()->id;
         if (empty($loggedinID))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+            
         try {
+            //todo: return true false 
             $user = $this->userRepo->deactivate($loggedinID);
         } catch (InvalidArgumentException $ie) {
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
         }
 
+        //todo: check if user was not deleted. In case not, send bad code error
+
         if (!empty($user)) {
-            //todo:check how to set events and mail
-//            $response = Event::first('welcome_email', array($user->id));
             $deactivation_message = __('smstemplate.deactivation_message');
             $this->appSmsRepo->createAppSms($user->mobile, $deactivation_message, Config::get('sms_config.senderId'), $user->id);
             return Response::make(__('responseerror.activate_success'), HTTPConstants::SUCCESS_CODE);
-
         }
 
-        return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+        //fire event for user deactivation
+        Event::fire('app.user_deactivated', array(Auth::user()->id));
 
+        return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
     }
 
-    public function action_restore_Account($reactivationCode)
+    public function action_restore_account($reactivationCode)
     {
 
         $reactivationCode = isset($reactivationCode) ? $reactivationCode : "";
 
+        //show view and not response code
         if (empty($reactivationCode))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
-
+        
         try {
             $user = $this->userRepo->restoreAccount($reactivationCode);
         } catch (InvalidArgumentException $ie) {
@@ -158,15 +166,19 @@ class User_Controller extends Base_Controller
         } else {
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
         }
-
+        
+        //todo: fire event for account restoration app.user_restore        
     }
 
     public function action_delete()
     {
+        //todo: this will be taken care by auth filter
         $loggedinID = Auth::user()->id;
         if (empty($loggedinID))
-            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);        
+            
         try {
+            //todo: return true false for deleted account
             $status = $this->userRepo->deleted($loggedinID);
         } catch (InvalidArgumentException $ie) {
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
@@ -175,38 +187,44 @@ class User_Controller extends Base_Controller
         if (!empty($status))
             return Response::make(__('responseerror.activate_success'), HTTPConstants::SUCCESS_CODE);
 
-
         return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
-
+        
+        //todo: fire delete event app.user_delete
     }
 
     public function action_forgotten_password()
     {
+        //todo: rename to action_post_forgot_password
+        //todo: create action_forgot_password for view
+        
         $data = Input::json();
         $email = isset($data->email) ? $data->email : "";
+        
         if (empty($email))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
         try {
+            //todo: rename to setForgotActivationCode
             $user = $this->userRepo->forgotten_password($email);
         } catch (InvalidArgumentException $ie) {
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
         }
 
-
-        if (!empty($user)) {
-            $forgotten_code = $user->forgotten_password_code;
-            //todo:check how to set events
-            $response = Event::first('welcome_email', array($user->id));
-            return Response::eloquent($user);
-        }
-
-        return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+        if(empty($user))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+        
+        //todo: rename this property to forgot_password_code
+        $forgotten_code = $user->forgotten_password_code;
+        //todo:check how to set events
+        
+        //todo: fire event app.user_password_forgot
+        $response = Event::first('welcome_email', array($user->id));
+        return Response::eloquent($user);    
     }
 
     public function action_reset_password($code)
-    {
-        try {
+    {            
+       try {
             $data = $this->userRepo->forgotten_password_complete($code);
         } catch (InvalidArgumentException $ie) {
             Log::exception($ie);
@@ -221,7 +239,9 @@ class User_Controller extends Base_Controller
         $this->appSmsRepo->createAppSms($data['user']->mobile, $password_reset_message, Config::get('sms_config.senderId'), $data['user']->id);
         $new_password_message = __('smstemplate.new_password_message', array('code' => $data['password']));
         $this->appSmsRepo->createAppSms($data['user']->mobile, $new_password_message, Config::get('sms_config.senderId'), $data['user']->id);
-
+        
+        //fire event : app.user_password_reset
+        
     }
 
     public function action_resend_sms()
