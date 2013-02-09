@@ -11,12 +11,12 @@ class Init {
     {
         //create school table
         Schema::create('schools', function ($table) {
-            $table->increments('id');
+            $table->increments('id')->unsigned();
             $table->string('name', 1000);
             $table->text('address');
             $table->string('city', 100);
             $table->string('state', 100);
-            $table->string('zip', 45);
+            $table->string('zip', 20);
             $table->string('senderId', 45);
             $table->string('contactPerson', 400);
             $table->string('contactMobile', 45);
@@ -27,12 +27,12 @@ class Init {
 
         //create user table
         Schema::create('users', function ($table) {
-            $table->increments('id');
+            $table->increments('id')->unsigned();
             $table->string('email', 1000);
             $table->string('password', 1000);
-            $table->string('mobile', 45);
+            $table->string('mobile', 50);
             $table->string('emailVerificationCode', 100);
-            $table->string('mobileVerificationCode', 45);
+            $table->string('mobileVerificationCode', 50);
             $table->integer('schoolId')->unsigned();
             $table->foreign('schoolId')->references('id')->on('schools');
             $table->string('forgottenPasswordCode', 100);
@@ -45,7 +45,7 @@ class Init {
 
         //create roles table
         Schema::create('roles', function ($table) {
-            $table->increments('id');
+            $table->increments('id')->unsigned();
             $table->string('name', 200);
             $table->timestamps();
         });
@@ -53,7 +53,7 @@ class Init {
 
         //create Users Roles table
         Schema::create('role_user', function ($table) {
-            $table->increments('id');
+            $table->increments('id')->unsigned();
             $table->integer('user_id')->unsigned();
             $table->integer('role_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
@@ -63,7 +63,7 @@ class Init {
 
         //create students table
         Schema::create('students', function ($table) {
-            $table->increments('id');
+            $table->increments('id')->unsigned();
             $table->string('name', 500);
             $table->string('email', 1000);
             $table->string('motherName', 300);
@@ -89,7 +89,7 @@ class Init {
 
         //create teachers table
         Schema::create('teachers', function ($table) {
-            $table->increments('id');
+            $table->increments('id')->unsigned();
             $table->string('name', 500);
             $table->string('email', 1000);
             $table->string('mobile1', 45);
@@ -111,8 +111,8 @@ class Init {
 
 
         //create SMS Transaction Table
-        Schema::create('smstransactions', function ($table) {
-            $table->increments('id');
+        Schema::create('smsTransactions', function ($table) {
+            $table->increments('id')->unsigned();
             $table->string('mobile', 45);
             $table->text('message');
             $table->string('status', 45);
@@ -128,8 +128,8 @@ class Init {
 
 
         //create Application SMS Transaction Table
-        Schema::create('appsmstransactions', function ($table) {
-            $table->increments('id');
+        Schema::create('appSmsTransactions', function ($table) {
+            $table->increments('id')->unsigned();
             $table->string('mobile', 45);
             $table->text('message');
             $table->string('status', 45);
@@ -144,7 +144,7 @@ class Init {
 
         //create SMS credits table
         Schema::create('smsCredits', function ($table) {
-            $table->increments('id');
+            $table->increments('id')->unsigned();
             $table->integer('credits');
             $table->integer('schoolId')->unsigned();
             $table->foreign('schoolId')->references('id')->on('schools');
@@ -155,7 +155,7 @@ class Init {
 
         //create transaction table
         Schema::create('transactions', function ($table) {
-            $table->increments('id');
+            $table->increments('id')->unsigned();
             $table->string('orderId', 64);
             $table->integer('smsCredits');
             $table->decimal('amount', 10, 2);
@@ -193,11 +193,11 @@ class Init {
             $table->drop_foreign('teachers_schoolId_foreign');
         });
 
-        Schema::table('smstransactions', function ($table) {
+        Schema::table('smsTransactions', function ($table) {
             $table->drop_foreign('smstransactions_userId_foreign');
         });
 
-        Schema::table('appsmstransactions', function ($table) {
+        Schema::table('appSmsTransactions', function ($table) {
             $table->drop_foreign('appsmstransactions_userId_foreign');
         });
 
@@ -217,8 +217,8 @@ class Init {
         Schema::drop('role_user');
         Schema::drop('students');
         Schema::drop('teachers');
-        Schema::drop('smstransactions');
-        Schema::drop('appsmstransactions');
+        Schema::drop('smsTransactions');
+        Schema::drop('appSmsTransactions');
         Schema::drop('smsCredits');
         Schema::drop('transactions');
 

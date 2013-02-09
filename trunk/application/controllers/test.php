@@ -54,13 +54,12 @@ class Test_Controller extends Base_Controller
 
     function action_pass()
     {
-       var_dump(Hash::check('asdf','$2a$08$dpLbsfeVq4TlIX4ja1X2U.1sYJwdeMedbJmIibdueBL.NnbjE9xdO'));
+        var_dump(Hash::check('asdf', '$2a$08$dpLbsfeVq4TlIX4ja1X2U.1sYJwdeMedbJmIibdueBL.NnbjE9xdO'));
     }
 
     function action_test_mail()
     {
-        Message::send(function($message)
-        {
+        Message::send(function ($message) {
             $message->to('hmalhotra@greenapplesolutions.com');
             $message->from('hmalhotra@greenapplesolutions.com', 'Bob Marley');
 
@@ -77,15 +76,30 @@ class Test_Controller extends Base_Controller
 
     public function action_testm()
     {
-        $obj=new MailServices();
-        $obj->sendActivationEmail('hmalhotra@greenapplesolutions.com','1313dsfshfsf');
+        $obj = new MailServices();
+        $obj->sendActivationEmail('hmalhotra@greenapplesolutions.com', '1313dsfshfsf');
     }
 
     public function action_checkstatus()
     {
         Auth::login(16);
 
-        var_dump(Hash::check("password",  Auth::user()->password));
+        var_dump(Hash::check("password", Auth::user()->password));
     }
+
+
+    public function action_testEvents()
+    {
+        $user=User::find(16);
+        Event::fire('app.user_created', array($user));
+    }
+
+    public function action_id()
+    {
+        $userRoles = array('admin', 'editor');
+        $ids = role::where_in('name', $userRoles)->get('id');
+        var_dump($ids[0]->id);
+    }
+
 
 }

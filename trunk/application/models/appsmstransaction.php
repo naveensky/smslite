@@ -8,7 +8,7 @@
  */
 class AppSMSTransaction extends Eloquent
 {
-    public static $table = 'appsmstransactions';
+    public static $table = 'appSmsTransactions';
     const APP_SMS_STATUS_PENDING='pending';
     const APP_SMS_STATUS_FAIL='fail';
     const APP_SMS_STATUS_SENT='sent';

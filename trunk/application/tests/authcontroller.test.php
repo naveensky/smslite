@@ -36,24 +36,23 @@ class TestAuthcontroller extends PHPUnit_Framework_TestCase
 //        $this->assertEquals(200, $response->status());
 //    }
 
-//    public function testCreateUser()
-//    {
-//        $data = array(
-//            'email' => 'hitanshumalhotra@gmail.com',
-//            'password' => 'password',
-//            'mobile' => '95358938953'
-//
-//        );
-//
-//        Input::$json = (object)$data;
-//
-//        Request::setMethod('POST');
-//        $response = Controller::call('user@post_create');
-//        var_dump($response);
-//        $this->assertNotNull($response);
-//        $this->assertEquals(200, $response->status());
-//
-//    }
+    public function testCreateUser()
+    {
+        \Laravel\Bundle::start('message');
+        $data = array(
+            'email' => 'hitanshumalhotra@gmail.com',
+            'password' => 'password',
+            'mobile' => '95358938953'
+        );
+
+        Input::$json = (object)$data;
+        Request::setMethod('POST');
+        $response = Controller::call('user@post_signUp');
+        var_dump($response);
+        $this->assertNotNull($response);
+        $this->assertEquals(200, $response->status());
+
+    }
 
 //    public function testActivation()
 //    {
@@ -99,11 +98,9 @@ class TestAuthcontroller extends PHPUnit_Framework_TestCase
 //        $data = array(
 //            'email' => 'hitanshumalhotra@gmail.com'
 //        );
-//
 //        Input::$json = (object)$data;
-//
 //        Request::setMethod('POST');
-//        $response = Controller::call('user@forgotten_password');
+//        $response = Controller::call('user@post_forgot_password');
 //        $this->assertNotNull($response);
 //        $this->assertEquals(200, $response->status());
 //    }
@@ -111,24 +108,21 @@ class TestAuthcontroller extends PHPUnit_Framework_TestCase
 //    public function testforgottenComplete()
 //    {
 //        $data = array(
-//            'code' => 'JbMOHszsjRvvrWldvcIGfNUtvFoWBhlkyxixtkmLcahjpKhplAWGdZDIKdaHHsmh',
-//
+//            'code' => 'uqkRYwAvUzohfDaxcCglGiGMXIUyAHqKhJmOEFyGSMDQKnbCInzckmbUlQgCtefD',
 //        );
-//
 //        Request::setMethod('GET');
-//        $response = Controller::call('user@reset_password', $data);
+//        $response = Controller::call('user@post_reset_password', $data);
 //        var_dump($response);
 //    }
 
 //    public function testMobileVerify()
 //    {
+//        Auth::login(18);
 //        $data = array(
-//            'mobileActivationCode' => '395991',
-//
+//            'mobileActivationCode' => '200200',
 //        );
 ////
 ////        Input::$json = (object)$data;
-//
 //
 ////
 //        Request::setMethod('GET');
@@ -173,19 +167,33 @@ class TestAuthcontroller extends PHPUnit_Framework_TestCase
 //        $this->assertEquals(200, $response->status());
 //    }
 
-    public function testUpdateMobile()
-    {
-        Auth::login(16);
-        $data = array(
-            'mobile' => '89684866846'
-        );
-        Input::$json = (object)$data;
-        Request::setMethod('POST');
-        $response = Controller::call('user@update_mobile');
-        var_dump($response);
-        $this->assertNotNull($response);
-        $this->assertEquals(200, $response->status());
-    }
+//    public function testUpdateMobile()
+//    {
+//        Auth::login(16);
+//        $data = array(
+//            'mobile' => '89684866846'
+//        );
+//        Input::$json = (object)$data;
+//        Request::setMethod('POST');
+//        $response = Controller::call('user@update_mobile');
+//        var_dump($response);
+//        $this->assertNotNull($response);
+//        $this->assertEquals(200, $response->status());
+//    }
+
+//public function testsetPassword()
+//{
+//    $data = array(
+//            'email' => 'hitanshumalhotra1@gmail.com',
+//            'newPassword'=>'password'
+//        );
+//        Input::$json = (object)$data;
+//        Request::setMethod('POST');
+//        $response = Controller::call('user@post_set_password');
+//        var_dump($response);
+//        $this->assertNotNull($response);
+//        $this->assertEquals(200, $response->status());
+//}
 
 
 }

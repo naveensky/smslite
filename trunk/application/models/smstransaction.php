@@ -12,7 +12,7 @@ class SMSTransaction extends Eloquent
     const SMS_STATUS_FAIL='fail';
     const SMS_STATUS_SENT='sent';
 
-    public static $table = 'smstransactions';
+    public static $table = 'smsTransactions';
     public static $hidden = array('id'); //to exclude id from json array
     public static $timestamps = true;
 

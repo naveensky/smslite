@@ -15,18 +15,12 @@ class UserRepository
 
     public function createAdmin($email, $mobile, $password, $schoolCode)
     {
-
-        return $this->createUser($email, $mobile, $password, $schoolCode);
+        $roles = array(Role::USER_ROLE_ADMIN, Role::USER_ROLE_EDITOR);
+        return $this->createUser($email, $mobile, $password, $schoolCode, $roles);
     }
 
-    public function addAdminUserRole($userId)
-    {
-        $role = Role::USER_ROLE_ADMIN;
-        return $this->addUserToRole($userId, $role);
 
-    }
-
-    public function createUser($email, $mobile, $password, $schoolCode = null)
+    public function createUser($email, $mobile, $password, $schoolCode = null, array $userRoles)
     {
         if ($schoolCode == null) {
             throw new InvalidArgumentException("Empty School ID");
@@ -45,13 +39,26 @@ class UserRepository
         $user->email = $email;
         $user->mobile = $mobile;
         $user->password = Hash::make($password);
-        $user->emailVerificationCode = $this->getUniqueemailVerificationCode();
-        $user->mobileVerificationCode = $this->getUniqueMobileCode();
+        $user->emailVerificationCode = Str::random(64, 'alpha');
+        $user->mobileVerificationCode = mt_rand(100000, 999999);
         $user->schoolId = $school[0]->id;
-
+        $rolesIds = role::where_in('name', $userRoles)->get('id');
+        $idS = array();
+        foreach ($rolesIds as $roleId) {
+            $idS[] = $roleId->id;
+        }
         try {
+            DB::connection()->pdo->beginTransaction();
             $user->save();
-        } catch (Exception $e) {
+            $user->roles()->sync($idS);
+            DB::connection()->pdo->commit();
+        } catch (PDOException $e) {
+            //rollback if any error while bulk insertion
+            DB::connection()->pdo->rollBack();
+            Log::exception($e);
+            return false;
+        }
+        catch (Exception $e) {
             Log::exception($e);
             return false;
         }
@@ -95,32 +102,23 @@ class UserRepository
 
     public function deactivate($id = NULL)
     {
-        if ($id == NULL) {
-            throw new InvalidArgumentException("Empty ID");
-        }
-
-
         $data = array(
-
             'isDeactivated' => 1,
-            'reactivateCode' => $this->getUniqueReactivationCode()
+            'reactivateCode' => Str::random(64, 'alpha')
         );
+
         try {
             User::update($id, $data);
         } catch (Exception $e) {
             Log::exception($e);
             return false;
         }
-        return User::find($id);
+        return true;
 
     }
 
-    public function deleted($id = NULL)
+    public function deleted($id)
     {
-        if ($id == NULL) {
-            throw new InvalidArgumentException("Empty ID");
-        }
-
         $data = array(
             'isDeleted' => 1
         );
@@ -154,14 +152,14 @@ class UserRepository
         return false;
     }
 
-    public function forgotten_password($email)
+    public function setForgotActivationCode($email)
     {
         if (empty($email)) {
             throw new InvalidArgumentException("Empty ID");
         }
 
         $user = User::where_email($email)->get();
-        $forgotten_password_code = $this->getUniqueForgottenPasswordCode();
+        $forgotten_password_code = Str::random(64, 'alpha');
         $data = array(
             'forgottenPasswordCode' => $forgotten_password_code
         );
@@ -171,9 +169,7 @@ class UserRepository
             Log::exception($e);
             return false;
         }
-
         return User::find($user[0]->id);
-
     }
 
     public function forgotten_password_complete($code = NULL)
@@ -188,9 +184,7 @@ class UserRepository
             throw new InvalidArgumentException("User Not Found");
 
         if (count($user) == 1) {
-            $password = mt_rand(100000, 999999);
-            $updateData = array('forgottenPasswordCode' => NULL,
-                'password' => Hash::make($password)
+            $updateData = array('forgottenPasswordCode' => NULL
             );
             try {
                 User::update($user[0]->id, $updateData);
@@ -198,18 +192,39 @@ class UserRepository
                 Log::exception($e);
                 return false;
             }
-            return array('user' => User::find($user[0]->id), 'password' => $password);
+            return $user;
         }
         return false;
+    }
+
+    public function setNewPassword($email, $newPassword)
+    {
+        if (empty($email) || empty($newPassword))
+            throw new InvalidArgumentException("Empty newpassword or email");
+
+        $user = User::where_email($email)->first();
+
+        if ($user == NULL)
+            return false;
+
+        $data = array(
+            'password' => Hash::make($newPassword)
+        );
+        try {
+            User::update($user->id, $data);
+        } catch (Exception $e) {
+            Log::exception($e);
+            return false;
+        }
+        return User::find($user->id);
     }
 
     public function change_password($id, $old_password, $new_password)
     {
 
-        if (empty($id) || empty($old_password) || empty($new_password)) {
+        if (empty($old_password) || empty($new_password)) {
             throw new InvalidArgumentException("Empty id or Old Password or New Password");
         }
-
         $user = User::where_id($id)->get();
         if (empty($user))
             return false;
@@ -251,124 +266,56 @@ class UserRepository
 
     }
 
-    public function verifyMobile($mobileVerificationCode)
+    public function send_new_password_to_mobile($email, $mobile)
+    {
+        if (empty($email) || empty($mobile))
+            throw new InvalidArgumentException("Empty email or mobile");
+
+        $user = User::where_email($email)->where_mobile($mobile)->first();
+
+        if ($user == NULL)
+            return false;
+
+        $password = mt_rand(100000, 999999);
+        $updateData = array(
+            'password' => Hash::make($password)
+        );
+        try {
+            User::update($user->id, $updateData);
+        } catch (Exception $e) {
+            Log::exception($e);
+            return false;
+        }
+        return array('user' => User::find($user->id), 'password' => $password);
+    }
+
+    public function verifyMobile($id, $mobileVerificationCode)
     {
         if ($mobileVerificationCode == NULL) {
             throw new InvalidArgumentException("Empty Mobile Verification Code");
         }
 
-        $user = User::where_mobileVerificationCode($mobileVerificationCode)->first();
+        $user = User::where_id($id)->where_mobileVerificationCode($mobileVerificationCode)->first();
 
-        if (empty($user))
+        if ($user == NULL)
             throw new InvalidArgumentException("User Not Found");
 
-        if (count($user) == 1) {
-            $updateData = array('mobileVerificationCode' => NULL,
-                'isVerified' => true
-            );
-            try {
-                User::update($user->id, $updateData);
-            } catch (Exception $e) {
-                Log::exception($e);
-                return false;
-            }
-            return true;
-        }
-        return false;
-
-    }
-
-
-    public function checkUniqueMobileCode($mobile_code)
-    {
-        $user = User::where_mobileVerificationCode($mobile_code)->first();
-        if ($user == NULL)
-            return true;
-
-        return false;
-
-    }
-
-    public function getUniqueMobileCode()
-    {
-        $mobileCode = mt_rand(100000, 999999);
-        if ($this->checkUniqueMobileCode($mobileCode))
-            return $mobileCode;
-        else
-            $this->getUniqueMobileCode();
-    }
-
-    public function addUserToRole($userId, $role)
-    {
-        $user = User::find($userId);
-        $role = Role::where_name($role)->first();
-        $role = $user->roles()->attach($role->id);
-        if ($role)
-            return true;
-        else
+        $updateData = array('mobileVerificationCode' => NULL,
+            'isVerified' => true
+        );
+        try {
+            User::update($user->id, $updateData);
+        } catch (Exception $e) {
+            Log::exception($e);
             return false;
+        }
+        return true;
     }
 
     public function getUser($id)
     {
         $user = User::find($id);
         return $user;
-    }
-
-    public function checkUniqueVerificationCode($verificationCode)
-    {
-        $user = User::where_emailVerificationCode($verificationCode)->first();
-        if ($user == NULL)
-            return true;
-
-        return false;
-    }
-
-    public function getUniqueemailVerificationCode()
-    {
-        $emailVerificationCode = Str::random(64, 'alpha');
-        if ($this->checkUniqueVerificationCode($emailVerificationCode))
-            return $emailVerificationCode;
-        else
-            $this->getUniqueemailVerificationCode();
-    }
-
-    public function checkUniqueReactivationCode($reactivationCode)
-    {
-        $user = User::where_reactivateCode($reactivationCode)->first();
-        if ($user == NULL)
-            return true;
-
-        return false;
-
-    }
-
-    public function getUniqueReactivationCode()
-    {
-        $reactivationCode = Str::random(64, 'alpha');
-        if ($this->checkUniqueReactivationCode($reactivationCode))
-            return $reactivationCode;
-        else
-            $this->getUniqueReactivationCode();
-    }
-
-    public function checkUniqueForgottenPasswordCode($forgottenCode)
-    {
-        $user = User::where_forgottenPasswordCode($forgottenCode)->first();
-        if ($user == NULL)
-            return true;
-
-        return false;
-
-    }
-
-    public function getUniqueForgottenPasswordCode()
-    {
-        $forgottenPasswordCode = Str::random(64, 'alpha');
-        if ($this->checkUniqueForgottenPasswordCode($forgottenPasswordCode))
-            return $forgottenPasswordCode;
-        else
-            $this->getUniqueForgottenPasswordCode();
     }
 
     public function updateMobile($id, $mobile)
@@ -378,8 +325,8 @@ class UserRepository
             return false;
         $user = User::find($id);
         $user->mobile = $mobile;
-        $user->mobileVerificationCode=$this->getUniqueMobileCode();
-        $user->isVerified=false;
+        $user->mobileVerificationCode = mt_rand(100000, 999999);
+        $user->isVerified = false;
         try {
             $user->save();
 

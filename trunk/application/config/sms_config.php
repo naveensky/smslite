@@ -15,7 +15,6 @@ return array(
 
     'password' => 'password',
 
-    'senderId'=>'GAPS',
+    'sender_id' => 'GAPS'
 
-    'attributes' => array(),
-);
+    );

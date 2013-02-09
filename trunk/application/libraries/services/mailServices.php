@@ -8,11 +8,12 @@
  */
 class MailServices
 {
-    public function sendActivationEmail($toEmail,$activationCode)
+    public static function sendActivationEmail($user)
     {
-
-        Message::send(function ($message) use($toEmail,$activationCode) {
-            $message->to($toEmail);
+        var_dump($user);
+        $email=$user->email;
+        Message::send(function ($message) use($email) {
+            $message->to($email);
             $message->from(Config::get('email.from_email'),Config::get('email.adminName') );
 
             $message->subject('SMSLITE - Welcome Mail');
@@ -21,17 +22,16 @@ class MailServices
 
             // You can add View data by simply setting the value
             // to the message.
-            $message->body->activation_code = $activationCode;
-
+            $message->body->data = $email;
             $message->html(true);
         });
     }
 
 
-    public function sendForgottenPasswordEmail($toEmail,$forgottenPasswordCode)
+    public function sendForgottenPasswordEmail($toEmail,$forgottenPasswordCode,$name)
     {
 
-        Message::send(function ($message) use($toEmail,$forgottenPasswordCode) {
+        Message::send(function ($message) use($toEmail,$forgottenPasswordCode,$name) {
             $message->to($toEmail);
             $message->from(Config::get('email.from_email'), Config::get('email.adminName'));
 
