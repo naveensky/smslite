@@ -1,0 +1,73 @@
+body, input, .btn, label {
+    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.form-actions {
+    background-color: transparent;
+    border-top: none;
+}
+
+.valid {
+    color: #5c8846;
+}
+
+.padding-right-5 {
+    padding-right: 5px;
+}
+
+.margin-top-20 {
+    margin-top: 20px;
+}
+
+.margin-top-10 {
+    margin-top: 10px;
+}
+
+.margin-top-0 {
+    margin-top: 0px;
+}
+
+.margin-left-0 {
+    margin-left: 0px !important;
+}
+
+.invalid {
+    color: #b85355;
+}
+
+.btn-primary {
+    background-color: #5c8846 !important;
+}
+
+h3 {
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 20px;
+    padding-bottom: 10px;
+    text-transform: capitalize;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 20px;
+    margin-top: 0px;
+}
+
+h3 i{
+    padding-right: 5px !important;
+}
+
+.tab-content > .tab-pane, .pill-content > .pill-pane {
+    padding-top: 20px;
+}
+
+div.control-group .text-error {
+    display: block;
+    margin-top: 5px;
+}
+
+div.control-group .text-success {
+    display: block;
+    margin-top: 5px;
+}
+
+.border-right {
+    border-right: 1px solid #ccc;
+}
