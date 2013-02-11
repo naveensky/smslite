@@ -8,8 +8,6 @@
  */
 class Student_Controller extends Base_Controller
 {
-    public $restful = true;
-
     private $studentRepo;
     private $schoolRepo;
 
@@ -18,6 +16,17 @@ class Student_Controller extends Base_Controller
         parent::__construct();
         $this->studentRepo = new StudentRepository();
         $this->schoolRepo=new SchoolRepository();
+
+        //todo: add auth filter
+    }
+
+    public function action_upload(){
+        //todo: view for upload of student
+    }
+
+    public function action_post_upload(){
+        //todo: json input containing file path
+        //todo: bulk upload for students
     }
 
     public function post_create()
