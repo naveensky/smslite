@@ -31,15 +31,15 @@ class Init {
             $table->string('email', 1000);
             $table->string('password', 1000);
             $table->string('mobile', 50);
-            $table->string('emailVerificationCode', 100);
-            $table->string('mobileVerificationCode', 50);
+            $table->string('emailVerificationCode', 100)->nullable();
+            $table->string('mobileVerificationCode', 50)->nullable();
             $table->integer('schoolId')->unsigned();
             $table->foreign('schoolId')->references('id')->on('schools');
-            $table->string('forgottenPasswordCode', 100);
-            $table->integer('isVerified');
-            $table->integer('isDeactivated');
-            $table->integer('isDeleted');
-            $table->integer('reactivateCode');
+            $table->string('forgottenPasswordCode', 100)->nullable()->default(NULL);
+            $table->integer('isVerified')->default(false);
+            $table->integer('isDeactivated')->default(false);
+            $table->integer('isDeleted')->default(false);
+            $table->integer('reactivateCode')->nullable()->default(NULL);
             $table->timestamps();
         });
 

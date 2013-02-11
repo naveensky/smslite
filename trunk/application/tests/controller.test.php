@@ -12,25 +12,23 @@ require_once('controllertestcase.php');
 
 class TestController extends ControllerTestCase
 {
-//    public function testSomethingIsTrue()
-//    {
-//        $parameters=array(
-//          'name'=>'GD Goenka',
-//            'address'=>'dwarka',
-//            'city'=>'new delhi',
-//            'state'=>'delhi',
-//            'zip'=>110018,
-//            'sender_id'=>'333dfsvfbfs13331',
-//            'contact_person'=>'keshav astha',
-//            'contact_mobile'=>'992133631313'
-//
-//        );
-//
-//        Input::$json=(object)$parameters;
-//        $response = $this->post('school@create',array());
-//        var_dump($response);
-//        $this->assertTrue(true);
-//    }
+    public function testSomethingIsTrue()
+    {
+        $parameters=array(
+          'name'=>'GD Goenka',
+            'address'=>'dwarka',
+            'city'=>'new delhi',
+            'state'=>'delhi',
+            'zip'=>110018,
+            'sender_id'=>'333dfsvfbfs13331',
+            'contact_person'=>'keshav astha',
+            'contact_mobile'=>'992133631313'
+        );
+        Input::$json=(object)$parameters;
+        $response = $this->post('school@create',array());
+        var_dump($response);
+        $this->assertTrue(true);
+    }
 //
 //    public function testGet()
 //    {

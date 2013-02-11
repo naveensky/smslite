@@ -8,95 +8,91 @@
  */
 class MailServices
 {
-    public static function sendActivationEmail($user)
+    public function sendActivationEmail($user)
     {
-        var_dump($user);
-        $email=$user->email;
-        Message::send(function ($message) use($email) {
-            $message->to($email);
-            $message->from(Config::get('email.from_email'),Config::get('email.adminName') );
-
-            $message->subject('SMSLITE - Welcome Mail');
-
+        $user = $user->to_array();
+        Message::send(function ($message) use ($user) {
+            $message->to($user['email']);
+            $message->from(Config::get('email.from_email'), Config::get('email.adminName'));
+            //email subject can be changed from language file
+            $message->subject(__('emailsubjects.welcome_email_subject'));
             $message->body("view: auth.email.welcome");
-
-            // You can add View data by simply setting the value
+           // You can add View data by simply setting the value
             // to the message.
-            $message->body->data = $email;
+            $message->body->result = $user;
             $message->html(true);
         });
     }
 
 
-    public function sendForgottenPasswordEmail($toEmail,$forgottenPasswordCode,$name)
+    public function sendForgottenPasswordEmail($user)
     {
-
-        Message::send(function ($message) use($toEmail,$forgottenPasswordCode,$name) {
-            $message->to($toEmail);
+        $user = $user->to_array();
+        Message::send(function ($message) use ($user) {
+            $message->to($user['email']);
             $message->from(Config::get('email.from_email'), Config::get('email.adminName'));
-
-            $message->subject('SMSLITE - Forgot Password');
-
-            $message->body("view: auth.email.forgotpassword");
-
+            $message->subject(__('emailsubjects.forgot_password_email_subject'));
+            $message->body("view: auth.email.forgotPassword");
             // You can add View data by simply setting the value
             // to the message.
-            $message->body->activation_code = $forgottenPasswordCode;
-
+            $message->body->result = $user;
             $message->html(true);
         });
     }
 
 
-    public function sendForgottenPasswordCompleteEmail($toEmail,$NewPassword)
+    public function sendForgottenPasswordCompleteEmail($user)
     {
-
-        Message::send(function ($message) use($toEmail,$NewPassword) {
-            $message->to($toEmail);
+        $user = $user->to_array();
+        Message::send(function ($message) use ($user) {
+            $message->to($user['email']);
             $message->from(Config::get('email.from_email'), Config::get('email.adminName'));
-
-            $message->subject('SMSLITE - New Password');
-
+            $message->subject(__('emailsubjects.new_password_email_subject'));
             $message->body("view: auth.email.newpassword");
-
             // You can add View data by simply setting the value
             // to the message.
-            $message->body->activation_code = $NewPassword;
-
+            $message->body->result = $user;
             $message->html(true);
         });
     }
 
-    public function sendDeactivateAccountEmail($toEmail,$activationCode)
+    public function sendDeactivateAccountEmail($user)
     {
-
-        Message::send(function ($message) use($toEmail,$activationCode) {
-            $message->to($toEmail);
+        $user = $user->to_array();
+        Message::send(function ($message) use ($user) {
+            $message->to($user['email']);
             $message->from(Config::get('email.from_email'), Config::get('email.adminName'));
-
-            $message->subject('SMSLITE - Account Deactivation');
-
-            $message->body("view: auth.email.deactivate");
-
+            $message->subject(__('emailsubjects.deactivate_account_email_subject'));
+            $message->body("view: auth.email.accountDeactivate");
             // You can add View data by simply setting the value
             // to the message.
-            $message->body->activation_code = $activationCode;
-
+            $message->body->result = $user;
             $message->html(true);
         });
     }
 
-    public function sendDeleteAccountEmail($toEmail)
+    public function sendDeleteAccountEmail($user)
     {
-
-        Message::send(function ($message) use($toEmail) {
-            $message->to($toEmail);
+        $user = $user->to_array();
+        Message::send(function ($message) use ($user) {
+            $message->to($user['email']);
             $message->from(Config::get('email.from_email'), Config::get('email.adminName'));
+            $message->subject(__('emailsubjects.delete_account_email_subject'));
+            $message->body("view: auth.email.accountDeleted");
+            $message->body->result = $user;
+            $message->html(true);
+        });
+    }
 
-            $message->subject('SMSLITE - Account Deleted');
-
+    public function sendAccountRestore($user)
+    {
+        $user = $user->to_array();
+        Message::send(function ($message) use ($user) {
+            $message->to($user['email']);
+            $message->from(Config::get('email.from_email'), Config::get('email.adminName'));
+            $message->subject(__('emailsubjects.restore_account_email_subject'));
             $message->body("view: auth.email.deleted");
-
+            $message->body->result = $user;
             $message->html(true);
         });
     }

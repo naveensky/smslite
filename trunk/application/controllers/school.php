@@ -33,7 +33,6 @@ class School_Controller extends Base_Controller
         $new_school->senderId = isset($new_school->sender_id) ? $new_school->sender_id : NULL;
         $new_school->contactPerson = isset($new_school->contact_person) ? $new_school->contact_person : NULL;
         $new_school->contactMobile = isset($new_school->contact_mobile) ? $new_school->contact_mobile : NULL;
-        //todo: get current login user id
         $new_school->code = Str::random(64, 'alpha');
         $result = $this->schoolRepo->createSchool($new_school);
 

@@ -22,6 +22,13 @@ class MailListener
             $this->mailService->sendActivationEmail($user);
         });
 
+        Event::listen(ListenerConstants::APP_USER_DEACTIVATED, function ($user) {
+            $this->mailService->sendDeactivateAccountEmail($user);
+        });
+        Event::listen(ListenerConstants::APP_USER_RESTORE, function ($user) {
+            $this->mailService->sendDeactivateAccountEmail($user);
+        });
+
 
 
     }

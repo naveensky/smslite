@@ -55,7 +55,6 @@ class User_Controller extends Base_Controller
     {
         $data = Input::json();
 
-        //return if empty
         if (empty($data))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
@@ -258,7 +257,7 @@ class User_Controller extends Base_Controller
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
 
         $password_reset_message = __('smstemplate.password_reset_successfully_message');
-        $senderId= Config::get('sms_config.sender_id');
+        $senderId = Config::get('sms_config.sender_id');
         var_dump($senderId);
         $this->appSmsRepo->createAppSms($user->mobile, $password_reset_message, $senderId, $user->id);
 

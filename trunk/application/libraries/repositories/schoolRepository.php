@@ -75,23 +75,20 @@ class SchoolRepository
 
     public function createEmptySchool()
     {
-
         $school_obj = new School();
-        $school_obj->name = NULL;
-        $school_obj->address = NULL;
-        $school_obj->city = NULL;
-        $school_obj->state = NULL;
-        $school_obj->zip = NULL;
-        $school_obj->senderId = NULL;
-        $school_obj->contactPerson = NULL;
-        $school_obj->contactMobile = NULL;
+        $school_obj->name = "";
+        $school_obj->address = "";
+        $school_obj->city = "";
+        $school_obj->state = "";
+        $school_obj->zip = "";
+        $school_obj->senderId = "";
+        $school_obj->contactPerson = "";
+        $school_obj->contactMobile = "";
         $school_obj->code = Str::random(64, 'alpha');
 
-        try{
+        try {
             $school_obj->save();
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
             Log::exception($e);
             return false;
         }

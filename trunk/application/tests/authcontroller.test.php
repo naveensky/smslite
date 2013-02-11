@@ -36,29 +36,28 @@ class TestAuthcontroller extends PHPUnit_Framework_TestCase
 //        $this->assertEquals(200, $response->status());
 //    }
 
-    public function testCreateUser()
-    {
-        \Laravel\Bundle::start('message');
-        $data = array(
-            'email' => 'hitanshumalhotra@gmail.com',
-            'password' => 'password',
-            'mobile' => '95358938953'
-        );
-
-        Input::$json = (object)$data;
-        Request::setMethod('POST');
-        $response = Controller::call('user@post_signUp');
-        var_dump($response);
-        $this->assertNotNull($response);
-        $this->assertEquals(200, $response->status());
-
-    }
+//    public function testCreateUser()
+//    {
+//        Bundle::start('messages');
+//        $data = array(
+//            'email' => 'hitanshumalhotra@gmail.com',
+//            'password' => 'password',
+//            'mobile' => '95358938953'
+//        );
+//
+//        Input::$json = (object)$data;
+//        Request::setMethod('POST');
+//        $response = Controller::call('user@post_signUp');
+//        var_dump($response);
+//        $this->assertNotNull($response);
+//        $this->assertEquals(200, $response->status());
+//
+//    }
 
 //    public function testActivation()
 //    {
 //        $data = array(
-//            'code' => 'afwygSHSIVCdGJZLdQxCbJTdZdiPmRoWSEGZPeEbQifYhRDVbVcteSBegPANYfMA',
-//
+//            'code' => 'WcdeoFKIcESkIGCiVjCvkjyEpbAMUoitrcDOYQIHNMOsQRTKzSjqJgJFRExiFzeA',
 //        );
 ////
 ////        Input::$json = (object)$data;
