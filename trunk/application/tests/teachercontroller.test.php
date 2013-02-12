@@ -9,6 +9,7 @@
 class TestTeachercontroller extends ControllerTestCase
 {
 
+
 //    public function testCreate()
 //    {
 //
@@ -104,6 +105,18 @@ class TestTeachercontroller extends ControllerTestCase
 //        var_dump($response);
 //        $this->assertTrue(true);
 //    }
+
+    public function testimportteacher()
+    {
+        Auth::login(1);
+        $parameters = array(
+            'filePath' => 'tmp/teacher-upload.csv'
+        );
+        Input::$json = (object)$parameters;
+        $response = $this->post('teacher@post_upload', array());
+        var_dump($response);
+        $this->assertTrue(true);
+    }
 
 
 }

@@ -8,7 +8,7 @@
  */
 class Teacher_Controller extends Base_Controller
 {
-    public $restful = true;
+
     private $teacherRepo;
     private $schoolRepo;
 
@@ -17,60 +17,42 @@ class Teacher_Controller extends Base_Controller
         parent::__construct();
         $this->teacherRepo = new TeacherRepository();
         $this->schoolRepo = new SchoolRepository();
+
+        //proceed ahead only if authenticated
+//       $this->filter('before', 'auth');
     }
 
-    public function post_create()
+    public function action_upload()
+    {
+        //todo: view for upload of teacher
+    }
+
+    public function action_post_upload()
     {
         $data = Input::json();
-
-        if (empty($data) || count($data) == 0) {
+        if (empty($data))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        $filePath = $data->filePath;
+        $path = path('public');
+        $contents = File::get($path . $filePath);
+        $contents = trim($contents);
+        $result = Teacher::parseFromCSV($contents);
+        $teacherInserted = count($result['bulkTeachers']);
+        if (empty($result['bulkTeachers'])) {
+            $teacherInserted = 0;
+            return Response::json(array('numberOfTeacherInserted' => $teacherInserted, 'rowNumbersError' => $result['errorRows']));
         }
-
-        $schoolCode = $data->schoolCode;
-
-        $teachers = array();
-
         try {
-            $checkSchoolCode = $this->schoolRepo->checkSchoolCode($schoolCode);
-        } catch (InvalidArgumentException $ie) {
-            Log::exception($ie);
-            return Response::make(__('responseerror.not_found'), HTTPConstants::NOT_FOUND_ERROR_CODE);
-        }
-
-        foreach ($data->teachers as $new_teacher) {
-            $teacher = new Teacher();
-            $teacher->name = isset($new_teacher->Name) ? $new_teacher->Name : "";
-            $teacher->email = isset($new_teacher->Email) ? $new_teacher->Email : NULL;
-            $teacher->mobile1 = isset($new_teacher->Mobile1) ? $new_teacher->Mobile1 : NULL;
-            $teacher->mobile2 = isset($new_teacher->Mobile2) ? $new_teacher->Mobile2 : NULL;
-            $teacher->mobile3 = isset($new_teacher->Mobile3) ? $new_teacher->Mobile3 : NULL;
-            $teacher->mobile4 = isset($new_teacher->Mobile4) ? $new_teacher->Mobile4 : NULL;
-            $teacher->mobile5 = isset($new_teacher->Mobile5) ? $new_teacher->Mobile5 : NULL;
-            $teacher->dob = isset($new_teacher->DOB) ? $new_teacher->DOB : NULL;
-            $teacher->department = isset($new_teacher->Department) ? $new_teacher->Department : NULL;
-            $teacher->morningBusRoute = isset($new_teacher->MorningBusRoute) ? $new_teacher->MorningBusRoute : NULL;
-            $teacher->eveningBusRoute = isset($new_teacher->EveningBusRoute) ? $new_teacher->EveningBusRoute : NULL;
-            $teacher->sex = isset($new_teacher->Sex) ? $new_teacher->Sex : NULL;
-            $teacher->code = Str::random(64, 'alpha');
-            $teachers[] = $teacher;
-        }
-        //find school code from the current login code
-        try {
-            $result = $this->teacherRepo->createTeachers($schoolCode, $teachers); //school code
-        } catch (InvalidArgumentException $ie) {
-            Log::exception($ie);
-            return Response::make(__('responseerror.not_found'), HTTPConstants::NOT_FOUND_ERROR_CODE);
-        }
-
-        if (empty($result))
+            $this->teacherRepo->bulkTeachersInsert($result['bulkTeachers']);
+        } catch (PDOException $pdo) {
+            log::exception($pdo);
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
-
-        return Response::json($result);
+        }
+        return Response::json(array('numberOfTeacherInserted' => $teacherInserted, 'rowNumbersError' => $result['errorRows']));
     }
 
-
-    public function get_get()
+    public function action_get()
     {
         $get_code = Input::json();
 
@@ -93,7 +75,7 @@ class Teacher_Controller extends Base_Controller
     }
 
 
-    public function post_delete()
+    public function action_post_delete()
     {
         $delete_code = Input::Json();
 
@@ -118,7 +100,7 @@ class Teacher_Controller extends Base_Controller
     }
 
 
-    public function post_update()
+    public function action_post_update()
     {
 
         $update_data = Input::json();
@@ -169,8 +151,14 @@ class Teacher_Controller extends Base_Controller
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
 
         }
-
         return Response::Eloquent($result);
+
+    }
+
+    public function action_getTeachers($department,$morningBusRoute,$eveningBusRoute,$pageNo=1,$pageCount=25)
+    {
+
+
 
     }
 

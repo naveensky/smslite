@@ -102,8 +102,12 @@ Route::filter('csrf', function()
 	if (Request::forged()) return Response::error('500');
 });
 
-Route::filter('auth', function()
-{
-	if (Auth::guest()) return Redirect::to('login');
+Route::filter('auth', function () {
+    if (Auth::guest()) {
+        if (Request::ajax())
+            return Redirect::to('/user/login');
+        else
+            return Redirect::to('/#/user/login');
+    }
 });
 
