@@ -12,4 +12,10 @@ class User extends Eloquent
     {
         return $this->has_many_and_belongs_to('Role');
     }
+
+    public function school()
+    {
+        return $this->belongs_to('School');
+    }
+
 }

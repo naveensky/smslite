@@ -20,5 +20,8 @@ class School extends Eloquent
         return $this->has_many('Student', 'schoolId');
     }
 
+    public function users(){
+        return $this->has_many('User','schoolId');
+    }
 
 }
