@@ -9,7 +9,8 @@ angular.module('app', []).
         ///student routes
         $routeProvider
             .when('/student', {templateUrl: '/student', controller: 'Student_List'})
-            .when('/student/upload', {templateUrl: '/student/upload', controller: 'Student_Upload'});
+            .when('/student/upload', {templateUrl: '/student/upload', controller: 'Student_Upload'})
+            .when('/student/list',{templateUrl: '/student/list',controller:'Student_List'});
 
 
         $routeProvider.otherwise({redirectTo: '/'});

@@ -25,6 +25,18 @@ class Student_Controller extends Base_Controller
 //       $this->filter('before', 'auth');
     }
 
+    public function action_list()
+    {
+        $classes=$this->studentRepo->getClasses();
+        $morningBusRoutes=$this->studentRepo->getMorningBusRoutes();
+        $eveningBusRoutes=$this->studentRepo->getEveningBusRoutes();
+        $data['classes']=$classes;
+        $data['morningRoutes']=$morningBusRoutes;
+        $data['eveningRoutes']=$eveningBusRoutes;
+        return View::make('student.list',$data);
+    }
+
+
     public function action_upload()
     {
         return View::make('student.upload');
@@ -160,6 +172,27 @@ class Student_Controller extends Base_Controller
         }
         return Response::Eloquent($result);
 
+    }
+
+    public function action_getStudents()
+    {
+        $data = Input::json();
+        if (empty($data))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        $classSection = array();
+        $section = array();
+        $morningBusRoute = array();
+        $eveningBusRoute = array();
+        $classSection = isset($data->classSection) ? $data->classSection : $classSection;
+        $morningBusRoute = isset($data->morningBusRoute) ? $data->morningBusRoute : $morningBusRoute;
+        $eveningBusRoute = isset($data->eveningBusRoute) ? $data->eveningBusRoute : $eveningBusRoute;
+        $pageNumber = 1;
+        $pageCount = 10;
+        $pageNumber = isset($data->pageNumber) ? $data->pageNumber : $pageNumber;
+        $skip = $pageCount * ($pageNumber - 1);
+        $FilterStudents = $this->studentRepo->filterStudents($classSection, $morningBusRoute, $eveningBusRoute, $pageCount, $skip);
+        return Response::eloquent($FilterStudents);
     }
 
 }

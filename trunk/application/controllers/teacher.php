@@ -155,10 +155,26 @@ class Teacher_Controller extends Base_Controller
 
     }
 
-    public function action_getTeachers($department,$morningBusRoute,$eveningBusRoute,$pageNo=1,$pageCount=25)
+    public function action_getTeachers()
     {
 
+        $data = Input::json();
 
+        if (empty($data))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        $department = array();
+        $morningBusRoute = array();
+        $eveningBusRoute = array();
+        $department = isset($data->department) ? $data->department : $department;
+        $morningBusRoute = isset($data->morningBusRoute) ? $data->morningBusRoute : $morningBusRoute;
+        $eveningBusRoute = isset($data->eveningBusRoute) ? $data->eveningBusRoute : $eveningBusRoute;
+        $pageNumber = 1;
+        $pageCount = 25;
+        $pageNumber = isset($data->pageNumber) ? $data->pageNumber : $pageNumber;
+        $skip = $pageCount * ($pageNumber - 1);
+        $FilterTeachers = $this->teacherRepo->filterTeachers($department, $morningBusRoute, $eveningBusRoute, $pageCount, $skip);
+        return Response::json($FilterTeachers);
 
     }
 

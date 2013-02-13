@@ -93,13 +93,88 @@ class StudentRepository
             DB::connection()->pdo->rollBack();
             log::exception($e);
             throw new PDOException("Exception while bulk insertion");
-        }catch(Exception $e)
-        {
+        } catch (Exception $e) {
             log::exception($e);
             return false;
         }
 
         return true;
+    }
+
+    public function getClasses()
+    {
+        $schoolId = Auth::user()->schoolId;
+
+        $classes = DB::query('select "classSection", "classStandard" from students where "schoolId"=' . $schoolId . ' group by "classSection", "classStandard"');
+        $classSection = array();
+        foreach ($classes as $class) {
+            $classSection["$class->classStandard-$class->classSection"] = ucfirst($class->classStandard) . '-' . ucfirst($class->classSection);
+        }
+        return $classSection;
+    }
+
+    public function getMorningBusRoutes()
+    {
+        $schoolId = Auth::user()->schoolId;
+        $query = Student::where('schoolId', '=', $schoolId);
+        $query = $query->distinct('morningBusRoute');
+        $routes = $query->get('morningBusRoute');
+        $morningRoutes = array();
+        foreach ($routes as $route) {
+            $morningRoutes[] = $route->morningBusRoute;
+        }
+        return $morningRoutes;
+    }
+
+    public function getEveningBusRoutes()
+    {
+        $schoolId = Auth::user()->schoolId;
+        $query = Student::where('schoolId', '=', $schoolId);
+        $query = $query->distinct('eveningBusRoute');
+        $routes = $query->get('eveningBusRoute');
+        $eveningRoutes = array();
+        foreach ($routes as $route) {
+            $eveningRoutes[] = $route->eveningBusRoute;
+        }
+        return $eveningRoutes;
+    }
+
+    public function filterStudents($classSections, $morningBusRoute, $eveningBusRoute, $perPage, $skip)
+    {
+        $schoolId = Auth::user()->schoolId;
+        $query = Student::where('schoolId', '=', $schoolId);
+        if (!empty($classSections)) {
+            $count = 1;
+            foreach ($classSections as $classSection) {
+                $class = strstr($classSection, '-', true);
+                $section = preg_replace('/[^-]*-/', "", $classSection);
+                if ($count == 1) {
+                    $query = $query->where(function ($query) use ($class, $section) {
+                        $query->where("classStandard", '=', $class);
+                        $query->where("classSection", '=', $section);
+                    });
+                } else {
+                    $query = $query->or_where(function ($query) use ($class, $section) {
+                        $query->where("classStandard", '=', $class);
+                        $query->where("classSection", '=', $section);
+                    });
+                }
+                $count++;
+            }
+        }
+        if (!empty($morningBusRoute))
+            $query = $query->where_in("morningBusRoute", $morningBusRoute);
+        if (!empty($eveningBusRoute))
+            $query = $query->where_in("eveningBusRoute", $eveningBusRoute);
+
+        try {
+            $student = $query->skip($skip)->take($perPage)->get();
+        } catch (Exception $e) {
+            log::exception($e);
+            return false;
+        }
+
+        return $student;
     }
 
 }

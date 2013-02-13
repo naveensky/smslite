@@ -101,7 +101,12 @@ class TeacherRepository
         if (!empty($eveningBusRoute))
             $query = $query->where_in(DB::raw('lower("eveningBusRoute")'), $eveningBusRoute);
 
-        $teacher = $query->skip($skip)->take($perPage)->get();
-        var_dump($teacher);
+        try {
+            $teacher = $query->skip($skip)->take($perPage)->get();
+        } catch (Exception $e) {
+            log::exception($e);
+            return false;
+        }
+        return $teacher;
     }
 }

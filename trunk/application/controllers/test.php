@@ -158,9 +158,9 @@ class Test_Controller extends Base_Controller
     {
         $path = path('public') . 'tmp';
         $contents = File::get($path . '/1574bddb75c78a6fd2251d61e2993b5146201319-hLJAUSODyeREPgJBkozgibkYbdhyBfjLqehMNBYVZGfFMZlaOljvnItTFtTqmdEA.csv');
-        $contents=trim($contents);
-        $student=new Student();
-        $data=$student->parseFromCSV($contents);
+        $contents = trim($contents);
+        $student = new Student();
+        $data = $student->parseFromCSV($contents);
         var_dump($data);
 
     }
@@ -169,7 +169,7 @@ class Test_Controller extends Base_Controller
     {
         Auth::login(1);
 
-        $schoolId=Auth::user()->schoolId;
+        $schoolId = Auth::user()->schoolId;
         var_dump($schoolId);
 
     }
@@ -177,14 +177,38 @@ class Test_Controller extends Base_Controller
     public function action_test_filter()
     {
         Auth::login(1);
-        $department=array('science','maths');
-        $repo=new TeacherRepository();
-        $morningBusRoute=array();
-        $eveningBusRoute=array();
-        $pageNo=1;
-        $pageCount=1;
-        $skip=$pageCount*($pageNo-1);
-        $repo->filterTeachers($department,$morningBusRoute,$eveningBusRoute,$pageCount,$skip);
+        $department = array('science', 'maths');
+        $repo = new TeacherRepository();
+        $morningBusRoute = array();
+        $eveningBusRoute = array();
+        $pageNo = 2;
+        $pageCount = 1;
+        $skip = $pageCount * ($pageNo - 1);
+        $teachers = $repo->filterTeachers($department, $morningBusRoute, $eveningBusRoute, $pageCount, $skip);
+        var_dump($teachers);
+
+    }
+
+    public function action_filterStudents()
+    {
+        Auth::login(1);
+        $class = array('science', 'maths');
+        $repo = new StudentRepository();
+        $morningBusRoute = array();
+        $eveningBusRoute = array();
+        $classSections = array('6-A','7-B');
+        $pageNo = 1;
+        $pageCount = 1;
+        $skip = $pageCount * ($pageNo - 1);
+        $data=$repo->filterStudents($classSections, $morningBusRoute, $eveningBusRoute, $pageCount, $skip);
+        var_dump($data);
+    }
+
+    public function action_getClasses()
+    {
+        Auth::login(1);
+        $repo = new StudentRepository();
+        dd($repo->getClasses());
 
     }
 
