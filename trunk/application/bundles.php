@@ -34,12 +34,11 @@
 */
 
 return array(
-
     'docs' => array('handles' => 'docs'),
     'bootstrapper' => array('auto' => true),
     'sentry' => array('auto' => true,),
     'swiftmailer' => array('auto' => true),
-    'hashids'=>array('auto'=>true),
-    'messages'=>array('auto'=>true)
-
+    'hashids' => array('auto' => true),
+    'messages' => array('auto' => true),
+    'compactor' => array('auto' => true),
 );
