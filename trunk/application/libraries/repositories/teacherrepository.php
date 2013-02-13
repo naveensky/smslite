@@ -23,7 +23,7 @@ class TeacherRepository
             try {
                 $teacher->schoolId = $school[0]->id;
                 $teacher->save();
-                $insertedTeachers[]=$teacher->attributes;
+                $insertedTeachers[] = $teacher->attributes;
             } catch (Exception $e) {
                 Log::exception($e);
             }
@@ -32,7 +32,7 @@ class TeacherRepository
     }
 
 
-    public function updateTeacher($teacherCode,$update_data)
+    public function updateTeacher($teacherCode, $update_data)
     {
         $teacher = Teacher::where_code($teacherCode)->get();
         if (empty($teacher)) {
@@ -69,4 +69,39 @@ class TeacherRepository
         return $teachers;
     }
 
+    public function bulkTeachersInsert($bulkTeachers)
+    {
+
+        try {
+            //using database transaction
+            DB::connection()->pdo->beginTransaction();
+            $statusTeachers = Teacher::insert($bulkTeachers);
+            DB::connection()->pdo->commit();
+        } catch (PDOException $e) {
+            //rollback if any error while bulk insertion
+            DB::connection()->pdo->rollBack();
+            log::exception($e);
+            throw new PDOException("Exception while bulk insertion");
+        } catch (Exception $e) {
+            log::exception($e);
+            return false;
+        }
+
+        return true;
+    }
+
+    public function filterTeachers($department, $morningBusRoute, $eveningBusRoute, $perPage, $skip)
+    {
+        $schoolId = Auth::user()->schoolId;
+        $query = Teacher::where('schoolId', '=', $schoolId);
+        if (!empty($department))
+            $query = $query->where_in(DB::raw('lower("department")'), $department);
+        if (!empty($morningBusRoute))
+            $query = $query->where_in(DB::raw('lower("morningBusRoute")'), $morningBusRoute);
+        if (!empty($eveningBusRoute))
+            $query = $query->where_in(DB::raw('lower("eveningBusRoute")'), $eveningBusRoute);
+
+        $teacher = $query->skip($skip)->take($perPage)->get();
+        var_dump($teacher);
+    }
 }

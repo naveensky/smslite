@@ -80,4 +80,26 @@ class StudentRepository
         return $students;
     }
 
+    public function bulkStudentsInsert($bulkStudents)
+    {
+
+        try {
+            //using database transaction
+            DB::connection()->pdo->beginTransaction();
+            $statusStudents = Student::insert($bulkStudents);
+            DB::connection()->pdo->commit();
+        } catch (PDOException $e) {
+            //rollback if any error while bulk insertion
+            DB::connection()->pdo->rollBack();
+            log::exception($e);
+            throw new PDOException("Exception while bulk insertion");
+        }catch(Exception $e)
+        {
+            log::exception($e);
+            return false;
+        }
+
+        return true;
+    }
+
 }

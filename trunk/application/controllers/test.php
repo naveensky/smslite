@@ -90,7 +90,7 @@ class Test_Controller extends Base_Controller
 
     public function action_testEvents()
     {
-        $user=User::find(16);
+        $user = User::find(16);
         Event::fire('app.user_created', array($user));
     }
 
@@ -99,6 +99,93 @@ class Test_Controller extends Base_Controller
         $userRoles = array('admin', 'editor');
         $ids = role::where_in('name', $userRoles)->get('id');
         var_dump($ids[0]->id);
+    }
+
+    public function action_csv()
+    {
+        $path = "http://smslite.localhost.com/tmp/1574bddb75c78a6fd2251d61e2993b5146201319-hLJAUSODyeREPgJBkozgibkYbdhyBfjLqehMNBYVZGfFMZlaOljvnItTFtTqmdEA.csv";
+        $delimiter = ',';
+        $enclosure = '"';
+
+        if ($input = @fopen($path, 'r')) {
+
+            $data = array();
+            $rows = array();
+
+            while ($fields = fgetcsv($input, 0, $delimiter, $enclosure)) {
+                // spin headers...
+                foreach ($fields as $field) {
+                    // slug headers, blanks not allowed
+                    $columns[] = Str::slug($field ? $field : uniqid(), '_');
+                }
+
+
+                $rows[] = array_combine($columns, $fields);
+
+
+            }
+
+            // close file
+            fclose($input);
+
+            // build object
+            $class = __CLASS__;
+            $object = new $class;
+            $object->columns = $columns;
+            $object->rows = $rows;
+            var_dump($object);
+        }
+
+    }
+
+
+    public function action_read()
+    {
+        $path = "http://smslite.localhost.com/tmp/1574bddb75c78a6fd2251d61e2993b5146201319-hLJAUSODyeREPgJBkozgibkYbdhyBfjLqehMNBYVZGfFMZlaOljvnItTFtTqmdEA.csv";
+        $fp = fopen($path, "r");
+        var_dump(fgets($fp));
+        $csvData = '';
+        while (!feof($fp)) {
+            $row = fgets($fp);
+            $dataRow = rtrim($row, ",");
+            $csvData .= "$dataRow \r\n";
+        }
+        var_dump($csvData);
+        fclose($fp);
+    }
+
+    public function action_teststring()
+    {
+        $path = path('public') . 'tmp';
+        $contents = File::get($path . '/1574bddb75c78a6fd2251d61e2993b5146201319-hLJAUSODyeREPgJBkozgibkYbdhyBfjLqehMNBYVZGfFMZlaOljvnItTFtTqmdEA.csv');
+        $contents=trim($contents);
+        $student=new Student();
+        $data=$student->parseFromCSV($contents);
+        var_dump($data);
+
+    }
+
+    public function action_testLogin()
+    {
+        Auth::login(1);
+
+        $schoolId=Auth::user()->schoolId;
+        var_dump($schoolId);
+
+    }
+
+    public function action_test_filter()
+    {
+        Auth::login(1);
+        $department=array('science','maths');
+        $repo=new TeacherRepository();
+        $morningBusRoute=array();
+        $eveningBusRoute=array();
+        $pageNo=1;
+        $pageCount=1;
+        $skip=$pageCount*($pageNo-1);
+        $repo->filterTeachers($department,$morningBusRoute,$eveningBusRoute,$pageCount,$skip);
+
     }
 
 

@@ -24,6 +24,7 @@ return array(
     'login_fail'=>'Login Unsuccessful',
     'login_fail_deactivated'=>'deactivated account',
     'resend_sms_success'=>'Verification Code Successfully Sent',
-    'resend_sms_fail'=>'SMS Fail'
+    'resend_sms_fail'=>'SMS Fail',
+    'student_inserted'=>'Students Inserted Successfully'
 
 );

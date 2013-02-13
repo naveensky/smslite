@@ -110,5 +110,18 @@ class TestStudentcontroller extends ControllerTestCase
 //        $this->assertTrue(true);
 //    }
 
+//    public function testimport()
+//    {
+//        Auth::login(1);
+//        $parameters = array(
+//            'filePath' => 'tmp/1574bddb75c78a6fd2251d61e2993b5146201319-hLJAUSODyeREPgJBkozgibkYbdhyBfjLqehMNBYVZGfFMZlaOljvnItTFtTqmdEA.csv'
+//        );
+//
+//        Input::$json = (object)$parameters;
+//        $response = $this->post('student@post_upload', array());
+//        var_dump($response);
+//        $this->assertTrue(true);
+//    }
+
 
 }

@@ -21,7 +21,8 @@ class Student_Controller extends Base_Controller
         $this->studentRepo = new StudentRepository();
         $this->schoolRepo = new SchoolRepository();
 
-        //todo: add auth filter
+        //proceed ahead only if authenticated
+//       $this->filter('before', 'auth');
     }
 
     public function action_upload()
@@ -31,67 +32,32 @@ class Student_Controller extends Base_Controller
 
     public function action_post_upload()
     {
-        //todo: json input containing file path
-        //todo: bulk upload for students
-    }
-
-    public function post_create()
-    {
         $data = Input::json();
-
-        if (empty($data) || count($data) == 0) {
+        if (empty($data))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        $filePath = $data->filePath;
+        $path = path('public');
+        $contents = File::get($path . $filePath);
+        $contents = trim($contents);
+        $result = Student::parseFromCSV($contents);
+
+        $studentInserted = count($result['bulkStudents']);
+        if (empty($result['bulkStudents'])) {
+            $studentInserted = 0;
+            return Response::json(array('numberOfStudentInserted' => $studentInserted, 'rowNumbersError' => $result['errorRows']));
         }
-
-        $schoolCode = $data->schoolCode;
-
-        $students = array();
-
         try {
-
-            $checkSchoolCode = $this->schoolRepo->checkSchoolCode($schoolCode);
-        } catch (InvalidArgumentException $ie) {
-            Log::exception($ie);
-            return Response::make(__('responseerror.not_found'), HTTPConstants::NOT_FOUND_ERROR_CODE);
+            $isInserted = $this->studentRepo->bulkStudentsInsert($result['bulkStudents']);
+        } catch (PDOException $pdo) {
+            log::exception($pdo);
+            return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
         }
-
-        foreach ($data->students as $new_student) {
-            $student = new Student();
-            $student->name = isset($new_student->Name) ? $new_student->Name : "";
-            $student->email = isset($new_student->Email) ? $new_student->Email : NULL;
-            $student->motherName = isset($new_student->MothersName) ? $new_student->MothersName : NULL;
-            $student->fatherName = isset($new_student->FathersName) ? $new_student->FathersName : NULL;
-            $student->mobile1 = isset($new_student->Mobile1) ? $new_student->Mobile1 : NULL;
-            $student->mobile2 = isset($new_student->Mobile2) ? $new_student->Mobile2 : NULL;
-            $student->mobile3 = isset($new_student->Mobile3) ? $new_student->Mobile3 : NULL;
-            $student->mobile4 = isset($new_student->Mobile4) ? $new_student->Mobile4 : NULL;
-            $student->mobile5 = isset($new_student->Mobile5) ? $new_student->Mobile5 : NULL;
-            $student->dob = isset($new_student->DOB) ? $new_student->DOB : NULL;
-            $student->classStandard = isset($new_student->ClassStandard) ? $new_student->ClassStandard : NULL;
-            $student->classSection = isset($new_student->ClassSection) ? $new_student->ClassSection : NULL;
-            $student->morningBusRoute = isset($new_student->MorningBusRoute) ? $new_student->MorningBusRoute : NULL;
-            $student->eveningBusRoute = isset($new_student->EveningBusRoute) ? $new_student->EveningBusRoute : NULL;
-            $student->sex = isset($new_student->Sex) ? $new_student->Sex : NULL;
-            $student->code = Str::random(64, 'alpha');
-            $students[] = $student;
-        }
-
-        try {
-
-            $result = $this->studentRepo->createStudents($schoolCode, $students);
-        } catch (InvalidArgumentException $ie) {
-            Log::exception($ie);
-            return Response::make(__('responseerror.not_found'), HTTPConstants::NOT_FOUND_ERROR_CODE);
-        }
-
-
-        if (empty($result) && count($result) < 0)
+        if (!$isInserted)
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
 
-        return Response::json($result);
-
+        return Response::json(array('numberOfStudentInserted' => $studentInserted, 'rowNumbersError' => $result['errorRows']));
     }
-
 
     public function get_get()
     {
