@@ -8,8 +8,8 @@
  */
 class ConstantCredit
 {
-    const SINGLE_CREDIT=1;
-    const DOUBLE_CREDIT=2;
+    const SINGLE_CREDIT = 1;
+    const DOUBLE_CREDIT = 2;
     const SINGLE_MESSAGE_LIMIT = 160;
     const MAXIMUM_MESSAGE_LENGTH = 306;
 

@@ -28,9 +28,6 @@ class MailListener
         Event::listen(ListenerConstants::APP_USER_RESTORE, function ($user) {
             $this->mailService->sendDeactivateAccountEmail($user);
         });
-
-
-
     }
 }
 

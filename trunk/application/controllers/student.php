@@ -14,17 +14,23 @@ class Student_Controller extends Base_Controller
     public function __construct()
     {
         parent::__construct();
+
+        //add auth filter
+        $this->filter('before', 'auth');
+
         $this->studentRepo = new StudentRepository();
-        $this->schoolRepo=new SchoolRepository();
+        $this->schoolRepo = new SchoolRepository();
 
         //todo: add auth filter
     }
 
-    public function action_upload(){
-        //todo: view for upload of student
+    public function action_upload()
+    {
+        return View::make('student.upload');
     }
 
-    public function action_post_upload(){
+    public function action_post_upload()
+    {
         //todo: json input containing file path
         //todo: bulk upload for students
     }
