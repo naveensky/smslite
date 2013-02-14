@@ -22,9 +22,20 @@ class Teacher_Controller extends Base_Controller
 //       $this->filter('before', 'auth');
     }
 
+    public function action_list()
+    {
+        $departments = $this->teacherRepo->getDepartments();
+        $morningBusRoutes = $this->teacherRepo->getMorningBusRoutes();
+        $eveningBusRoutes = $this->teacherRepo->getEveningBusRoutes();
+        $data['departments'] = $departments;
+        $data['morningRoutes'] = $morningBusRoutes;
+        $data['eveningRoutes'] = $eveningBusRoutes;
+        return View::make('teacher.list', $data);
+    }
+
     public function action_upload()
     {
-        //todo: view for upload of teacher
+        return View::make('teacher.upload');
     }
 
     public function action_post_upload()
@@ -163,18 +174,19 @@ class Teacher_Controller extends Base_Controller
         if (empty($data))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
-        $department = array();
-        $morningBusRoute = array();
-        $eveningBusRoute = array();
-        $department = isset($data->department) ? $data->department : $department;
-        $morningBusRoute = isset($data->morningBusRoute) ? $data->morningBusRoute : $morningBusRoute;
-        $eveningBusRoute = isset($data->eveningBusRoute) ? $data->eveningBusRoute : $eveningBusRoute;
-        $pageNumber = 1;
-        $pageCount = 25;
-        $pageNumber = isset($data->pageNumber) ? $data->pageNumber : $pageNumber;
+        $departments = isset($data->departments) ? $data->departments : array();
+        $morningBusRoutes = isset($data->morningBusRoutes) ? $data->morningBusRoutes : array();
+        $eveningBusRoutes = isset($data->eveningBusRoutes) ? $data->eveningBusRoutes : array();
+        $pageCount = isset($data->pageCount) ? $data->pageCount : 25;
+        $pageNumber = isset($data->pageNumber) ? $data->pageNumber : 1;
         $skip = $pageCount * ($pageNumber - 1);
-        $FilterTeachers = $this->teacherRepo->filterTeachers($department, $morningBusRoute, $eveningBusRoute, $pageCount, $skip);
-        return Response::json($FilterTeachers);
+        $FilterTeachers = $this->teacherRepo->getTeachers(
+            $departments, $morningBusRoutes, $eveningBusRoutes, $pageCount, $skip);
+
+        if ($FilterTeachers == false && !is_array($FilterTeachers))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        return Response::eloquent($FilterTeachers);
 
     }
 

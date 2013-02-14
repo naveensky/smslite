@@ -1,30 +1,30 @@
 'use strict';
 
-//for route student/list
+//for route user/login
 angular.module('app')
-    .controller('Student_List', ['$scope', '$http', function ($scope, $http) {
-    $scope.classSections = [];
+    .controller('Teacher_List', ['$scope', '$http', function ($scope, $http) {
+    $scope.departments = [];
     $scope.morningRoutes = [];
     $scope.eveningRoutes = [];
-    $scope.students = [];
+    $scope.teachers = [];
     $scope.pageNumber = 1;
     $scope.pageCount = 2;
     $scope.previousPage = 0;
     $scope.nextPage = $scope.pageNumber + 1;
 
-    $scope.getStudents = function () {
+    $scope.getTeachers = function () {
         $http.post(
-            '/student/getStudents',
+            '/teacher/getTeachers',
             {
-                "classSection":$scope.classSections,
-                "morningBusRoute":$scope.morningRoutes,
-                "eveningBusRoute":$scope.eveningRoutes,
+                "departments":$scope.departments,
+                "morningBusRoutes":$scope.morningRoutes,
+                "eveningBusRoutes":$scope.eveningRoutes,
                 "pageNumber":$scope.pageNumber,
                 "pageCount":$scope.pageCount
             }
         ).success(function ($data) {
                 if (Array.isArray($data))
-                    $scope.students = $data;
+                    $scope.teachers = $data;
             }
         ).error(function ($e) {
                 alert($e);
@@ -36,17 +36,17 @@ angular.module('app')
         $scope.previousPage = $scope.pageNumber;
         $scope.pageNumber = $scope.nextPage;
         $scope.nextPage = $scope.nextPage + 1;
-        $scope.getStudents();
+        $scope.getTeachers();
     }
 
     $scope.updatePrevious = function () {
         $scope.pageNumber = $scope.previousPage;
         $scope.nextPage = $scope.pageNumber + 1;
         $scope.previousPage = $scope.previousPage - 1;
-        $scope.getStudents();
+        $scope.getTeachers();
 
     }
     //init data for first page load
-    $scope.getStudents();
+    $scope.getTeachers();
 
 }]);

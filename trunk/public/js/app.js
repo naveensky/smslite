@@ -12,6 +12,12 @@ angular.module('app', []).
             .when('/student/upload', {templateUrl: '/student/upload', controller: 'Student_Upload'})
             .when('/student/list',{templateUrl: '/student/list',controller:'Student_List'});
 
+    ///teacher routes
+    $routeProvider
+        .when('/teacher', {templateUrl: '/teacher', controller: 'Teacher_List'})
+        .when('/teacher/upload', {templateUrl: '/teacher/upload', controller: 'Teacher_Upload'})
+        .when('/teacher/list',{templateUrl: '/teacher/list',controller:'Teacher_List'});
+
 
         $routeProvider.otherwise({redirectTo: '/'});
     }]);

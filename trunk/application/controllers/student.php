@@ -20,20 +20,17 @@ class Student_Controller extends Base_Controller
 
         $this->studentRepo = new StudentRepository();
         $this->schoolRepo = new SchoolRepository();
-
-        //proceed ahead only if authenticated
-//       $this->filter('before', 'auth');
     }
 
     public function action_list()
     {
-        $classes=$this->studentRepo->getClasses();
-        $morningBusRoutes=$this->studentRepo->getMorningBusRoutes();
-        $eveningBusRoutes=$this->studentRepo->getEveningBusRoutes();
-        $data['classes']=$classes;
-        $data['morningRoutes']=$morningBusRoutes;
-        $data['eveningRoutes']=$eveningBusRoutes;
-        return View::make('student.list',$data);
+        $classes = $this->studentRepo->getClasses();
+        $morningBusRoutes = $this->studentRepo->getMorningBusRoutes();
+        $eveningBusRoutes = $this->studentRepo->getEveningBusRoutes();
+        $data['classes'] = $classes;
+        $data['morningRoutes'] = $morningBusRoutes;
+        $data['eveningRoutes'] = $eveningBusRoutes;
+        return View::make('student.list', $data);
     }
 
 
@@ -180,19 +177,18 @@ class Student_Controller extends Base_Controller
         if (empty($data))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
-        $classSection = array();
-        $section = array();
-        $morningBusRoute = array();
-        $eveningBusRoute = array();
-        $classSection = isset($data->classSection) ? $data->classSection : $classSection;
-        $morningBusRoute = isset($data->morningBusRoute) ? $data->morningBusRoute : $morningBusRoute;
-        $eveningBusRoute = isset($data->eveningBusRoute) ? $data->eveningBusRoute : $eveningBusRoute;
-        $pageNumber = 1;
-        $pageCount = 10;
-        $pageNumber = isset($data->pageNumber) ? $data->pageNumber : $pageNumber;
+        $classSection = isset($data->classSection) ? $data->classSection : array();
+        $morningBusRoutes = isset($data->morningBusRoute) ? $data->morningBusRoute : array();
+        $eveningBusRoutes = isset($data->eveningBusRoute) ? $data->eveningBusRoute : array();
+        $pageCount = isset($data->pageCount) ? $data->pageCount : 25;
+        $pageNumber = isset($data->pageNumber) ? $data->pageNumber : 1;
         $skip = $pageCount * ($pageNumber - 1);
-        $FilterStudents = $this->studentRepo->filterStudents($classSection, $morningBusRoute, $eveningBusRoute, $pageCount, $skip);
-        return Response::eloquent($FilterStudents);
-    }
+        $filterStudents = $this->studentRepo->getStudents(
+            $classSection, $morningBusRoutes, $eveningBusRoutes, $pageCount, $skip);
 
+        if ($filterStudents == false && !is_array($filterStudents))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        return Response::eloquent($filterStudents);
+    }
 }

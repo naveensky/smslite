@@ -139,7 +139,7 @@ class StudentRepository
         return $eveningRoutes;
     }
 
-    public function filterStudents($classSections, $morningBusRoute, $eveningBusRoute, $perPage, $skip)
+    public function getStudents($classSections, $morningBusRoute, $eveningBusRoute, $perPage, $skip)
     {
         $schoolId = Auth::user()->schoolId;
         $query = Student::where('schoolId', '=', $schoolId);

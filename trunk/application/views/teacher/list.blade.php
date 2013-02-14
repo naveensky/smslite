@@ -1,14 +1,14 @@
 <div class="row">
     <div class="span3">
         <div class="box" style="padding: 8px 0;">
-            @render('student.leftmenu')
+            @render('teacher.leftmenu')
         </div>
     </div>
 
     <div class="span9">
         <div class="box">
 
-            <h3><i class="icon-th-list icon-large"></i>List Students</h3>
+            <h3><i class="icon-th-list icon-large"></i>List Teachers</h3>
 
             <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
                 has been
@@ -21,10 +21,10 @@
 
                     <!--                        <label>Label name</label>-->
                     <!--                        <input type="text" placeholder="Enter Your Name">-->
-                    <label>Classes</label>
-                    <select ng-model="classSections" multiple="multiple">
-                        @foreach($classes as $class)
-                        <option><%$class%></option>
+                    <label>Departments</label>
+                    <select ng-model="departments" multiple="multiple">
+                        @foreach($departments as $department)
+                        <option><%$department%></option>
                         @endforeach
                     </select>
                     <label>MorningBusRoute</label>
@@ -39,7 +39,7 @@
                         <option><%$eveningRoute%></option>
                         @endforeach
                     </select>
-                    <button class="btn btn-success" ng-click="getStudents()">Filter</button>
+                    <button class="btn btn-success" ng-click="getTeachers()">Filter</button>
 
                 </div>
                 <div class="span5">
@@ -47,22 +47,22 @@
                         <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Class</th>
-                            <th>Section</th>
+                            <th>Department</th>
+                            <th>Mobile1</th>
 
                         </tr>
                         </thead>
-                        <tbody ng-show="students.length>0">
+                        <tbody ng-show="teachers.length>0">
 
-                        <tr ng-repeat="student in students">
-                            <td>{{ student.name }}</td>
-                            <td>{{ student.classStandard }}</td>
-                            <td>{{ student.classSection }}</td>
+                        <tr ng-repeat="teacher in teachers">
+                            <td>{{ teacher.name }}</td>
+                            <td>{{ teacher.department }}</td>
+                            <td>{{ teacher.mobile1 }}</td>
 
                         </tr>
 
                         </tbody>
-                        <tbody ng-show="students.length==0">
+                        <tbody ng-show="teachers.length==0">
                         <tr>
                             <td colspan="9" style="text-align: center">
                                 <br/>
@@ -84,7 +84,7 @@
                    </span>
                         </a>
 
-                        <a ng-model="nextPage" ng-click="updateNext()" ng-hide="students.length==0" class="btn btn-info">
+                        <a ng-model="nextPage" ng-click="updateNext()" ng-hide="teachers.length==0" class="btn btn-info">
                    <span>
                        <span> Next</span>
                    </span>

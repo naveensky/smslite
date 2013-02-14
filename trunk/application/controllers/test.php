@@ -200,7 +200,7 @@ class Test_Controller extends Base_Controller
         $pageNo = 1;
         $pageCount = 1;
         $skip = $pageCount * ($pageNo - 1);
-        $data=$repo->filterStudents($classSections, $morningBusRoute, $eveningBusRoute, $pageCount, $skip);
+        $data=$repo->getStudents($classSections, $morningBusRoute, $eveningBusRoute, $pageCount, $skip);
         var_dump($data);
     }
 
@@ -209,6 +209,15 @@ class Test_Controller extends Base_Controller
         Auth::login(1);
         $repo = new StudentRepository();
         dd($repo->getClasses());
+
+    }
+
+    public function action_teacherlist()
+    {
+        Auth::login(1);
+        $repo=new TeacherRepository();
+        $data=$repo->getDepartments();
+        dd($data);
 
     }
 
