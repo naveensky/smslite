@@ -177,4 +177,43 @@ class StudentRepository
         return $student;
     }
 
+
+    public function getStudentsToExport($classSections, $morningBusRoute, $eveningBusRoute)
+    {
+        $schoolId = Auth::user()->schoolId;
+        $query = Student::where('schoolId', '=', $schoolId);
+        if (!empty($classSections)) {
+            $count = 1;
+            foreach ($classSections as $classSection) {
+                $class = strstr($classSection, '-', true);
+                $section = preg_replace('/[^-]*-/', "", $classSection);
+                if ($count == 1) {
+                    $query = $query->where(function ($query) use ($class, $section) {
+                        $query->where("classStandard", '=', $class);
+                        $query->where("classSection", '=', $section);
+                    });
+                } else {
+                    $query = $query->or_where(function ($query) use ($class, $section) {
+                        $query->where("classStandard", '=', $class);
+                        $query->where("classSection", '=', $section);
+                    });
+                }
+                $count++;
+            }
+        }
+        if (!empty($morningBusRoute))
+            $query = $query->where_in("morningBusRoute", $morningBusRoute);
+        if (!empty($eveningBusRoute))
+            $query = $query->where_in("eveningBusRoute", $eveningBusRoute);
+
+        try {
+            $student = $query->get();
+        } catch (Exception $e) {
+            log::exception($e);
+            return false;
+        }
+
+        return $student;
+    }
+
 }

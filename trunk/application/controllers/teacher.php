@@ -190,4 +190,25 @@ class Teacher_Controller extends Base_Controller
 
     }
 
+    public function action_exportTeachers()
+    {
+
+        $data = Input::json();
+
+        if (empty($data))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        $departments = isset($data->departments) ? $data->departments : array();
+        $morningBusRoutes = isset($data->morningBusRoutes) ? $data->morningBusRoutes : array();
+        $eveningBusRoutes = isset($data->eveningBusRoutes) ? $data->eveningBusRoutes : array();
+        $teachers=$this->teacherRepo->getTeachersToExport(
+            $departments,$morningBusRoutes,$eveningBusRoutes);
+
+        if ($teachers == false && !is_array($teachers))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        $teachersCSV=Teacher::parseToCSV($teachers);
+
+    }
+
 }

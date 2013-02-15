@@ -196,12 +196,10 @@ class Test_Controller extends Base_Controller
         $repo = new StudentRepository();
         $morningBusRoute = array();
         $eveningBusRoute = array();
-        $classSections = array('6-A','7-B');
-        $pageNo = 1;
-        $pageCount = 1;
-        $skip = $pageCount * ($pageNo - 1);
-        $data=$repo->getStudents($classSections, $morningBusRoute, $eveningBusRoute, $pageCount, $skip);
-        var_dump($data);
+        $classSections = array('6-A', '7-B');
+        $students = $repo->getStudentsToExport($classSections, $morningBusRoute, $eveningBusRoute);
+        Student::parseToCSV($students);
+
     }
 
     public function action_getClasses()
@@ -215,8 +213,8 @@ class Test_Controller extends Base_Controller
     public function action_teacherlist()
     {
         Auth::login(1);
-        $repo=new TeacherRepository();
-        $data=$repo->getDepartments();
+        $repo = new TeacherRepository();
+        $data = $repo->getDepartments();
         dd($data);
 
     }

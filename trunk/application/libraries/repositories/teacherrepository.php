@@ -90,30 +90,10 @@ class TeacherRepository
         return true;
     }
 
-    public function getTeachers($department, $morningBusRoute, $eveningBusRoute, $perPage, $skip)
-    {
-        $schoolId = Auth::user()->schoolId;
-        $query = Teacher::where('schoolId', '=', $schoolId);
-        if (!empty($department))
-            $query = $query->where_in(DB::raw('lower("department")'), $department);
-        if (!empty($morningBusRoute))
-            $query = $query->where_in("morningBusRoute", $morningBusRoute);
-        if (!empty($eveningBusRoute))
-            $query = $query->where_in("eveningBusRoute", $eveningBusRoute);
-
-        try {
-            $teacher = $query->skip($skip)->take($perPage)->get();
-        } catch (Exception $e) {
-            log::exception($e);
-            return false;
-        }
-        return $teacher;
-    }
-
     public function getDepartments()
     {
         $schoolId = Auth::user()->schoolId;
-        $departments=DB::query('SELECT DISTINCT lower("department") as department FROM "teachers" WHERE "schoolId" = ' . $schoolId );
+        $departments = DB::query('SELECT DISTINCT lower("department") as department FROM "teachers" WHERE "schoolId" = ' . $schoolId);
         $departmentsData = array();
         foreach ($departments as $department) {
             $departmentsData[] = $department->department;
@@ -146,4 +126,46 @@ class TeacherRepository
         }
         return $eveningRoutes;
     }
+
+    public function getTeachers($department, $morningBusRoute, $eveningBusRoute, $perPage, $skip)
+    {
+        $schoolId = Auth::user()->schoolId;
+        $query = Teacher::where('schoolId', '=', $schoolId);
+        if (!empty($department))
+            $query = $query->where_in(DB::raw('lower("department")'), $department);
+        if (!empty($morningBusRoute))
+            $query = $query->where_in("morningBusRoute", $morningBusRoute);
+        if (!empty($eveningBusRoute))
+            $query = $query->where_in("eveningBusRoute", $eveningBusRoute);
+
+        try {
+            $teacher = $query->skip($skip)->take($perPage)->get();
+        } catch (Exception $e) {
+            log::exception($e);
+            return false;
+        }
+        return $teacher;
+    }
+
+    public function getTeachersToExport($department, $morningBusRoute, $eveningBusRoute)
+    {
+        $schoolId = Auth::user()->schoolId;
+        $query = Teacher::where('schoolId', '=', $schoolId);
+        if (!empty($department))
+            $query = $query->where_in(DB::raw('lower("department")'), $department);
+        if (!empty($morningBusRoute))
+            $query = $query->where_in("morningBusRoute", $morningBusRoute);
+        if (!empty($eveningBusRoute))
+            $query = $query->where_in("eveningBusRoute", $eveningBusRoute);
+
+        try {
+            $teacher = $query->get();
+        } catch (Exception $e) {
+            log::exception($e);
+            return false;
+        }
+        return $teacher;
+    }
+
+
 }

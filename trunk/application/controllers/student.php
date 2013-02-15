@@ -191,4 +191,24 @@ class Student_Controller extends Base_Controller
 
         return Response::eloquent($filterStudents);
     }
+
+
+    public function action_exportStudent()
+    {
+        $data = Input::json();
+        if (empty($data))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        $classSection = isset($data->classSection) ? $data->classSection : array();
+        $morningBusRoutes = isset($data->morningBusRoute) ? $data->morningBusRoute : array();
+        $eveningBusRoutes = isset($data->eveningBusRoute) ? $data->eveningBusRoute : array();
+        $students=$this->studentRepo->getStudentsToExport(
+            $classSection,$morningBusRoutes,$eveningBusRoutes);
+
+        if ($students == false && !is_array($students))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        $studentsCSV=Student::parseToCSV($students);
+
+    }
 }
