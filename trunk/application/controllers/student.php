@@ -20,9 +20,6 @@ class Student_Controller extends Base_Controller
 
         $this->studentRepo = new StudentRepository();
         $this->schoolRepo = new SchoolRepository();
-
-        //proceed ahead only if authenticated
-//       $this->filter('before', 'auth');
     }
 
     public function action_upload()
@@ -47,6 +44,7 @@ class Student_Controller extends Base_Controller
             $studentInserted = 0;
             return Response::json(array('numberOfStudentInserted' => $studentInserted, 'rowNumbersError' => $result['errorRows']));
         }
+
         try {
             $isInserted = $this->studentRepo->bulkStudentsInsert($result['bulkStudents']);
         } catch (PDOException $pdo) {

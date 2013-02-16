@@ -1,5 +1,7 @@
 body, input, .btn, label {
     font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    line-height: 20px;
 }
 
 .form-actions {
@@ -50,7 +52,7 @@ h3 {
     margin-top: 0px;
 }
 
-h3 i{
+h3 i {
     padding-right: 5px !important;
 }
 
