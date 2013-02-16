@@ -20,14 +20,14 @@
                 <div class="span5 border-right">
                     <form class="form-horizontal">
                         <div class="control-group">
-                            <label for="student-file"><strong>Select File</strong></label>
-                            <input type="file" id="student-file">
+                            <a href="#" data-url="home/post_upload" data-done="fileUploaded" data-mimes="csv"
+                               id="student-file" class="file-uploader">
+                                <i class="icon-upload"></i> Upload File</a>
+                        </div>
+                        <div class="control-group">
                             <button type="submit" class="btn">
                                 <i class="icon-upload icon-large padding-right-5"></i>Import
                             </button>
-
-                            <span class="text-error"><i class="icon-remove"></i> Password do not match</span>
-                            <span class="text-success"><i class="icon-ok"></i> Password do not match</span>
                         </div>
                     </form>
                 </div>
@@ -51,3 +51,8 @@
     </div>
 </div>
 </div>
+
+
+<script type="text/javascript">
+    initComponents();
+</script>

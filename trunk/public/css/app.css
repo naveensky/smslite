@@ -1,6 +1,6 @@
 body, input, .btn, label {
     font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 13px;
+    font-size: 12px;
     line-height: 20px;
 }
 
@@ -72,4 +72,16 @@ div.control-group .text-success {
 
 .border-right {
     border-right: 1px solid #ccc;
+}
+
+
+/*Styles for Upload */
+
+.file-uploader-wrapper a.file-uploader{
+    display: block;
+    margin-bottom: 10px;
+}
+
+.file-uploader-wrapper .progress-wrapper{
+    margin-left: 0px;
 }
