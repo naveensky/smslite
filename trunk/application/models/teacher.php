@@ -78,4 +78,39 @@ class Teacher extends Eloquent
         return array('bulkTeachers' => $BulkTeachers, 'errorRows' => $errorRows);
     }
 
+    public static function parseToCSV($teachers)
+    {
+
+        $teachersData = array();
+
+        foreach ($teachers as $teacher) {
+            $row = array();
+            $row['name'] = $teacher->name;
+            $row['department'] = $teacher->department;
+            $row['sex'] = $teacher->sex;
+            $row['email'] = $teacher->email;
+            $row['mobile1'] = $teacher->mobile1;
+            $row['mobile2'] = $teacher->mobile2;
+            $row['mobile3'] = $teacher->mobile3;
+            $row['mobile4'] = $teacher->mobile4;
+            $row['mobile5'] = $teacher->mobile5;
+            $row['dob'] = $teacher->dob;
+            $row['morningBusRoute'] = $teacher->morningBusRoute;
+            $row['eveningBusRoute'] = $teacher->eveningBusRoute;
+            array_push($teachersData, $row);
+        }
+
+        $csvData = "";
+        $headerRow = "Full Name,Gender,Email,Mobile1,Mobile2,Mobile3,Mobile4,Mobile5,DOB,Morning Bus Route,Evening Bus Route \n";
+        $csvData .= $headerRow;
+        foreach ($teachersData as $data) {
+            $dataRow = "";
+            foreach ($data as $key => $value) {
+                $dataRow .= "\"$value\",";
+            }
+            $dataRow = rtrim($dataRow, ",");
+            $csvData .= "$dataRow \n";
+        }
+        return $csvData;
+    }
 }

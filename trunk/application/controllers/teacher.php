@@ -22,9 +22,20 @@ class Teacher_Controller extends Base_Controller
 //       $this->filter('before', 'auth');
     }
 
+    public function action_list()
+    {
+        $departments = $this->teacherRepo->getDepartments();
+        $morningBusRoutes = $this->teacherRepo->getMorningBusRoutes();
+        $eveningBusRoutes = $this->teacherRepo->getEveningBusRoutes();
+        $data['departments'] = $departments;
+        $data['morningRoutes'] = $morningBusRoutes;
+        $data['eveningRoutes'] = $eveningBusRoutes;
+        return View::make('teacher.list', $data);
+    }
+
     public function action_upload()
     {
-        //todo: view for upload of teacher
+        return View::make('teacher.upload');
     }
 
     public function action_post_upload()
@@ -155,10 +166,48 @@ class Teacher_Controller extends Base_Controller
 
     }
 
-    public function action_getTeachers($department,$morningBusRoute,$eveningBusRoute,$pageNo=1,$pageCount=25)
+    public function action_getTeachers()
     {
 
+        $data = Input::json();
 
+        if (empty($data))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        $departments = isset($data->departments) ? $data->departments : array();
+        $morningBusRoutes = isset($data->morningBusRoutes) ? $data->morningBusRoutes : array();
+        $eveningBusRoutes = isset($data->eveningBusRoutes) ? $data->eveningBusRoutes : array();
+        $pageCount = isset($data->pageCount) ? $data->pageCount : 25;
+        $pageNumber = isset($data->pageNumber) ? $data->pageNumber : 1;
+        $skip = $pageCount * ($pageNumber - 1);
+        $FilterTeachers = $this->teacherRepo->getTeachers(
+            $departments, $morningBusRoutes, $eveningBusRoutes, $pageCount, $skip);
+
+        if ($FilterTeachers == false && !is_array($FilterTeachers))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        return Response::eloquent($FilterTeachers);
+
+    }
+
+    public function action_exportTeachers()
+    {
+
+        $data = Input::json();
+
+        if (empty($data))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        $departments = isset($data->departments) ? $data->departments : array();
+        $morningBusRoutes = isset($data->morningBusRoutes) ? $data->morningBusRoutes : array();
+        $eveningBusRoutes = isset($data->eveningBusRoutes) ? $data->eveningBusRoutes : array();
+        $teachers=$this->teacherRepo->getTeachersToExport(
+            $departments,$morningBusRoutes,$eveningBusRoutes);
+
+        if ($teachers == false && !is_array($teachers))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        $teachersCSV=Teacher::parseToCSV($teachers);
 
     }
 

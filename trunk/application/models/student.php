@@ -31,7 +31,7 @@ class Student extends Eloquent
             unset($data[0]);
         }
         //get the current logined user id and find the school Id from that
-        $schoolId=Auth::user()->schoolId;
+        $schoolId = Auth::user()->schoolId;
 
         foreach ($data as $dataRow) {
             $input = array(
@@ -70,14 +70,53 @@ class Student extends Eloquent
             $insertRow['morningBusRoute'] = isset($dataRow[13]) ? $dataRow[13] : ""; //Morning Bus Route
             $insertRow['eveningBusRoute'] = isset($dataRow[14]) ? $dataRow[14] : ""; //Evening Bus Route
             $insertRow['code'] = Str::random(64, 'alpha'); //student Code
-            $insertRow['schoolId']=$schoolId;//school Id
-            $insertRow['created_at']='Now';
-            $insertRow['updated_at']='Now';
+            $insertRow['schoolId'] = $schoolId; //school Id
+            $insertRow['created_at'] = 'Now';
+            $insertRow['updated_at'] = 'Now';
             $BulkStudents[] = $insertRow;
             $errorRowCount++;
         }
 
         return array('bulkStudents' => $BulkStudents, 'errorRows' => $errorRows);
+    }
+
+    public static function parseToCSV($students)
+    {
+
+        $studentsData = array();
+
+        foreach ($students as $student) {
+            $row = array();
+            $row['name'] = $student->name;
+            $row['classStandard'] = $student->classStandard;
+            $row['classSection'] = $student->classSection;
+            $row['sex'] = $student->sex;
+            $row['fatherName'] = $student->fatherName;
+            $row['motherName'] = $student->motherName;
+            $row['email'] = $student->email;
+            $row['mobile1'] = $student->mobile1;
+            $row['mobile2'] = $student->mobile2;
+            $row['mobile3'] = $student->mobile3;
+            $row['mobile4'] = $student->mobile4;
+            $row['mobile5'] = $student->mobile5;
+            $row['dob'] = $student->dob;
+            $row['morningBusRoute'] = $student->morningBusRoute;
+            $row['eveningBusRoute'] = $student->eveningBusRoute;
+            array_push($studentsData, $row);
+        }
+
+        $csvData = "";
+        $headerRow = "Full Name,Class Standard,Class Section,Gender,Father Name,Mother Name,Email,Mobile1,Mobile2,Mobile3,Mobile4,Mobile5,DOB,Morning Bus Route,Evening Bus Route \n";
+        $csvData.=$headerRow;
+        foreach ($studentsData as $data) {
+            $dataRow = "";
+            foreach ($data as $key => $value) {
+                $dataRow .= "\"$value\",";
+            }
+            $dataRow = rtrim($dataRow, ",");
+            $csvData .= "$dataRow \n";
+        }
+        return $csvData;
     }
 
 }

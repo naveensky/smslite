@@ -22,6 +22,17 @@ class Student_Controller extends Base_Controller
         $this->schoolRepo = new SchoolRepository();
     }
 
+    public function action_list()
+    {
+        $classes = $this->studentRepo->getClasses();
+        $morningBusRoutes = $this->studentRepo->getMorningBusRoutes();
+        $eveningBusRoutes = $this->studentRepo->getEveningBusRoutes();
+        $data['classes'] = $classes;
+        $data['morningRoutes'] = $morningBusRoutes;
+        $data['eveningRoutes'] = $eveningBusRoutes;
+        return View::make('student.list', $data);
+    }
+
     public function action_upload()
     {
         return View::make('student.upload');
@@ -44,7 +55,6 @@ class Student_Controller extends Base_Controller
             $studentInserted = 0;
             return Response::json(array('numberOfStudentInserted' => $studentInserted, 'rowNumbersError' => $result['errorRows']));
         }
-
         try {
             $isInserted = $this->studentRepo->bulkStudentsInsert($result['bulkStudents']);
         } catch (PDOException $pdo) {

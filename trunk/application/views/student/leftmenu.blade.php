@@ -1,7 +1,7 @@
 <ul class="nav nav-list">
     <li class="nav-header">Students</li>
-    <li class="active"><a href="#">List</a></li>
-    <li><a href="#">Upload</a></li>
+    <li class="active"><a href="#/student/list">List</a></li>
+    <li><a href="#/student/upload">Upload</a></li>
     <li><a href="#">Export</a></li>
     <li><a href="#">Help</a></li>
 </ul>

@@ -106,14 +106,28 @@ class TestTeachercontroller extends ControllerTestCase
 //        $this->assertTrue(true);
 //    }
 
-    public function testimportteacher()
+//    public function testimportteacher()
+//    {
+//        Auth::login(1);
+//        $parameters = array(
+//            'filePath' => 'tmp/teacher-upload.csv'
+//        );
+//        Input::$json = (object)$parameters;
+//        $response = $this->post('teacher@post_upload', array());
+//        var_dump($response);
+//        $this->assertTrue(true);
+//    }
+
+    public function testimport()
     {
         Auth::login(1);
         $parameters = array(
-            'filePath' => 'tmp/teacher-upload.csv'
+            'department' => array('science','maths'),
+            'morningBusRoute' => array('647','205'),
         );
         Input::$json = (object)$parameters;
-        $response = $this->post('teacher@post_upload', array());
+        $response = $this->post('teacher@getTeachers', array());
+
         var_dump($response);
         $this->assertTrue(true);
     }

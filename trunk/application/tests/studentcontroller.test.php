@@ -123,5 +123,19 @@ class TestStudentcontroller extends ControllerTestCase
 //        $this->assertTrue(true);
 //    }
 
+//    public function testimport()
+//    {
+//        Auth::login(1);
+//        $parameters = array(
+//            'class' => array('vi', 'x'),
+//            'section' => array('a', 'b', 'e'),
+//            'pageNumber'=>2
+//        );
+//        Input::$json = (object)$parameters;
+//        $response = $this->post('student@getStudents', array());
+//        var_dump($response);
+//        $this->assertTrue(true);
+//    }
+
 
 }
