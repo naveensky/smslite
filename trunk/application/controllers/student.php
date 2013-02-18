@@ -66,7 +66,6 @@ class Student_Controller extends Base_Controller
 
         return Response::json(array('numberOfStudentInserted' => $studentInserted, 'rowNumbersError' => $result['errorRows']));
     }
-
     public function get_get()
     {
         $get_code = Input::json();
@@ -167,6 +166,47 @@ class Student_Controller extends Base_Controller
 
         }
         return Response::Eloquent($result);
+
+    }
+
+    public function action_getStudents()
+    {
+        $data = Input::json();
+        if (empty($data))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        $classSection = isset($data->classSection) ? $data->classSection : array();
+        $morningBusRoutes = isset($data->morningBusRoute) ? $data->morningBusRoute : array();
+        $eveningBusRoutes = isset($data->eveningBusRoute) ? $data->eveningBusRoute : array();
+        $pageCount = isset($data->pageCount) ? $data->pageCount : 25;
+        $pageNumber = isset($data->pageNumber) ? $data->pageNumber : 1;
+        $skip = $pageCount * ($pageNumber - 1);
+        $filterStudents = $this->studentRepo->getStudents(
+            $classSection, $morningBusRoutes, $eveningBusRoutes, $pageCount, $skip);
+
+        if ($filterStudents == false && !is_array($filterStudents))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        return Response::eloquent($filterStudents);
+    }
+
+
+    public function action_exportStudent()
+    {
+        $data = Input::json();
+        if (empty($data))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        $classSection = isset($data->classSection) ? $data->classSection : array();
+        $morningBusRoutes = isset($data->morningBusRoute) ? $data->morningBusRoute : array();
+        $eveningBusRoutes = isset($data->eveningBusRoute) ? $data->eveningBusRoute : array();
+        $students=$this->studentRepo->getStudentsToExport(
+            $classSection,$morningBusRoutes,$eveningBusRoutes);
+
+        if ($students == false && !is_array($students))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        $studentsCSV=Student::parseToCSV($students);
 
     }
 

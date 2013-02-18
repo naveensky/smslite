@@ -1,4 +1,4 @@
-body, input, .btn, label {
+body, input, .btn, label, select, option, textarea, table {
     font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 12px;
     line-height: 20px;

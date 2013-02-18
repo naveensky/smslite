@@ -19,19 +19,26 @@
             <div class="row">
                 <div class="span5 border-right">
                     <form class="form-horizontal">
-                        <div class="control-group">
+                        <div class="control-group" ng-hide="files.length>0 || importStatus">
                             <a href="#" data-url="home/post_upload" data-done="fileUploaded" data-mimes="csv"
                                id="student-file" class="file-uploader">
                                 <i class="icon-upload"></i> Upload File</a>
-
                         </div>
-                        <div ng-repeat="file in files">
-                            <p>{{ file.path }}</p>
+                        <div ng-show="files.length >0">
+                        <h5>File Uploaded</h5>
+                        <p ng-repeat="file in files"><i class="icon-ok"></i> {{ file.filename }}</p>
                         </div>
-                        <div class="control-group">
-                            <button type="submit" class="btn">
+                        <div ng-show="showError">
+                        <p> {{ errorMessage }}</p>
+                        </div>
+                        <div class="control-group" ng-hide="showError">
+                            <button type="submit" class="btn" ng-click="importStudents()">
                                 <i class="icon-upload icon-large padding-right-5"></i>Import
                             </button>
+                        </div>
+                        <div class="control-group" ng-show="importStatus">
+                            <p>Number of students Imported: {{numberOfStudents}}</p>
+                            <p ng-show="rowErrors!=0">Row Numbers having Errors: {{rowErrors}} </p>
                         </div>
                     </form>
                 </div>

@@ -45,7 +45,7 @@ class Base_Controller extends Controller
             Asset::add('theme-css', 'css/adminflare.min.css', array('bootstrap-css'));
             Asset::add('fonts-awesome', 'css/font-awesome.min.css', array('bootstrap-css'));
             Asset::add('fonts', 'css/fonts.css');
-            Asset::add('fonts', 'css/app.css');
+            Asset::add('app', 'css/app.css', array('fonts-awesome','theme-css'));
         }
     }
 }

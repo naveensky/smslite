@@ -30,9 +30,16 @@ class Home_Controller extends Base_Controller
 
         foreach ($docs as $key => $doc) {
             $extension = File::extension($doc['name']);
-            if($extension!='csv')
-                return Response::json(false);
 
+            if ($extension != 'csv') {
+                return Response::json(
+                    array('filename' => $doc['name'],
+                        'path' => '',
+                        'status' => 'fail',
+                        'message' => "Filetype you are trying to upload is not allowed.",
+                    )
+                );
+            }
             $directory = path('public') . 'tmp/';
             $filename = sha1(Auth::user()->id) . '-' . Str::random(64, 'alpha') . ".{$extension}";
             //save the original
@@ -48,7 +55,13 @@ class Home_Controller extends Base_Controller
                 );
                 return Response::json($uploadData);
             } else {
-                return Response::json(false);
+                return Response::json(
+                    array('filename' => $doc['name'],
+                        'path' => '',
+                        'status' => 'fail',
+                        'message' => "There is some internal error occured while uploading file please try again later.",
+                    )
+                );
             }
         }
     }

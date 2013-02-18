@@ -3,24 +3,24 @@
 // Declare app level module which depends on filters, and services
 angular.module('app', []).
     config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/user/login', {templateUrl: 'user/login', controller: 'User_Login'});
+    $routeProvider.when('/user/login', {templateUrl:'user/login', controller:'User_Login'});
 
 
-        ///student routes
-        $routeProvider
-            .when('/student', {templateUrl: '/student', controller: 'Student_List'})
-            .when('/student/upload', {templateUrl: '/student/upload', controller: 'Student_Upload'})
-            .when('/student/list', {templateUrl: '/student/list', controller: 'Student_List'});
+    ///student routes
+    $routeProvider
+        .when('/student', {templateUrl:'/student', controller:'Student_List'})
+        .when('/student/upload', {templateUrl:'/student/upload', controller:'Student_Upload'})
+        .when('/student/list', {templateUrl:'/student/list', controller:'Student_List'});
 
-        ///teacher routes
-        $routeProvider
-            .when('/teacher', {templateUrl: '/teacher', controller: 'Teacher_List'})
-            .when('/teacher/upload', {templateUrl: '/teacher/upload', controller: 'Teacher_Upload'})
-            .when('/teacher/list', {templateUrl: '/teacher/list', controller: 'Teacher_List'});
+    ///teacher routes
+    $routeProvider
+        .when('/teacher', {templateUrl:'/teacher', controller:'Teacher_List'})
+        .when('/teacher/upload', {templateUrl:'/teacher/upload', controller:'Teacher_Upload'})
+        .when('/teacher/list', {templateUrl:'/teacher/list', controller:'Teacher_List'});
 
 
-        $routeProvider.otherwise({redirectTo: '/'});
-    }]);
+    $routeProvider.otherwise({redirectTo:'/'});
+}]);
 
 
 function initComponents() {
@@ -50,9 +50,9 @@ function initUploader() {
 
         //add uploader api for file input
         fileInput.fileupload({
-            dataType: 'json',
-            url: currentElement.data('url'),           //url for data to be posted
-            add: function (e, data) {
+            dataType:'json',
+            url:currentElement.data('url'), //url for data to be posted
+            add:function (e, data) {
                 //init all texts, progress and other things
                 $(this).parent().find('.progress-file-name').text(data.files[0].name);
                 $(this).parent().find('.progress-percentage').text("");
@@ -62,7 +62,7 @@ function initUploader() {
                 //submit file to upload
                 data.submit();
             },
-            done: function (e, data) {
+            done:function (e, data) {
                 //called when upload is finished
                 //find call back function on finish done
                 var callback = currentElement.data('done');
@@ -70,12 +70,12 @@ function initUploader() {
                 //if callback is not null, find angular scope, and call scope function
                 if (callback != undefined && callback != null) {
                     var scope = angular.element(currentElement).scope();
-                    scope[callback](data);
+                    scope.$apply(scope[callback](data));        //use $apply to evaluate it correctly
                 }
 
                 $(this).parent().find('.progress-wrapper').hide();
             },
-            progressall: function (e, data) {
+            progressall:function (e, data) {
                 var progress = parseInt(data.loaded / data.total * 100, 10);
                 $(this).parent().find('.progress-percentage').text(progress + " %");
                 $(this).parent().find('.progress > .bar ').width(progress + "%");
