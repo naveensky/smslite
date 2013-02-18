@@ -23,6 +23,10 @@
                             <a href="#" data-url="home/post_upload" data-done="fileUploaded" data-mimes="csv"
                                id="student-file" class="file-uploader">
                                 <i class="icon-upload"></i> Upload File</a>
+
+                        </div>
+                        <div ng-repeat="file in files">
+                            <p>{{ file.path }}</p>
                         </div>
                         <div class="control-group">
                             <button type="submit" class="btn">
@@ -51,7 +55,6 @@
     </div>
 </div>
 </div>
-
 
 <script type="text/javascript">
     initComponents();
