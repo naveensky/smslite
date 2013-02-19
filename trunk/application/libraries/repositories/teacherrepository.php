@@ -65,6 +65,8 @@ class TeacherRepository
 
     public function getTeachersFromCode($teachers_codes)
     {
+        if(empty($teachers_codes))
+            return array();
         $teachers = Teacher::where_in('code', $teachers_codes)->get();
         return $teachers;
     }

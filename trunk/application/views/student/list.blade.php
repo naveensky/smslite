@@ -5,8 +5,8 @@
 
         </div>
 
-        <div class="box">
-            <div style="">
+        <div class="box padding-left-12">
+
                 <label><strong>Classes</strong></label>
                 <select ng-model="classSections" multiple="multiple">
                     @foreach($classes as $class)
@@ -26,8 +26,6 @@
                     @endforeach
                 </select>
                 <button class="btn btn-primary" ng-click="getStudents()">Filter</button>
-            </div>
-
         </div>
 
     </div>

@@ -219,5 +219,24 @@ class Test_Controller extends Base_Controller
 
     }
 
+    public function action_testSMS()
+    {
+        Auth::login(1);
+        $id = Auth::user()->id;
+        $repo=new SMSRepository();
+        $data=$repo->createSMS("Hello",array("AfXiqvOQBLLsYtzjgDobeHOfTWsJVMaxGBkUGmKZxdzKpVWJTrxXvJXCNXrpQEiC"),array(),"123",$id);
+        var_dump($data);
+    }
+
+    public function action_count()
+    {
+        Auth::login(1);
+        $repo = new StudentRepository();
+        $data=$repo->getStudentCodeFromBusRoutes(array('70','77'),array('8887'));
+        var_dump($data);
+
+
+    }
+
 
 }

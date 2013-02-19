@@ -51,61 +51,66 @@ class SMSRepository
      * @param $userId - auth userId for person sending message
      * @return array|bool
      */
-    public function createSMS($message, $studentCodes, $teachersCodes, $senderId, $userId)
+
+    public function remainingCredits($schoolId)
     {
-        $message = $this->formatMessage($message);
-        $credits = $this->countCredits($message);
+        //todo:get remaing credit from smsCredit table for the current login school
+        $schoolId = Auth::user()->schoolId;
+        return SMSCredit::where('schoolId', '=', $schoolId)->first('credits');
+    }
+
+    public function updateCredits($totalCreditsUsed)
+    {
+        $schoolId = Auth::user()->schoolId;
+        $SMSCredit = SMSCredit::where('schoolId', '=', $schoolId)->first();
+        $creditsLeft = $SMSCredit->credits - $totalCreditsUsed;
+        $attributes = array('credits' => $creditsLeft);
+        $status = SMSCredit::update($SMSCredit->id, $attributes);
+        return $status;
+    }
+
+    public function createSMS(array $studentCodes, array $teachersCodes, $senderId, $userId)
+    {
+        //get all student codes
+        $codes = array_keys($studentCodes);
 
         //find all students for given codes
-        $students = $this->studentRepo->getStudentsFromCode($studentCodes);
+        $students = $this->studentRepo->getStudentsFromCode($codes);
 
-        $insertedTransactions = array();
         //array containing data for sms to be sent
-
+        $insertedTransactions = array();
+        //count the credits used for the message sent to students
+        $totalStudentCredits = 0;
         foreach ($students as $student) {
 
             $mobiles = $this->getStudentMobileNumbers($student); //get all mobiles numbers for each student
-
             //if no mobile is present, skip inserting the record
             if (count($mobiles) == 0)
                 continue;
 
-            $sms_data['message'] = $message;
-            $sms_data['credits'] = $credits;
+            $sms_data['message'] = $studentCodes[$student->code];
+            $creditsForMessage = $this->countCredits($sms_data['message']);
+            $sms_data['credits'] = $creditsForMessage;
             $sms_data['teacherId'] = NULL;
             $sms_data['userId'] = $userId;
             $sms_data['senderId'] = $senderId;
             $sms_data['status'] = SMSTransaction::SMS_STATUS_PENDING;
+            $sms_data['created_at'] = new DateTime(); //this a pain but laravel doesnt set these values in bulk operations.
+            $sms_data['updated_at'] = new DateTime(); //this a pain but laravel doesnt set these values in bulk operations.
             $sms_data['studentId'] = $student->id;
 
             //a student might have multiple mobile. Create transaction for each of the mobile.
             foreach ($mobiles as $mobileNumber) {
                 $sms_data['mobile'] = $mobileNumber;
                 $this->sms_transaction[] = $sms_data;
+                $totalStudentCredits += $creditsForMessage;
             }
         }
 
-        //we are splitting insert for student and teacher to segregate their status
-        if (!empty($this->sms_transaction) && count($this->sms_transaction) > 0) {
-            try {
-                //using database transaction
-                DB::connection()->pdo->beginTransaction();
-                $statusStudents = SMSTransaction::insert($this->sms_transaction);
-                DB::connection()->pdo->commit();
-                $insertedTransactions['studentsStatus'] = $statusStudents;
-            } catch (PDOException $e) {
-                //rollback if any error while bulk insertion
-                DB::connection()->pdo->rollBack();
-                throw new PDOException("Exception while bulk insertion");
-            }
-            catch (Exception $e) {
-                Log::exception($e);
-                $insertedTransactions['studentsStatus'] = false;
-            }
-        }
+        $teacher_codes = array_keys($teachersCodes);
 
-        $teachers = $this->teacherRepo->getTeachersFromCode($teachersCodes);
-
+        $teachers = $this->teacherRepo->getTeachersFromCode($teacher_codes);
+        $teacherCreditsUsed = 0;
         foreach ($teachers as $teacher) {
 
             $mobiles = $this->getTeacherMobileNumbers($teacher); //get all mobiles numbers for each student
@@ -114,46 +119,74 @@ class SMSRepository
             if (count($mobiles) == 0)
                 continue;
 
-            $sms_data['message'] = $message;
-            $sms_data['credits'] = $credits;
+            $sms_data['message'] = $teachersCodes[$teacher->code];
+            $sms_data['credits'] = $this->countCredits($sms_data['message']);
             $sms_data['studentId'] = NULL;
             $sms_data['userId'] = $userId;
             $sms_data['senderId'] = $senderId;
             $sms_data['status'] = SMSTransaction::SMS_STATUS_PENDING;
             $sms_data['teacherId'] = $teacher->id;
-
+            $sms_data['created_at'] = new DateTime(); //this a pain but laravel doesnt set these values in bulk operations.;
+            $sms_data['updated_at'] = new DateTime(); //this a pain but laravel doesnt set these values in bulk operations.;
             foreach ($mobiles as $mobileNumber) {
                 $sms_data['mobile'] = $mobileNumber;
                 $this->smsTeachersTransaction[] = $sms_data;
+                $teacherCreditsUsed += $sms_data['credits'];
             }
         }
 
 
         //we are splitting insert for student and teacher to segregate their status
-        if (!empty($this->smsTeachersTransaction) && count($this->smsTeachersTransaction) > 0)
-            try {
-                //database transaction support is used here
-                DB::connection()->pdo->beginTransaction();
+        try {
+            //using database transaction
+            DB::connection()->pdo->beginTransaction();
+            if (!empty($this->sms_transaction) && count($this->sms_transaction) > 0) {
+                $statusStudents = SMSTransaction::insert($this->sms_transaction);
+                $this->updateCredits($totalStudentCredits);
+            }
+            if (!empty($this->smsTeachersTransaction) && count($this->smsTeachersTransaction) > 0) {
                 $statusTeachers = SMSTransaction::insert($this->smsTeachersTransaction);
-                DB::connection()->pdo->commit();
+                $this->updateCredits($teacherCreditsUsed);
+            }
+            DB::connection()->pdo->commit();
+            if (!empty($this->sms_transaction) && count($this->sms_transaction) > 0) {
+                $insertedTransactions['studentsStatus'] = $statusStudents;
+                $insertedTransactions['numberofstudentinserted'] = count($this->sms_transaction);
+                $insertedTransactions['numberOfCreditsUsed'] = $totalStudentCredits;
+            }
+            if (!empty($this->smsTeachersTransaction) && count($this->smsTeachersTransaction) > 0) {
                 $insertedTransactions['teachersStatus'] = $statusTeachers;
-            } catch (PDOException $e) {
-                //rollback the insertion if fail at any point.
-                DB::connection()->pdo->rollBack();
-                throw new PDOException("Exception while bulk insertion");
+                $insertedTransactions['numberofteacherinserted'] = count($this->smsTeachersTransaction);
+                $insertedTransactions['numberOfCreditsUsedTeachers'] = $teacherCreditsUsed;
             }
-            catch (Exception $e) {
-                Log::exception($e);
-                $insertedTransactions['teachersStatus'] = false;
-            }
+        } catch (PDOException $e) {
+            //rollback if any error while bulk insertion
+            DB::connection()->pdo->rollBack();
+            throw new PDOException("Exception while bulk insertion");
+        }
+        catch (Exception $e) {
+            DB::connection()->pdo->rollBack();
+            Log::exception($e);
+            $insertedTransactions['studentsStatus'] = false;
+            $insertedTransactions['numberofstudentinserted'] = 0;
+            $insertedTransactions['numberOfCreditsUsed'] = 0;
+            $insertedTransactions['teachersStatus'] = false;
+            $insertedTransactions['numberofteacherinserted'] = 0;
+            $insertedTransactions['numberOfCreditsUsedTeachers'] = 0;
+        }
 
-        if ($insertedTransactions['studentsStatus'] == false && $insertedTransactions['teachersStatus'] == false)
+        if (empty($insertedTransactions))
             return false;
 
         return $insertedTransactions;
 
     }
 
+    /**
+     * Returns all mobiles for a student in an array. (In memory operation)
+     * @param $student
+     * @return array
+     */
     public function getStudentMobileNumbers($student)
     {
         $mobiles = array();
@@ -225,6 +258,24 @@ class SMSRepository
         }
 
         return true;
+    }
+
+    public function getFormattedMessage($studentCodes, $messageTemplate)
+    {
+        $messages = array();
+        foreach ($studentCodes as $studentCode) {
+            $messages["$studentCode"] = $this->formatMessage($messageTemplate);
+        }
+        return $messages;
+    }
+
+    public function getFormattedMessageTeachers($teacherCodes, $messageTemplate)
+    {
+        $messages = array();
+        foreach ($teacherCodes as $teacherCode) {
+            $messages["$teacherCode"] = $this->formatMessage($messageTemplate);
+        }
+        return $messages;
     }
 
 }

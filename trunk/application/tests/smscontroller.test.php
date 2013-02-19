@@ -33,4 +33,30 @@ class TestSmscontroller extends ControllerTestCase
 //        var_dump($response);
 //        $this->assertTrue(true);
 //    }
+
+
+//    public function testaddsms()
+//    {
+////        Auth::login(1);
+////        $parameters = array(
+////            'classSections'=>array('8-A'),
+////            'message'=>"Dear Parents, your child name"
+////        );
+////        Input::$json = (object)$parameters;
+////        $response = $this->post('SMS@post_send_to_class', array());
+////        var_dump($response);
+//    }
+
+    public function testbusroute()
+    {
+        Auth::login(1);
+        $parameters = array(
+            'morningBusRoutes'=>array('70','77','647'),
+            'eveningBusRoutes'=>array('8887'),
+            'message'=>"Dear parents, teacher"
+        );
+        Input::$json = (object)$parameters;
+        $response = $this->post('SMS@post_send_to_busroutes', array());
+        var_dump($response);
+    }
 }

@@ -3,6 +3,30 @@
         <div class="box" style="padding: 8px 0;">
             @render('teacher.leftmenu')
         </div>
+
+        <div class="box padding-left-12">
+
+                <label>Departments</label>
+                <select ng-model="departments" multiple="multiple">
+                    @foreach($departments as $department)
+                    <option><%$department%></option>
+                    @endforeach
+                </select>
+                <label>MorningBusRoute</label>
+                <select ng-model="morningRoutes" multiple="multiple">
+                    @foreach($morningRoutes as $morningRoute)
+                    <option><%$morningRoute%></option>
+                    @endforeach
+                </select>
+                <label>EveningBusRoute</label>
+                <select ng-model="eveningRoutes" multiple="multiple">
+                    @foreach($eveningRoutes as $eveningRoute)
+                    <option><%$eveningRoute%></option>
+                    @endforeach
+                </select>
+                <button class="btn btn-primary" ng-click="getTeachers()">Filter</button>
+
+        </div>
     </div>
 
     <div class="span9">
@@ -17,32 +41,8 @@
                 of type and scrambled it to make a type specimen book.</p>
 
             <div class="row">
-                <div class="span3 border-right">
 
-                    <!--                        <label>Label name</label>-->
-                    <!--                        <input type="text" placeholder="Enter Your Name">-->
-                    <label>Departments</label>
-                    <select ng-model="departments" multiple="multiple">
-                        @foreach($departments as $department)
-                        <option><%$department%></option>
-                        @endforeach
-                    </select>
-                    <label>MorningBusRoute</label>
-                    <select ng-model="morningRoutes" multiple="multiple">
-                        @foreach($morningRoutes as $morningRoute)
-                        <option><%$morningRoute%></option>
-                        @endforeach
-                    </select>
-                    <label>EveningBusRoute</label>
-                    <select ng-model="eveningRoutes" multiple="multiple">
-                        @foreach($eveningRoutes as $eveningRoute)
-                        <option><%$eveningRoute%></option>
-                        @endforeach
-                    </select>
-                    <button class="btn btn-success" ng-click="getTeachers()">Filter</button>
-
-                </div>
-                <div class="span5">
+                <div class="span8">
                     <table class="table table-striped table-hover table-condensed">
                         <thead>
                         <tr>
@@ -77,18 +77,10 @@
 
                     </table>
                     <div>
-
-                        <a ng-model="previousPage" ng-show="previousPage > 0" ng-hide="previousPage==0" ng-click="updatePrevious()" class="btn btn-info">
-                   <span>
-                       <span>Previous</span>
-                   </span>
-                        </a>
-
-                        <a ng-model="nextPage" ng-click="updateNext()" ng-hide="teachers.length==0" class="btn btn-info">
-                   <span>
-                       <span> Next</span>
-                   </span>
-                        </a>
+                        <button class="btn" ng-disabled="previousPage == 0" ng-click="updatePrevious()"><i
+                                class="icon-caret-left icon-large"></i></button>
+                        <button class="btn" ng-disabled="teachers.length ==0" ng-click="updateNext()"><i
+                                class="icon-caret-right icon-large"></i></button>
                     </div>
                 </div>
 

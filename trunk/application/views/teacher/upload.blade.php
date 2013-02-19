@@ -19,15 +19,26 @@
             <div class="row">
                 <div class="span5 border-right">
                     <form class="form-horizontal">
-                        <div class="control-group">
-                            <label for="student-file"><strong>Select File</strong></label>
-                            <input type="file" id="student-file">
-                            <button type="submit" class="btn">
+                        <div class="control-group" ng-hide="files.length>0 || importStatus">
+                            <a href="#" data-url="file/post_add" data-done="fileUploaded" data-mimes="csv"
+                               id="teacher-file" class="file-uploader">
+                                <i class="icon-upload"></i> Upload File</a>
+                        </div>
+                        <div ng-show="files.length >0">
+                            <h5>File Uploaded</h5>
+                            <p ng-repeat="file in files"><i class="icon-ok"></i> {{ file.filename }}</p>
+                        </div>
+                        <div ng-show="showError">
+                            <p> {{ errorMessage }}</p>
+                        </div>
+                        <div class="control-group" ng-hide="showError || importStatus">
+                            <button type="submit" class="btn" ng-click="importTeachers()">
                                 <i class="icon-upload icon-large padding-right-5"></i>Import
                             </button>
-
-                            <span class="text-error"><i class="icon-remove"></i> Password do not match</span>
-                            <span class="text-success"><i class="icon-ok"></i> Password do not match</span>
+                        </div>
+                        <div class="control-group" ng-show="importStatus">
+                            <p>Number of teacher Imported: {{numberOfTeachers}}</p>
+                            <p ng-show="rowErrors!=0">Row Numbers having Errors: {{rowErrors}} </p>
                         </div>
                     </form>
                 </div>
@@ -50,4 +61,6 @@
         </div>
     </div>
 </div>
-</div>
+<script type="text/javascript">
+    initComponents();
+</script>

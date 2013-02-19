@@ -117,9 +117,9 @@ class Init {
             $table->text('message');
             $table->string('status', 45);
             $table->integer('credits');
-            $table->integer('studentId');
-            $table->integer('teacherId');
-            $table->integer('senderId');
+            $table->integer('studentId')->nullable();
+            $table->integer('teacherId')->nullable();
+            $table->string('senderId');
             $table->integer('userId')->unsigned();
             $table->foreign('userId')->references('id')->on('users');
             $table->timestamps();

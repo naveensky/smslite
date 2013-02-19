@@ -8,7 +8,7 @@ angular.module('app')
     $scope.eveningRoutes = [];
     $scope.teachers = [];
     $scope.pageNumber = 1;
-    $scope.pageCount = 2;
+    $scope.pageCount = 25;
     $scope.previousPage = 0;
     $scope.nextPage = $scope.pageNumber + 1;
 

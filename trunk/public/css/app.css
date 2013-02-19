@@ -85,3 +85,11 @@ div.control-group .text-success {
 .file-uploader-wrapper .progress-wrapper{
     margin-left: 0px;
 }
+
+select{
+    width:190px !important;
+}
+
+.padding-left-12{
+    padding-left: 12px;
+}
