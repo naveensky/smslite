@@ -3,10 +3,15 @@
 // Declare app level module which depends on filters, and services
 angular.module('app', []).
     config(['$routeProvider', function ($routeProvider) {
-    $routeProvider.when('/user/login', {templateUrl:'user/login', controller:'User_Login'});
+    $routeProvider.when('/user/login', {templateUrl:'user/login', controller:'User_Login'})
+        .when('/user/register', {templateUrl:'/user/register', controller:'User_Register'})
+        .when('/user/register/1', {templateUrl:'/user/register', controller:'User_Register'})
+        .when('/user/register/2', {templateUrl:'/user/register/2', controller:'User_Register'})
+        .when('/user/register/3', {templateUrl:'/user/register/3', controller:'User_Register'})
+        .when('/user/register/4', {templateUrl:'/user/register/4', controller:'User_Register'});
 
 
-    ///student routes
+    //student routes
     $routeProvider
         .when('/student', {templateUrl:'/student', controller:'Student_List'})
         .when('/student/upload', {templateUrl:'/student/upload', controller:'Student_Upload'})

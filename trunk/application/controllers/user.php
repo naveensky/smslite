@@ -14,7 +14,7 @@ class User_Controller extends Base_Controller
         //add auth filter
         $this->filter('before', 'auth')
             ->except(
-                array('login', 'post_login', 'signUp'));
+            array('login', 'post_login', 'register'));
 
         $this->userRepo = new UserRepository();
         $this->schoolRepo = new SchoolRepository();
@@ -57,30 +57,38 @@ class User_Controller extends Base_Controller
         return Redirect::to('/');
     }
 
-    public function action_signUp()
+    public function action_register($step = 1)
     {
-        //todo: pending
-        return "pending";
+        switch ($step) {
+            case 1:
+                return View::make('user.register');
+                break;
+            case 2:
+                return View::make('user.schoolInfo');
+                break;
+            case 3:
+                return View::make('user.mobileVerify');
+                break;
+            case 4:
+                return View::make('user.emailVerify');
+                break;
+            default:
+                //show page 1
+        }
     }
 
     public function action_post_signUp()
     {
         $data = Input::json();
-
         if (empty($data))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
-
         $email = isset($data->email) ? $data->email : "";
         $password = isset($data->password) ? $data->password : "";
         $mobile = isset($data->mobile) ? $data->mobile : "";
-
-
         $school = $this->schoolRepo->createEmptySchool();
         if (!$school)
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
-
         $schoolCode = $school->code;
-
         try {
             $user = $this->userRepo->createAdmin($email, $mobile, $password, $schoolCode);
 
@@ -88,7 +96,6 @@ class User_Controller extends Base_Controller
             Log::exception($ie);
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
         }
-
         if (empty($user))
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
 
@@ -97,7 +104,6 @@ class User_Controller extends Base_Controller
 
         //fire user created event
         Event::fire(ListenerConstants::APP_USER_CREATED, array($user));
-
         //make the user as logged in user
         Auth::login($user->id);
         return Response::eloquent($user);

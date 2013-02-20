@@ -36,6 +36,7 @@ class Base_Controller extends Controller
             Asset::add('jquery-upload', 'js/jquery.upload.js', 'jquery');
             Asset::add('app', 'js/app.js', array('jquery', 'bootstrap', 'angular','jquery-upload'));
             Asset::add('controller_user_login', 'js/controllers/user/login.js', array('jquery', 'bootstrap', 'angular', 'app'));
+            Asset::add('controller_user_register', 'js/controllers/user/register.js', array('jquery', 'bootstrap', 'angular', 'app'));
             Asset::add('controller_student_upload', 'js/controllers/student/upload.js', array('jquery', 'bootstrap', 'angular', 'app'));
             Asset::add('controller_student_list', 'js/controllers/student/list.js', array('jquery', 'bootstrap', 'angular', 'app'));
             Asset::add('controller_teacher_upload', 'js/controllers/teacher/upload.js', array('jquery', 'bootstrap', 'angular', 'app'));
