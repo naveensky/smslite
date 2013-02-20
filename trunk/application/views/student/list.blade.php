@@ -25,7 +25,7 @@
                     <option><%$eveningRoute%></option>
                     @endforeach
                 </select>
-                <button class="btn btn-primary" ng-click="getStudents()">Filter</button>
+                <button class="btn btn-primary" ng-click="filterStudents()">Filter</button>
         </div>
 
     </div>

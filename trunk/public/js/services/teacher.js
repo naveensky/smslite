@@ -1,20 +1,19 @@
 var module = angular.module('app');
-module.factory('StudentService', ["$http", "$q", function ($http, $q) {
+module.factory('TeacherService', ["$http", "$q", function ($http, $q) {
     return {
-
-        //function to get students as per various filters. All filters are optional
-        getStudents: function (classSections, morningRoutes, eveningRoutes, pageNumber, pageCount) {
+        //function to get teachers as per various filters. All filters are optional
+        getTeachers: function (departments, morningRoutes, eveningRoutes, pageNumber, pageCount) {
 
             //create a defer
             var deferred = $q.defer();
 
             //make post request with params
             $http.post(
-                '/student/getStudents',
+                '/teacher/getTeachers',
                 {
-                    "classSection": classSections,
-                    "morningBusRoute": morningRoutes,
-                    "eveningBusRoute": eveningRoutes,
+                    "departments": departments,
+                    "morningBusRoutes": morningRoutes,
+                    "eveningBusRoutes": eveningRoutes,
                     "pageNumber": pageNumber,
                     "pageCount": pageCount
                 }
@@ -37,4 +36,3 @@ module.factory('StudentService', ["$http", "$q", function ($http, $q) {
         }
     }
 }]);
-
