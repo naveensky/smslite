@@ -7,8 +7,8 @@
 
             <div class="nav-collapse collapse">
                 <ul class="nav">
-                    <li><a href="#/student"><i class="icon-group"></i> Students</a></li>
-                    <li><a href="#/student"><i class="icon-user-md"></i> Teachers</a></li>
+                    <li><a href="#/student/list"><i class="icon-group"></i> Students</a></li>
+                    <li><a href="#/teacher/list"><i class="icon-user-md"></i> Teachers</a></li>
                     <li><a href="#/student"><i class="icon-comments"></i> SMS</a></li>
                     <li><a href="#/student"><i class="icon-cog"></i> Account</a></li>
                 </ul>
