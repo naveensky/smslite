@@ -97,4 +97,101 @@ class SchoolRepository
 
     }
 
+    public function getClassesWithStrength()
+    {
+        $schoolId = Auth::user()->schoolId;
+
+        $classes = DB::query('select "classSection", "classStandard" from students where "schoolId"=' . $schoolId . ' group by "classSection", "classStandard"');
+        $classSection = array();
+        foreach ($classes as $class) {
+            $classWise = array();
+            $classWise['noofstudents'] = $this->countStudents($class->classStandard, $class->classSection);
+            $classWise["$class->classStandard-$class->classSection"] = ucfirst($class->classStandard) . '-' . ucfirst($class->classSection);
+            $classSection[] = $classWise;
+        }
+        return $classSection;
+    }
+
+    public function countStudents($class, $section)
+    {
+        $schoolId = Auth::user()->schoolId;
+        $students = Student::where_schoolId_and_classStandard_and_classSection($schoolId,$class, $section)->count();
+        return $students;
+    }
+
+    public function getClasses()
+    {
+        $schoolId = Auth::user()->schoolId;
+
+        $classes = DB::query('select "classSection", "classStandard" from students where "schoolId"=' . $schoolId . ' group by "classSection", "classStandard"');
+        $classSection = array();
+        foreach ($classes as $class) {
+            $classSection["$class->classStandard-$class->classSection"] = ucfirst($class->classStandard) . '-' . ucfirst($class->classSection);
+        }
+        return $classSection;
+    }
+
+    public function getMorningBusRoutes()
+    {
+        $schoolId = Auth::user()->schoolId;
+        $query = Student::where('schoolId', '=', $schoolId);
+        $query = $query->distinct('morningBusRoute');
+        $routes = $query->get('morningBusRoute');
+        $morningRoutes = array();
+        foreach ($routes as $route) {
+            $morningRoutes[] = $route->morningBusRoute;
+        }
+        return $morningRoutes;
+    }
+
+    public function getEveningBusRoutes()
+    {
+        $schoolId = Auth::user()->schoolId;
+        $query = Student::where('schoolId', '=', $schoolId);
+        $query = $query->distinct('eveningBusRoute');
+        $routes = $query->get('eveningBusRoute');
+        $eveningRoutes = array();
+        foreach ($routes as $route) {
+            $eveningRoutes[] = $route->eveningBusRoute;
+        }
+        return $eveningRoutes;
+    }
+
+    public function getDepartments()
+    {
+        $schoolId = Auth::user()->schoolId;
+        $departments = DB::query('SELECT DISTINCT lower("department") as department FROM "teachers" WHERE "schoolId" = ' . $schoolId);
+        $departmentsData = array();
+        foreach ($departments as $department) {
+            $departmentsData[] = $department->department;
+        }
+        return $departmentsData;
+    }
+
+    public function getMorningBusRoutesOfTeachers()
+    {
+        $schoolId = Auth::user()->schoolId;
+        $query = Teacher::where('schoolId', '=', $schoolId);
+        $query = $query->distinct('morningBusRoute');
+        $routes = $query->get('morningBusRoute');
+        $morningRoutes = array();
+        foreach ($routes as $route) {
+            $morningRoutes[] = $route->morningBusRoute;
+        }
+        return $morningRoutes;
+    }
+
+    public function getEveningBusRoutesOfTeachers()
+    {
+        $schoolId = Auth::user()->schoolId;
+        $query = Teacher::where('schoolId', '=', $schoolId);
+        $query = $query->distinct('eveningBusRoute');
+        $routes = $query->get('eveningBusRoute');
+        $eveningRoutes = array();
+        foreach ($routes as $route) {
+            $eveningRoutes[] = $route->eveningBusRoute;
+        }
+        return $eveningRoutes;
+    }
+
 }

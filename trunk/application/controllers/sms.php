@@ -11,12 +11,14 @@ class SMS_Controller extends Base_Controller
 
     private $smsRepo;
     private $studentRepo;
+    private $teacherRepo;
 
     public function __construct()
     {
         parent::__construct();
         $this->smsRepo = new SMSRepository();
         $this->studentRepo = new StudentRepository();
+        $this->teacherRepo = new TeacherRepository();
     }
 
 
@@ -46,7 +48,7 @@ class SMS_Controller extends Base_Controller
         //get current logined user id
 
         $userId = Auth::user()->id;
-        $senderId = "gaps";
+        $senderId = Config::get('sms_config.senderId'); //getting senderId from config file
         //calling function for creating key value pair for studentCode => message
         $studentCodes = $this->smsRepo->getFormattedMessage($studentCodes, $message);
         $result = $this->smsRepo->createSMS($studentCodes, array(), $senderId, $userId);
@@ -57,38 +59,28 @@ class SMS_Controller extends Base_Controller
 
     }
 
-    public function action_post_send_to_busroutes()
+    public function action_post_send_to_bus_routes()
     {
         $data = Input::json();
         if (empty($data))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
-
         $morningBusRoutes = isset($data->morningBusRoutes) ? $data->morningBusRoutes : array();
         $eveningBusRoutes = isset($data->eveningBusRoutes) ? $data->eveningBusRoutes : array();
-//        $teachers = isset($data->teachers) ? $data->teachers : false;
-//        $students = isset($data->students) ? $data->students : false;
         $message = isset($data->message) ? $data->message : '';
-
-//        if (empty($teachers) && empty($students))
-//            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
-
         if (empty($morningBusRoutes) && empty($eveningBusRoutes))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
-//        if (!empty($teachers))
-        $teachersCodes = $this->studentRepo->getTeacherCodeFromBusRoutes($morningBusRoutes, $eveningBusRoutes);
-
+        //getting teacher codes from the morning and evening bus routes
+        $teachersCodes = $this->teacherRepo->getTeacherCodeFromBusRoutes($morningBusRoutes, $eveningBusRoutes);
+        //getting key value pair for message and teacher code
         $teachersCodes = $this->smsRepo->getFormattedMessageTeachers($teachersCodes, $message);
-
-//        if (!empty($students))
+        //getting students codes from the morning and evening bus routes
         $studentCodes = $this->studentRepo->getStudentCodeFromBusRoutes($morningBusRoutes, $eveningBusRoutes);
-
+        //getting key value pair of message and student code
         $studentCodes = $this->smsRepo->getFormattedMessage($studentCodes, $message);
-
-//get current logined user id
-
+        //get current logined user id
         $userId = Auth::user()->id;
-        $senderId = "gaps";
+        $senderId = Config::get('sms_config.senderId'); //getting senderId from config file
         $result = $this->smsRepo->createSMS($studentCodes, $teachersCodes, $senderId, $userId);
         if ($result == false && !is_array($result))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
@@ -96,7 +88,6 @@ class SMS_Controller extends Base_Controller
         return Response::json($result);
 
     }
-
 
     public function post_create()
     {

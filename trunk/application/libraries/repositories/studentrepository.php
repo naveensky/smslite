@@ -8,7 +8,6 @@
  */
 class StudentRepository
 {
-
     /**
     /**
      * @param $schoolCode - Code for school to which student needs to be added
@@ -103,18 +102,6 @@ class StudentRepository
         return true;
     }
 
-    public function getClasses()
-    {
-        $schoolId = Auth::user()->schoolId;
-
-        $classes = DB::query('select "classSection", "classStandard" from students where "schoolId"=' . $schoolId . ' group by "classSection", "classStandard"');
-        $classSection = array();
-        foreach ($classes as $class) {
-            $classSection["$class->classStandard-$class->classSection"] = ucfirst($class->classStandard) . '-' . ucfirst($class->classSection);
-        }
-        return $classSection;
-    }
-
     //function to get the class from the given classSection
     public function getClass($classSection)
     {
@@ -161,32 +148,6 @@ class StudentRepository
         }
 
         return $studentCodes;
-    }
-
-    public function getMorningBusRoutes()
-    {
-        $schoolId = Auth::user()->schoolId;
-        $query = Student::where('schoolId', '=', $schoolId);
-        $query = $query->distinct('morningBusRoute');
-        $routes = $query->get('morningBusRoute');
-        $morningRoutes = array();
-        foreach ($routes as $route) {
-            $morningRoutes[] = $route->morningBusRoute;
-        }
-        return $morningRoutes;
-    }
-
-    public function getEveningBusRoutes()
-    {
-        $schoolId = Auth::user()->schoolId;
-        $query = Student::where('schoolId', '=', $schoolId);
-        $query = $query->distinct('eveningBusRoute');
-        $routes = $query->get('eveningBusRoute');
-        $eveningRoutes = array();
-        foreach ($routes as $route) {
-            $eveningRoutes[] = $route->eveningBusRoute;
-        }
-        return $eveningRoutes;
     }
 
     public function getStudents($classSections, $morningBusRoute, $eveningBusRoute, $perPage, $skip)
@@ -266,40 +227,19 @@ class StudentRepository
         return $student;
     }
 
-    public function getClassesWithStrength()
-    {
-        $schoolId = Auth::user()->schoolId;
-
-        $classes = DB::query('select "classSection", "classStandard" from students where "schoolId"=' . $schoolId . ' group by "classSection", "classStandard"');
-        $classSection = array();
-        foreach ($classes as $class) {
-            $classWise = array();
-            $classWise['noofstudents'] = $this->countStudents($class->classStandard, $class->classSection);
-            $classWise["$class->classStandard-$class->classSection"] = ucfirst($class->classStandard) . '-' . ucfirst($class->classSection);
-            $classSection[] = $classWise;
-        }
-        return $classSection;
-    }
-
-    public function countStudents($class, $section)
-    {
-        $schoolId = Auth::user()->schoolId;
-        $students = Student::where_classStandard_and_classSection($class, $section)->count();
-        return $students;
-
-    }
-
     public function getStudentCodeFromBusRoutes($morningBusRoutes, $eveningBusRoutes)
     {
         $schoolId = Auth::user()->schoolId;
         $query = Student::where_schoolId($schoolId);
+        $query = $query->where(function ($query) use ($morningBusRoutes, $eveningBusRoutes) {
+            if (!empty($morningBusRoutes))
+                $query->where_in("morningBusRoute", $morningBusRoutes);
+            if (!empty($eveningBusRoutes))
+                $query->or_where_in("eveningBusRoute", $eveningBusRoutes);
 
-        if (!empty($morningBusRoutes))
-            $query = $query->where_in("morningBusRoute", $morningBusRoutes);
-        if (!empty($eveningBusRoutes))
-            $query = $query->or_where_in("eveningBusRoute", $eveningBusRoutes);
-
+        });
         $codes = $query->distinct('code')->get('code');
+
         $studentCodes = array();
         foreach ($codes as $code) {
             $studentCodes[] = $code->code;
@@ -307,24 +247,5 @@ class StudentRepository
         return $studentCodes;
     }
 
-    public function getTeacherCodeFromBusRoutes($morningBusRoutes, $eveningBusRoutes)
-    {
-        $schoolId = Auth::user()->schoolId;
-        $query = Teacher::where_schoolId($schoolId);
 
-        if (!empty($morningBusRoutes))
-            $query = $query->where_in("morningBusRoute", $morningBusRoutes);
-        if (!empty($eveningBusRoutes))
-            $query = $query->or_where_in("eveningBusRoute", $eveningBusRoutes);
-
-        $codes = $query->distinct('code')->get('code');
-
-
-        $teacherCodes = array();
-        foreach ($codes as $code) {
-            $teacherCodes[] = $code->code;
-        }
-
-        return $teacherCodes;
-    }
 }

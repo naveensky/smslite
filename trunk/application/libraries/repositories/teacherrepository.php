@@ -65,7 +65,7 @@ class TeacherRepository
 
     public function getTeachersFromCode($teachers_codes)
     {
-        if(empty($teachers_codes))
+        if (empty($teachers_codes))
             return array();
         $teachers = Teacher::where_in('code', $teachers_codes)->get();
         return $teachers;
@@ -90,43 +90,6 @@ class TeacherRepository
         }
 
         return true;
-    }
-
-    public function getDepartments()
-    {
-        $schoolId = Auth::user()->schoolId;
-        $departments = DB::query('SELECT DISTINCT lower("department") as department FROM "teachers" WHERE "schoolId" = ' . $schoolId);
-        $departmentsData = array();
-        foreach ($departments as $department) {
-            $departmentsData[] = $department->department;
-        }
-        return $departmentsData;
-    }
-
-    public function getMorningBusRoutes()
-    {
-        $schoolId = Auth::user()->schoolId;
-        $query = Teacher::where('schoolId', '=', $schoolId);
-        $query = $query->distinct('morningBusRoute');
-        $routes = $query->get('morningBusRoute');
-        $morningRoutes = array();
-        foreach ($routes as $route) {
-            $morningRoutes[] = $route->morningBusRoute;
-        }
-        return $morningRoutes;
-    }
-
-    public function getEveningBusRoutes()
-    {
-        $schoolId = Auth::user()->schoolId;
-        $query = Teacher::where('schoolId', '=', $schoolId);
-        $query = $query->distinct('eveningBusRoute');
-        $routes = $query->get('eveningBusRoute');
-        $eveningRoutes = array();
-        foreach ($routes as $route) {
-            $eveningRoutes[] = $route->eveningBusRoute;
-        }
-        return $eveningRoutes;
     }
 
     public function getTeachers($department, $morningBusRoute, $eveningBusRoute, $perPage, $skip)
@@ -167,6 +130,26 @@ class TeacherRepository
             return false;
         }
         return $teacher;
+    }
+
+    public function getTeacherCodeFromBusRoutes($morningBusRoutes, $eveningBusRoutes)
+    {
+        $schoolId = Auth::user()->schoolId;
+        $query = Teacher::where_schoolId($schoolId);
+
+        $query = $query->where(function ($query) use ($morningBusRoutes, $eveningBusRoutes) {
+            if (!empty($morningBusRoutes))
+                $query->where_in("morningBusRoute", $morningBusRoutes);
+            if (!empty($eveningBusRoutes))
+                $query->or_where_in("eveningBusRoute", $eveningBusRoutes);
+
+        });
+        $codes = $query->distinct('code')->get('code');
+        $teacherCodes = array();
+        foreach ($codes as $code) {
+            $teacherCodes[] = $code->code;
+        }
+        return $teacherCodes;
     }
 
 

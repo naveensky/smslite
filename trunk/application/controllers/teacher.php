@@ -18,15 +18,15 @@ class Teacher_Controller extends Base_Controller
         $this->teacherRepo = new TeacherRepository();
         $this->schoolRepo = new SchoolRepository();
 
-        //proceed ahead only if authenticated
-//       $this->filter('before', 'auth');
+//        proceed ahead only if authenticated
+        $this->filter('before', 'auth');
     }
 
     public function action_list()
     {
-        $departments = $this->teacherRepo->getDepartments();
-        $morningBusRoutes = $this->teacherRepo->getMorningBusRoutes();
-        $eveningBusRoutes = $this->teacherRepo->getEveningBusRoutes();
+        $departments = $this->schoolRepo->getDepartments();
+        $morningBusRoutes = $this->schoolRepo->getMorningBusRoutesOfTeachers();
+        $eveningBusRoutes = $this->schoolRepo->getEveningBusRoutesOfTeachers();
         $data['departments'] = $departments;
         $data['morningRoutes'] = $morningBusRoutes;
         $data['eveningRoutes'] = $eveningBusRoutes;
@@ -201,13 +201,13 @@ class Teacher_Controller extends Base_Controller
         $departments = isset($data->departments) ? $data->departments : array();
         $morningBusRoutes = isset($data->morningBusRoutes) ? $data->morningBusRoutes : array();
         $eveningBusRoutes = isset($data->eveningBusRoutes) ? $data->eveningBusRoutes : array();
-        $teachers=$this->teacherRepo->getTeachersToExport(
-            $departments,$morningBusRoutes,$eveningBusRoutes);
+        $teachers = $this->teacherRepo->getTeachersToExport(
+            $departments, $morningBusRoutes, $eveningBusRoutes);
 
         if ($teachers == false && !is_array($teachers))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
-        $teachersCSV=Teacher::parseToCSV($teachers);
+        $teachersCSV = Teacher::parseToCSV($teachers);
 
     }
 
