@@ -152,5 +152,18 @@ class TeacherRepository
         return $teacherCodes;
     }
 
+    public function getTeacherCodeFromDepartments(array $departments)
+    {
+        $schoolId = Auth::user()->schoolId;
+        $query = Teacher::where('schoolId', '=', $schoolId);
+        $query = $query->where_in(DB::raw('lower("department")'), $departments);
+        $codes = $query->distinct('code')->get('code');
+        $teacherCodes = array();
+        foreach ($codes as $code) {
+            $teacherCodes[] = $code->code;
+        }
+        return $teacherCodes;
+    }
+
 
 }

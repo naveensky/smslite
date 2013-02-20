@@ -89,6 +89,29 @@ class SMS_Controller extends Base_Controller
 
     }
 
+    public function action_post_send_to_department()
+    {
+        $data = Input::json();
+        if (empty($data))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        $department = isset($data->department) ? $data->department : array();
+        $message = isset($data->message) ? $data->message : '';
+
+        if (empty($department) || empty($message))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+        //getting teacher Codes from the department
+        $teacherCodes = $this->teacherRepo->getTeacherCodeFromDepartments($department);
+        //getting key value pair for the teacherCode => message
+        $teacherCodes = $this->smsRepo->getFormattedMessageDepartment($teacherCodes, $message);
+        $userId = Auth::user()->id;
+        $senderId = Config::get('sms_config.senderId'); //getting senderId from config file
+        $result = $this->smsRepo->createSMS(array(), $teacherCodes, $senderId, $userId);
+        if ($result == false && !is_array($result))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+        return Response::json($result);
+    }
+
     public function post_create()
     {
         $data = Input::json();

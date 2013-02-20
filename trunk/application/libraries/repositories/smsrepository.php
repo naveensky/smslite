@@ -278,4 +278,13 @@ class SMSRepository
         return $messages;
     }
 
+    public function getFormattedMessageDepartment($teacherCodes, $messageTemplate)
+    {
+        $messages = array();
+        foreach ($teacherCodes as $teacherCode) {
+            $messages["$teacherCode"] = $this->formatMessage($messageTemplate);
+        }
+        return $messages;
+    }
+
 }
