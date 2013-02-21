@@ -25,17 +25,25 @@
                         <label class="control-label" for="inputVerificationCode">Enter Verification Code</label>
 
                         <div class="controls">
-                            <input type="text" id="inputVerificationCode" placeholder="Enter Verification Code">
+                            <input type="text" id="inputVerificationCode" ng-model="mobileVerificationCode"
+                                   placeholder="Enter Verification Code">
                         </div>
                         <br>
 
                         <div class="controls">
-                            <button type="submit" class="btn">Verify</button>
-                            <button type="submit" class="btn">Send Again</button>
+                            <button type="submit" ng-click="verifyMobile()" class="btn">Verify</button>
+                            <button type="submit" ng-click="sendMobileCodeAgain()" class="btn">Send Again</button>
                         </div>
 
                     </div>
-
+                    <div class="alert alert-success smsresend" ng-show="SMSResent">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        New mobile verification code sent.
+                    </div>
+                    <div class="alert alert-error smsresend" ng-show="SMSResentError">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        Please enter correct mobile verification code.
+                    </div>
                 </form>
                 <hr/>
                 <form class="form-horizontal offset2">
@@ -46,16 +54,25 @@
                         <label class="control-label" for="inputUpdateMobile">Update Mobile</label>
 
                         <div class="controls">
-                            <input type="text" id="inputUpdateMobile" placeholder="Update Mobile">
-                            <button type="submit" class="btn">Update</button>
+                            <input type="text" id="inputUpdateMobile" ng-model="newMobileNumber"
+                                   placeholder="Update Mobile">
+                            <button type="submit" ng-click="updateMobile()" class="btn">Update</button>
 
+                        </div>
+
+                        <div class="alert alert-success margin-top-20 mobile-update" ng-show="IsMobileUpdated">
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                            Your mobile number is updated and mobile verification code has been sent to you.
+                        </div>
+                        <div class="alert alert-success margin-top-20 mobile-update" ng-show="IsMobileUpdatedError">
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                            Sorry Mobile Number is not Updated Please try again.
                         </div>
 
                         <div class="controls margin-top-20">
 
-                            <button type="button" class="btn btn-success" ng-click="verifyMobile()">Next</button>
+                            <button type="button" class="btn btn-success" ng-disabled="IsMobileVerified==false">Next</button>
                         </div>
-
                     </div>
                 </form>
             </div>

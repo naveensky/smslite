@@ -14,6 +14,7 @@ return array(
     'deactivation_message'=>'Your account has been deactivated',
     'restore_message'=>'Your account is restored successfully',
     'password_update_message'=>'Password Updated Successfully',
-    'deletion_message'=>'Your account has been Deleted'
+    'deletion_message'=>'Your account has been Deleted',
+    'mobile_updated_message'=>'Your mobile number is updated successfully'
 
 );

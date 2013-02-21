@@ -13,8 +13,7 @@ return array(
     'restore_account_email_subject'=>'SMSLITE - Restore Account',
     'update_password_email_subject'=>'SMSLITE - Password Update',
     'deactivate_account_email_subject'=>'SMSLITE - Account Deactivated',
-    'delete_account_email_subject'=>'SMSLITE - Account Deleted'
-
-
+    'delete_account_email_subject'=>'SMSLITE - Account Deleted',
+    'account_email_update_subject'=>'SMSLITE - Email Updated'
 
 );

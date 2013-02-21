@@ -134,7 +134,7 @@ class Init {
             $table->text('message');
             $table->string('status', 45);
             $table->integer('credits');
-            $table->integer('senderId');
+            $table->string('senderId');
             $table->integer('userId')->unsigned();
             $table->foreign('userId')->references('id')->on('users');
             $table->timestamps();

@@ -194,4 +194,10 @@ class SchoolRepository
         return $eveningRoutes;
     }
 
+    public function getSchoolFromId($schoolId)
+    {
+        return School::where_id($schoolId)->first();
+
+    }
+
 }

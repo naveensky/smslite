@@ -91,6 +91,8 @@ class School_Controller extends Base_Controller
         if (empty($update_data))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
+        $schoolId = Auth::user()->schoolId; //getting the loggined
+        $school = $this->schoolRepo->getSchoolFromId($schoolId); //getting school from the school id to obtain the school Code
         $updateData = array();
         if (isset($update_data->name))
             $updateData['name'] = $update_data->name;
@@ -108,13 +110,11 @@ class School_Controller extends Base_Controller
             $updateData['contactPerson'] = $update_data->contact_person;
         if (isset($update_data->contact_mobile))
             $updateData['contactMobile'] = $update_data->contact_mobile;
-        if (isset($update_data->code))
-            $schoolCode = $update_data->code;
-        if (empty($schoolCode))
-            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
+        if($school==NULL)
+            return Response::make(__('responseerror.not_found'), HTTPConstants::NOT_FOUND_ERROR_CODE);
         try {
-            $result = $this->schoolRepo->updateSchool($schoolCode, $updateData);
+            $result = $this->schoolRepo->updateSchool($school->code, $updateData);
         } catch (InvalidArgumentException $ie) {
             Log::exception($ie);
             return Response::make(__('responseerror.not_found'), HTTPConstants::NOT_FOUND_ERROR_CODE);

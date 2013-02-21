@@ -93,3 +93,13 @@ select{
 .padding-left-12{
     padding-left: 12px;
 }
+
+.smsresend{
+    margin-left:138px;
+    width:35%;
+}
+
+.mobile-update{
+    margin-left:138px;
+    width:44%;
+}

@@ -15,5 +15,7 @@ class ListenerConstants
     const APP_USER_PASSWORD_FORGOT = 'app.user_forgot_password';
     const APP_USER_PASSWORD_RESET = 'app.user_password_reset';
     const APP_USER_PASSWORD_UPDATE = 'app.user_password_update';
+    const APP_USER_EMAIL_UPDATE='app.user_email_update';
     const MAXIMUM_MESSAGE_LENGTH = 306;
+
 }

@@ -25,14 +25,14 @@
                         <label class="control-label" for="inputSchoolName">School Name</label>
 
                         <div class="controls">
-                            <input type="text" id="inputSchoolName" placeholder="School Name">
+                            <input type="text" id="inputSchoolName" ng-model="schoolName" placeholder="School Name">
                         </div>
                     </div>
                     <div class="control-group">
                         <label class="control-label" for="inputContactPerson">Contact Person</label>
 
                         <div class="controls">
-                            <input type="text" id="inputContactPerson" placeholder="Contact Person">
+                            <input type="text" id="inputContactPerson" ng-model="contactPerson" placeholder="Contact Person">
                         </div>
                     </div>
 
@@ -40,7 +40,7 @@
                         <label class="control-label" for="inputAddress">Address</label>
 
                         <div class="controls">
-                            <textarea rows="3" id="inputAddress" placeholder="Address"></textarea>
+                            <textarea rows="3" id="inputAddress" ng-model="address" placeholder="Address"></textarea>
                         </div>
                     </div>
 
@@ -48,7 +48,7 @@
                         <label class="control-label" for="inputSchoolContactNumber">School Contact Number</label>
 
                         <div class="controls">
-                            <input type="text" id="inputSchoolContactNumber" placeholder="School Contact Number">
+                            <input type="text" id="inputSchoolContactNumber" ng-model="schoolContactNumber" placeholder="School Contact Number">
                         </div>
                     </div>
 
@@ -56,7 +56,7 @@
                         <label class="control-label" for="inputCity">City</label>
 
                         <div class="controls">
-                            <input type="text" id="inputCity" placeholder="City">
+                            <input type="text" id="inputCity" ng-model="city" placeholder="City">
                         </div>
                     </div>
 
@@ -64,7 +64,7 @@
                         <label class="control-label" for="inputState">State</label>
 
                         <div class="controls">
-                            <input type="text" id="inputState" placeholder="State">
+                            <input type="text" id="inputState" ng-model="state" placeholder="State">
                         </div>
                     </div>
 
@@ -72,9 +72,10 @@
                         <label class="control-label" for="inputZip">Zip</label>
 
                         <div class="controls">
-                            <input type="text" id="inputZip" placeholder="Zip">
+                            <input type="text" id="inputZip" ng-model="zip" placeholder="Zip">
                         </div>
                     </div>
+                    <input type="hidden" ng-init="senderId='<?php echo $senderId;?>'">
 
                     <div class="controls margin-top-20">
                         <button type="button" ng-click="saveSchoolInfo()" class="btn btn-success">Next</button>

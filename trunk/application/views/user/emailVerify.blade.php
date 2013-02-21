@@ -26,11 +26,14 @@
                         of type and scrambled it to make a type specimen book.</p>
 
                     <div class="controls margin-top-20 margin-left-0">
-                        <button type="button" class="btn">Send Email Again</button>
-
+                        <button type="button" class="btn" ng-click="sendEmailAgain()">Send Email Again</button>
+                        <div class="alert alert-success margin-top-20" style="width:35%" ng-show="emailResent">
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                            Email with further instruction is sent to you
+                        </div>
                     </div>
-                </form>
 
+                </form>
                 <hr>
 
                 <form class="form-horizontal">
@@ -40,11 +43,15 @@
                         <label class="control-label" for="inputUpdateEmail">Update Email</label>
 
                         <div class="controls">
-                            <input type="text" id="inputUpdateEmail" placeholder="Update Email">
-                            <button type="submit" class="btn">Update</button>
+                            <input type="text" id="inputUpdateEmail" ng-model="newEmail" placeholder="Update Email">
+                            <button type="submit" class="btn" ng-click="updateEmail()">Update</button>
+                            <div class="alert alert-success margin-top-20" style="width:35%" ng-show="resetEmail">
+                                <button type="button" class="close" data-dismiss="alert">×</button>
+                                Email id is updated successfully
+                            </div>
                         </div>
                         <div class="controls margin-top-20">
-                            <button type="button" class="btn btn-success">Next</button>
+                            <button type="button" class="btn btn-success">Skip</button>
                         </div>
 
                     </div>

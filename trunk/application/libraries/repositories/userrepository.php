@@ -322,7 +322,7 @@ class UserRepository
     {
         $user = User::where_id($id)->get();
         if (empty($user))
-            return false;
+            throw new InvalidArgumentException("User Not Found");
         $user = User::find($id);
         $user->mobile = $mobile;
         $user->mobileVerificationCode = mt_rand(100000, 999999);
@@ -331,12 +331,28 @@ class UserRepository
             $user->save();
 
         } catch (Exception $e) {
-            log::exception($e);
+            Log::exception($e);
             return false;
         }
         return $user;
 
     }
 
+    public function updateEmail($id, $email)
+    {
+        $user = User::where_id($id)->get();
+        if (empty($user))
+            throw new InvalidArgumentException("User Not Found");
+        $user = User::find($id);
+        $user->email = $email;
+        $user->emailVerificationCode = Str::random(64, 'alpha');
+        try {
+            $user->save();
+        } catch (Exception $e) {
+            Log::exception($e);
+            return false;
+        }
+        return $user;
+    }
 }
 

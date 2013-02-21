@@ -96,4 +96,17 @@ class MailServices
             $message->html(true);
         });
     }
+
+    public function sendUserEmailUpdate($user)
+    {
+        $user = $user->to_array();
+        Message::send(function ($message) use ($user) {
+            $message->to($user['email']);
+            $message->from(Config::get('email.from_email'), Config::get('email.adminName'));
+            $message->subject(__('emailsubjects.account_email_update_subject'));
+            $message->body("view: user.email.userEmailUpdate");
+            $message->body->result = $user;
+            $message->html(true);
+        });
+    }
 }
