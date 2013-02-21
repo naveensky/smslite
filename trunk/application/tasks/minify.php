@@ -19,16 +19,24 @@ class Minify_Task
         $cssPath = path('public') . "css/";
         $jsPath = path('public') . "js/";
         $jsControllers = path('public') . "js/controllers/";
+        $jsServices = path('public') . "js/services/";
 
         $cssFiles = array(
-            $cssPath . 'bootstrap.min.css',
-            $cssPath . 'bootstrap-responsive.min.css',
             $cssPath . 'fonts.min.css',
             $cssPath . 'adminflare.min.css',
             $cssPath . 'font-awesome.min.css',
+            $cssPath . 'app.css',
         );
 
-        $compactor->combine_files($cssFiles)->save_file($cssPath . "css-combine.css");
-        $compactor->combine_directory($jsControllers)->save_file($jsPath . "controllers.js");
+        $compactor->combine_files($cssFiles)->save_file($cssPath . "application.css");
+
+        $compactor
+            ->combine_directory($jsPath)
+            ->combine_directory($jsServices)
+            ->combine_directory($jsControllers)
+            ->combine_directory($jsControllers . "student/")
+            ->combine_directory($jsControllers . "teacher/")
+            ->combine_directory($jsControllers . "user/")
+            ->save_file($jsPath . "application.js");
     }
 }
