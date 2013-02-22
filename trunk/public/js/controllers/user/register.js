@@ -13,6 +13,8 @@ angular.module('app')
     $scope.email = '';
     $scope.password = '';
     $scope.rePassword = '';
+    $scope.iAgree = true;
+    $scope.emailUsed = false;
 
     //school Info Variables
     $scope.schoolName = '';
@@ -23,8 +25,8 @@ angular.module('app')
     $scope.state = '';
     $scope.zip = '';
     $scope.senderId;
-    $scope.PasswordNotMatch = false;
-
+    $scope.errorUpdatingSchoolInfo = false;
+    $scope.errorUpdateSchoolMessage = '';
 
     //Mobile Verify Screen models
     $scope.mobileVerificationCode = '';
@@ -49,18 +51,21 @@ angular.module('app')
                 "email":$scope.email
             }
         ).success(function ($data) {
-                $window.location.href = "#/user/register/2";
+                if ($data.status == true)
+                    $window.location.href = "#/user/register/2";
+                else {
+                    $scope.emailUsed = true;
+                    $scope.emailUsedMessage = $data.message;
+                }
             }
         ).error(function ($e) {
 
             });
     }
 
-    $scope.matchPassword = function () {
-        if ($scope.password != $scope.rePassword) {
-            $scope.PasswordNotMatch = true;
-        }
-
+    $scope.changePassword = function () {
+        $scope.rePassword = "";
+        $scope.passwordChange = true;
     }
 
     $scope.saveSchoolInfo = function () {
@@ -78,8 +83,14 @@ angular.module('app')
 
             }
         ).success(function ($data) {
-                console.log($data);
-                $window.location.href = "#/user/register/3";
+                if ($data.status == true) {
+                    $window.location.href = "#/user/register/3";
+                }
+                else {
+                    $scope.errorUpdatingSchoolInfo = false;
+                    $scope.errorUpdateSchoolMessage = $data.message;
+                    console.log($data);
+                }
             }
         ).error(function ($e) {
 
@@ -174,11 +185,11 @@ angular.module('app')
     }
 
 
-}]).directive('sameAs', function() {
+}]).directive('sameAs', function () {
         return {
-            require: 'ngModel',
-            link: function(scope, elm, attrs, ctrl) {
-                ctrl.$parsers.unshift(function(viewValue) {
+            require:'ngModel',
+            link:function (scope, elm, attrs, ctrl) {
+                ctrl.$parsers.unshift(function (viewValue) {
                     if (viewValue === scope[attrs.sameAs]) {
                         ctrl.$setValidity('sameAs', true);
                         return viewValue;

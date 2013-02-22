@@ -20,6 +20,7 @@ class Minify_Task
         $jsPath = path('public') . "js/";
         $jsControllers = path('public') . "js/controllers/";
         $jsServices = path('public') . "js/services/";
+//        $jsIgnored=array("$jsPath.'application.js'");
 
         $cssFiles = array(
             $cssPath . 'fonts.min.css',
@@ -31,9 +32,9 @@ class Minify_Task
         $compactor->combine_files($cssFiles)->save_file($cssPath . "application.css");
 
         $compactor
-            ->combine_directory($jsPath)
+            ->combine_directory($jsPath,array("application.js"))
             ->combine_directory($jsServices)
-            ->combine_directory($jsControllers)
+//            ->combine_directory($jsControllers)
             ->combine_directory($jsControllers . "student/")
             ->combine_directory($jsControllers . "teacher/")
             ->combine_directory($jsControllers . "user/")

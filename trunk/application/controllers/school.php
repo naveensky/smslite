@@ -117,12 +117,12 @@ class School_Controller extends Base_Controller
             $result = $this->schoolRepo->updateSchool($school->code, $updateData);
         } catch (InvalidArgumentException $ie) {
             Log::exception($ie);
-            return Response::make(__('responseerror.not_found'), HTTPConstants::NOT_FOUND_ERROR_CODE);
+            return Response::json(array('status'=>false,'message'=>'Please try again'),HTTPConstants::SUCCESS_CODE);
         }
 
         if (empty($result))
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
 
-        return Response::Eloquent($result);
+        return Response::json(array('status'=>true),HTTPConstants::SUCCESS_CODE);
     }
 }

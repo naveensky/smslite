@@ -85,6 +85,10 @@ class User_Controller extends Base_Controller
         $email = isset($data->email) ? $data->email : "";
         $password = isset($data->password) ? $data->password : "";
         $mobile = isset($data->mobile) ? $data->mobile : "";
+        $isValidEmail = $this->userRepo->validateEmail($email);
+        if (!$isValidEmail)
+            return Response::json(array('status' => false,'message'=>'Email address is already used'), HTTPConstants::SUCCESS_CODE);
+
         $school = $this->schoolRepo->createEmptySchool();
         if (!$school)
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
@@ -106,7 +110,7 @@ class User_Controller extends Base_Controller
         Event::fire(ListenerConstants::APP_USER_CREATED, array($user));
         //make the user as logged in user
         Auth::login($user->id);
-        return Response::eloquent($user);
+        return Response::json(array('status' => true), HTTPConstants::SUCCESS_CODE);
     }
 
     public function action_activate($activationCode)
@@ -200,8 +204,7 @@ class User_Controller extends Base_Controller
 
     public function action_forgot_password()
     {
-        //todo: complete view
-        return "forgot password view";
+        return View::make('user.forgotPassword');
     }
 
     public function action_post_forgot_password()

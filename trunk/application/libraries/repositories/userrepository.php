@@ -19,22 +19,18 @@ class UserRepository
         return $this->createUser($email, $mobile, $password, $schoolCode, $roles);
     }
 
-
     public function createUser($email, $mobile, $password, $schoolCode = null, array $userRoles)
     {
         if ($schoolCode == null) {
             throw new InvalidArgumentException("Empty School ID");
         }
-
         $school = School::where_code($schoolCode)->get();
-
-
         if (empty($school))
             throw new InvalidArgumentException("Invalid School ID $schoolCode");
 
         $user = new User();
-        if ($this->validateEmail($email))
-            throw new InvalidArgumentException("Email Exists Already");
+//        if ($this->validateEmail($email))
+//            throw new InvalidArgumentException("Email Exists Already");
 
         $user->email = $email;
         $user->mobile = $mobile;
@@ -94,9 +90,8 @@ class UserRepository
 
         $user = User::where_email($email)->get();
         if (!empty($user))
-            return true;
-
-        return false;
+            return false;
+        return true;
     }
 
 

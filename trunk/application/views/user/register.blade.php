@@ -19,7 +19,10 @@
 
             <!-- Recent comments tab content -->
             <div class="tab-pane fade in active" id="sign-up">
-
+                <div class="alert alert-success margin-top-20 user-register" ng-show="emailUsed">
+                    <button type="button" class="close" data-dismiss="alert">×</button>
+                    {{emailUsedMessage}}
+                </div>
                 <form name="form" novalidate class="form-horizontal offset2">
                     <div class="control-group">
                         <label class="control-label" for="inputMobile">Mobile</label>
@@ -54,7 +57,7 @@
                         <label class="control-label" for="inputPassword">Password</label>
 
                         <div class="controls">
-                            <input type="password" id="inputPassword"name="password" ng-required="true" ng-model="password" placeholder="Password">
+                            <input type="password" id="inputPassword"name="password" ng-required="true" ng-change="changePassword()" ng-model="password" placeholder="Password">
                             <span class="validation valid" ng-show='form.password.$valid'>
                             <i class='icon-ok padding-right-5'></i></span>
                         </div>
@@ -64,17 +67,20 @@
                         <div class="controls">
                             <input type="password" id="rePassword" ng-model="rePassword" name="rePassword" same-as="password"
                                    placeholder="Confirm Password">
-                            <span ng-show="PasswordNotMatch"
+                            <span ng-show="form.rePassword.$invalid && !form.rePassword.$pristine"
                                   class="validation invalid"><i class="icon-remove padding-right-5"></i>Password Not Matched</span>
-                            <span ng-show="form.rePassword.$valid" class="validation valid"><i
+                            <span ng-show="form.rePassword.$valid && !form.rePassword.$pristine" class="validation valid"><i
                                     class="icon-ok padding-right-5"></i></span>
                         </div>
                     </div>
                     <div class="controls margin-top-20">
                         <label class="checkbox">
-                            <input type="checkbox"> I agree
+                            <input type="checkbox" ng-model="iAgree">I agree to abide by the <a href="">Terms & Conditions</a>
+                             <span ng-show="!iAgree"
+                                   class="validation invalid"><br/><i class="icon-remove padding-right-5"></i>In order to use our service you must agree to our terms and conditions</span>
                         </label>
-                        <button type="button" ng-click="register()" ng-disabled="form.$invalid" class="btn btn-success">
+
+                        <button type="button" ng-click="register()" ng-disabled="form.$invalid || !iAgree" class="btn btn-success">
                             Next
                         </button>
                     </div>

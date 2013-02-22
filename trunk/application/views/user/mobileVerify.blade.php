@@ -20,21 +20,25 @@
             <!-- Recent comments tab content -->
             <div class="tab-pane fade in active" id="sign-up">
 
-                <form class="form-horizontal offset2">
+                <form name="mobileVerifyForm" novalidate class="form-horizontal offset2">
                     <div class="control-group">
                         <label class="control-label" for="inputVerificationCode">Enter Verification Code</label>
 
                         <div class="controls">
-                            <input type="text" id="inputVerificationCode" ng-model="mobileVerificationCode"
+                            <input type="text" id="inputVerificationCode" name="mobileCode" ng-required="true"
+                                   ng-model="mobileVerificationCode"
                                    placeholder="Enter Verification Code">
+                            <span ng-show="mobileVerifyForm.mobileCode.$error.required && !mobileVerifyForm.mobileCode.$pristine "
+                                  class="validation invalid"><i class="icon-remove padding-right-5"></i>Please enter code we have sent to your mobile</span>
                         </div>
                         <br>
 
                         <div class="controls">
-                            <button type="submit" ng-click="verifyMobile()" class="btn">Verify</button>
+                            <button type="submit" ng-click="verifyMobile()" ng-disabled="mobileVerifyForm.$invalid"
+                                    class="btn">Verify
+                            </button>
                             <button type="submit" ng-click="sendMobileCodeAgain()" class="btn">Send Again</button>
                         </div>
-
                     </div>
                     <div class="alert alert-success smsresend" ng-show="SMSResent">
                         <button type="button" class="close" data-dismiss="alert">×</button>
@@ -46,7 +50,7 @@
                     </div>
                 </form>
                 <hr/>
-                <form class="form-horizontal offset2">
+                <form name="mobileUpdateForm" novalidate class="form-horizontal offset2">
 
                     <h3><i class="icon-mobile-phone icon-large padding-right-5"></i>Need to update Mobile</h3>
 
@@ -54,9 +58,20 @@
                         <label class="control-label" for="inputUpdateMobile">Update Mobile</label>
 
                         <div class="controls">
-                            <input type="text" id="inputUpdateMobile" ng-model="newMobileNumber"
+                            <input type="text" id="inputUpdateMobile" ng-model="newMobileNumber" ng-minLength="8" ng-required="true" ng-pattern="/^\+{0,1}\d+$/"
+                                   name="newNumber"
                                    placeholder="Update Mobile">
-                            <button type="submit" ng-click="updateMobile()" class="btn">Update</button>
+                            <span ng-show="mobileUpdateForm.newNumber.$valid && !mobileUpdateForm.newNumber.$pristine"
+                                  class="validation valid"><i
+                                    class="icon-ok padding-right-5"></i></span>
+                            <button type="submit" ng-click="updateMobile()" ng-disabled="mobileUpdateForm.$invalid"
+                                    class="btn">Update
+                            </button>
+
+                            <div ng-show="mobileUpdateForm.newNumber.$error.required && !mobileUpdateForm.newNumber.$pristine "
+                                  class="validation invalid"><i class="icon-remove padding-right-5"></i>Please enter your mobile number</div>
+                            <div ng-show="mobileUpdateForm.newNumber.$invalid && !mobileUpdateForm.newNumber.$pristine && !mobileUpdateForm.newNumber.$error.required" class="validation invalid"><i
+                                    class="icon-remove padding-right-5"></i>The mobile number must be at least 8 digits</div>
 
                         </div>
 
@@ -69,10 +84,6 @@
                             Sorry Mobile Number is not Updated Please try again.
                         </div>
 
-<!--                        <div class="controls margin-top-20">-->
-<!---->
-<!--                            <button type="button" class="btn btn-success" ng-disabled="IsMobileVerified==false">Next</button>-->
-<!--                        </div>-->
                     </div>
                 </form>
             </div>

@@ -235,6 +235,12 @@ class Test_Controller extends Base_Controller
         $data=$repo->getStudentCodeFromBusRoutes(array('70','77'),array('8887'));
         var_dump($data);
 
+    }
+
+    public function action_minify()
+    {
+        $jsPath = path('public') . "js/";
+        echo $jsPath . "application.js";
 
     }
 

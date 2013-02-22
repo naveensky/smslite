@@ -8,8 +8,8 @@ angular.module('app', []).
         .when('/user/register/1', {templateUrl:'/user/register', controller:'User_Register'})
         .when('/user/register/2', {templateUrl:'/user/register/2', controller:'User_Register'})
         .when('/user/register/3', {templateUrl:'/user/register/3', controller:'User_Register'})
-        .when('/user/register/4', {templateUrl:'/user/register/4', controller:'User_Register'});
-
+        .when('/user/register/4', {templateUrl:'/user/register/4', controller:'User_Register'})
+        .when('/user/forgot-password', {templateUrl:'/user/forgot_password', controller:'User_Forgot_Password'});
 
     //student routes
     $routeProvider
