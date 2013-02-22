@@ -69,10 +69,10 @@
                             Sorry Mobile Number is not Updated Please try again.
                         </div>
 
-                        <div class="controls margin-top-20">
-
-                            <button type="button" class="btn btn-success" ng-disabled="IsMobileVerified==false">Next</button>
-                        </div>
+<!--                        <div class="controls margin-top-20">-->
+<!---->
+<!--                            <button type="button" class="btn btn-success" ng-disabled="IsMobileVerified==false">Next</button>-->
+<!--                        </div>-->
                     </div>
                 </form>
             </div>

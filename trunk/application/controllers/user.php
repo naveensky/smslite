@@ -402,13 +402,13 @@ class User_Controller extends Base_Controller
         $email = isset($data->email) ? $data->email : "";
         if ($email == "")
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
-        $userId = Auth::user()->id;
-        try {
-            $user = $this->userRepo->updateEmail($userId, $email);
-        } catch (InvalidArgumentException $ie) {
-            Log::exception($ie);
+
+        $isValidEmail = $this->userRepo->validateEmail($email);
+        if (!$isValidEmail)
             return Response::json(array('status' => false), HTTPConstants::SUCCESS_CODE);
-        }
+
+        $userId = Auth::user()->id;
+        $user = $this->userRepo->updateEmail($userId, $email);
         if (!empty($user)) {
             Event::fire(ListenerConstants::APP_USER_EMAIL_UPDATE, array($user));
             return Response::json(array('status' => true), HTTPConstants::SUCCESS_CODE);

@@ -20,7 +20,7 @@
             <!-- Recent comments tab content -->
             <div class="tab-pane fade in active" id="sign-up">
 
-                <form name="form" novalidate="novalidate" class="form-horizontal offset2">
+                <form name="form" novalidate class="form-horizontal offset2">
                     <div class="control-group">
                         <label class="control-label" for="inputMobile">Mobile</label>
 
@@ -54,15 +54,20 @@
                         <label class="control-label" for="inputPassword">Password</label>
 
                         <div class="controls">
-                            <input type="password" id="inputPassword" ng-required="true" ng-model="password" placeholder="Password">
+                            <input type="password" id="inputPassword"name="password" ng-required="true" ng-model="password" placeholder="Password">
+                            <span class="validation valid" ng-show='form.password.$valid'>
+                            <i class='icon-ok padding-right-5'></i></span>
                         </div>
                     </div>
                     <div class="control-group">
                         <label class="control-label" for="inputPassword">Confirm Password</label>
-
                         <div class="controls">
-                            <input type="password" id="rePassword" ng-model="rePassword"
+                            <input type="password" id="rePassword" ng-model="rePassword" name="rePassword" same-as="password"
                                    placeholder="Confirm Password">
+                            <span ng-show="PasswordNotMatch"
+                                  class="validation invalid"><i class="icon-remove padding-right-5"></i>Password Not Matched</span>
+                            <span ng-show="form.rePassword.$valid" class="validation valid"><i
+                                    class="icon-ok padding-right-5"></i></span>
                         </div>
                     </div>
                     <div class="controls margin-top-20">

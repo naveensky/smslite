@@ -341,8 +341,6 @@ class UserRepository
     public function updateEmail($id, $email)
     {
         $user = User::where_id($id)->get();
-        if (empty($user))
-            throw new InvalidArgumentException("User Not Found");
         $user = User::find($id);
         $user->email = $email;
         $user->emailVerificationCode = Str::random(64, 'alpha');
