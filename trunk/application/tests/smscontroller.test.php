@@ -60,16 +60,16 @@ class TestSmscontroller extends ControllerTestCase
 //        var_dump($response);
     }
 
-    public function testDepartment()
-    {
-        Auth::login(1);
-        $parameters = array(
-            'department' => array('hindi','english'),
-            'message' => "Dear parents, teacher"
-        );
-        Input::$json = (object)$parameters;
-        $response = $this->post('SMS@post_send_to_department', array());
-        var_dump($response);
-
-    }
+//    public function testDepartment()
+//    {
+//        Auth::login(1);
+//        $parameters = array(
+//            'department' => array('hindi','english'),
+//            'message' => "Dear parents, teacher"
+//        );
+//        Input::$json = (object)$parameters;
+//        $response = $this->post('SMS@post_send_to_department', array());
+//        var_dump($response);
+//
+//    }
 }

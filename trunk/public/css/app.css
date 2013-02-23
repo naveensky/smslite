@@ -108,3 +108,22 @@ select{
     margin-left:245px;
     width:36%;
 }
+
+/*Ajax Loader styles*/
+
+#ajax-loader {
+    text-align: center;
+    padding: 10px 0px;
+    background: #feb215;
+    font-size: 20px;
+    font-weight: bold;
+    color: #9b6901;
+    position: absolute;
+    top: 40px;
+    width: 100%;
+}
+
+.forgot-password{
+
+    width:50%;
+}

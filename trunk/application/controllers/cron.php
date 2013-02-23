@@ -12,6 +12,7 @@ class Cron_Controller extends Base_Controller
     {
         $cronRepo = CronRepository::getInstance();
         $cronRepo->sendmessage();
+        echo "success";
     }
 
     public function action_test()

@@ -8,10 +8,10 @@
  */
 class TestCroncontroller extends PHPUnit_Framework_TestCase
 {
-//    public function testrunCron()
-//    {
-//        $response = Controller::call('cron@runCron', $parameters=array());
-//        var_dump($response);
-//    }
+    public function testrunCron()
+    {
+        $response = Controller::call('cron@runCron', $parameters=array());
+        var_dump($response);
+    }
 
 }

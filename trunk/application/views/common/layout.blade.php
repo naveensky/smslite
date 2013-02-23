@@ -19,6 +19,10 @@
     <!--Angular View Placeholder-->
 </div>
 
+<div id="ajax-loader">
+    Loading ...
+</div>
+
 <!--scripts-->
 <% Asset::scripts() %>
 

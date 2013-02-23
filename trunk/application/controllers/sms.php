@@ -48,7 +48,7 @@ class SMS_Controller extends Base_Controller
         //get current logined user id
 
         $userId = Auth::user()->id;
-        $senderId = Config::get('sms_config.senderId'); //getting senderId from config file
+        $senderId = Config::get('sms.senderid'); //getting senderId from config file
         //calling function for creating key value pair for studentCode => message
         $studentCodes = $this->smsRepo->getFormattedMessage($studentCodes, $message);
         $result = $this->smsRepo->createSMS($studentCodes, array(), $senderId, $userId);
@@ -80,7 +80,7 @@ class SMS_Controller extends Base_Controller
         $studentCodes = $this->smsRepo->getFormattedMessage($studentCodes, $message);
         //get current logined user id
         $userId = Auth::user()->id;
-        $senderId = Config::get('sms_config.senderId'); //getting senderId from config file
+        $senderId = Config::get('sms.senderid'); //getting senderId from config file
         $result = $this->smsRepo->createSMS($studentCodes, $teachersCodes, $senderId, $userId);
         if ($result == false && !is_array($result))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
@@ -105,7 +105,7 @@ class SMS_Controller extends Base_Controller
         //getting key value pair for the teacherCode => message
         $teacherCodes = $this->smsRepo->getFormattedMessageDepartment($teacherCodes, $message);
         $userId = Auth::user()->id;
-        $senderId = Config::get('sms_config.senderId'); //getting senderId from config file
+        $senderId = Config::get('sms.senderid'); //getting senderId from config file
         $result = $this->smsRepo->createSMS(array(), $teacherCodes, $senderId, $userId);
         if ($result == false && !is_array($result))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);

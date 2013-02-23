@@ -1,7 +1,30 @@
 'use strict';
 
+//service for loader module
+angular.module('LoaderServices', [])
+    .config(function ($httpProvider) {
+        $httpProvider.responseInterceptors.push('appHttpInterceptor');
+        var spinnerFunction = function (data, headersGetter) {
+            $('#ajax-loader').show();
+            return data;
+        };
+        $httpProvider.defaults.transformRequest.push(spinnerFunction);
+    })
+    // register the interceptor as a service, intercepts ALL angular ajax http calls
+    .factory('appHttpInterceptor', function ($q, $window) {
+        return function (promise) {
+            return promise.then(function (response) {
+                $('#ajax-loader').hide();
+                return response;
+            }, function (response) {
+                $('#ajax-loader').hide();
+                return $q.reject(response);
+            });
+        };
+    });
+
 // Declare app level module which depends on filters, and services
-angular.module('app', []).
+angular.module('app', ['LoaderServices']).
     config(['$routeProvider', function ($routeProvider) {
     $routeProvider.when('/user/login', {templateUrl:'user/login', controller:'User_Login'})
         .when('/user/register', {templateUrl:'/user/register', controller:'User_Register'})
@@ -9,7 +32,8 @@ angular.module('app', []).
         .when('/user/register/2', {templateUrl:'/user/register/2', controller:'User_Register'})
         .when('/user/register/3', {templateUrl:'/user/register/3', controller:'User_Register'})
         .when('/user/register/4', {templateUrl:'/user/register/4', controller:'User_Register'})
-        .when('/user/forgot-password', {templateUrl:'/user/forgot_password', controller:'User_Forgot_Password'});
+        .when('/user/forgot-password', {templateUrl:'/user/forgot_password', controller:'User_Forgot_Password'})
+        .when('/user/change-password/:code', {templateUrl:'/user/post_reset_password', controller:'User_change_Password'});
 
     //student routes
     $routeProvider
@@ -26,7 +50,6 @@ angular.module('app', []).
 
     $routeProvider.otherwise({redirectTo:'/'});
 }]);
-
 
 function initComponents() {
     initUploader();

@@ -19,7 +19,7 @@
 
             <!-- Recent comments tab content -->
             <div class="tab-pane fade in active" id="sign-up">
-                <div class="alert alert-success margin-top-20 user-register" ng-show="emailUsed">
+                <div class="alert alert-error margin-top-20 user-register" ng-show="emailUsed">
                     <button type="button" class="close" data-dismiss="alert">×</button>
                     {{emailUsedMessage}}
                 </div>

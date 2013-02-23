@@ -9,7 +9,7 @@
 class CronRepository
 {
     private static $_instance;
-    private static $isCronRunning = false;
+    private $isCronRunning = false;
     private $smsRepo;
 
     private function __construct()
@@ -19,8 +19,8 @@ class CronRepository
 
     public static function getInstance()
     {
-        if (!self::$_instance) {
-            self::$_instance = new CronRepository();
+        if (!self::$_instance instanceof self) {
+            self::$_instance = new self();
         }
         return self::$_instance;
     }
@@ -28,22 +28,22 @@ class CronRepository
     public function sendMessage()
     {
         //return if cron is already running
-        if (CronRepository::$isCronRunning)
+        if ($this->isCronRunning)
             return;
 
         //set cron as running
-        CronRepository::$isCronRunning = true;
+        $this->isCronRunning = true;
 
         //get all pending sms to be sent
         $pendingSMS = $this->smsRepo->getAllPendingSMS();
 
         if (!empty($pendingSMS)) {
-            $username = Config::get('sms_config.username');
-            $password = Config::get('sms_config.password');
+            $username = Config::get('sms.username');
+            $password = Config::get('sms.password');
 
             foreach ($pendingSMS as $sms) {
                 //create api url to hit
-                $sms_url = Config::get('sms_config.url');
+                $sms_url = Config::get('sms.url');
                 $sms_url = "$sms_url ?username=$username&password=$password&mobile=$sms->mobile&senderId=$sms->senderId&message=$sms->message";
 
                 $ch = curl_init();
@@ -57,8 +57,7 @@ class CronRepository
                     $this->smsRepo->updateStatus($sms->id, "sent");
             }
         }
-
         //mark cron as free for next request
-        CronRepository::$isCronRunning = false;
+        $this->isCronRunning = false;
     }
 }

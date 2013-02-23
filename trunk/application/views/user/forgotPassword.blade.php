@@ -39,13 +39,13 @@
 
                                 <div class="control-group">
                                     <label>Mobile Number</label>
-                                    <input type="text" id="mobile" placeholder="Mobile Number">
+                                    <input type="text" ng-model="mobileNumber" placeholder="Mobile Number">
                                         <span class="validation text-success">
                                         <i class="icon-ok padding-right-5"></i>This number is valid.</span>
                                 </div>
                                 <div class="control-group">
                                     <button type="submit" class="btn">Reset Password</button>
-                                    <button type="submit" class="btn">Cancel</button>
+                                    <button type="reset" class="btn">Cancel</button>
                                 </div>
                             </form>
                         </div>
@@ -55,16 +55,32 @@
                                 has been the industry's standard dummy text ever since the 1500s, when an unknown
                                 printer took a galley of type and scrambled it to make a type specimen book.</p>
 
-                            <form class="form-horizontal">
+                            <form name="emailForm" novalidate class="form-horizontal">
                                 <div class="control-group">
                                     <label>Enter Email ID</label>
-                                    <input type="text" id="mobile" placeholder="Email ID">
-                                    <span class="validation text-error"><i class="icon-remove padding-right-5"></i> Enter valid email-id.</span>
-
+                                    <input type="email" ng-model="email" name="email" ng-required="true" placeholder="Email ID">
+<span ng-show="emailForm.email.$error.required && !emailForm.email.$pristine "
+      class="validation invalid"><i class="icon-remove padding-right-5"></i>Please enter an email</span>
+                            <span ng-show="emailForm.email.$error.email && !emailForm.email.$pristine && !emailForm.email.$error.required"
+                                  class="validation invalid"><i
+                                    class="icon-remove padding-right-5"></i>Enter a valid email id. </span>
+                            <span ng-show="emailForm.email.$valid && !emailForm.email.$pristine"
+                                  class="validation valid"><i
+                                    class="icon-ok padding-right-5"></i></span>
+                                </div>
+                                <div class="alert alert-error margin-top-20 forgot-password" ng-show="errorEmail">
+                                    <button type="button" class="close" data-dismiss="alert">×</button>
+                                    {{emailErrorMessage}}
+                                </div>
+                                <div class="alert alert-success margin-top-20 forgot-password" ng-show="successEmail">
+                                    <button type="button" class="close" data-dismiss="alert">×</button>
+                                    {{emailSuccessMessage}}
                                 </div>
                                 <div class="control-group">
-                                    <button type="submit" class="btn">Reset Password</button>
-                                    <button type="submit" class="btn">Cancel</button>
+                                    <button type="submit" ng-disabled="emailForm.$invalid" ng-click="sendByEmail()" class="btn">Reset
+                                        Password
+                                    </button>
+                                    <button type="reset" class="btn">Cancel</button>
 
                                 </div>
 

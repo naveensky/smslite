@@ -149,22 +149,22 @@ class UserRepository
 
     public function setForgotActivationCode($email)
     {
-        if (empty($email)) {
-            throw new InvalidArgumentException("Empty ID");
+        $user = User::where_email($email)->first();
+        if ($user==NULL) {
+            throw new InvalidArgumentException("No user with email id $email");
         }
 
-        $user = User::where_email($email)->get();
         $forgotten_password_code = Str::random(64, 'alpha');
         $data = array(
             'forgottenPasswordCode' => $forgotten_password_code
         );
         try {
-            User::update($user[0]->id, $data);
+            User::update($user->id, $data);
         } catch (Exception $e) {
             Log::exception($e);
             return false;
         }
-        return User::find($user[0]->id);
+        return User::find($user->id);
     }
 
     public function forgotten_password_complete($code = NULL)
