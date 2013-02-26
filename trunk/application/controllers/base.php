@@ -35,11 +35,6 @@ class Base_Controller extends Controller
             Asset::add('bootstrap-css', 'https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap.no-icons.min.css');
             Asset::add('application-css', 'css/application.css');
         } else {
-
-            //if request is not ajax, then run minify task
-            if (!Request::ajax())
-                Command::run(array('minify'));
-
             //add scripts
             Asset::add('jquery', 'https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js');
             Asset::add('angular', 'https://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js', 'jquery');
@@ -49,7 +44,6 @@ class Base_Controller extends Controller
             //add css
             Asset::add('bootstrap-css', 'https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap.no-icons.min.css');
             Asset::add('application-css', 'css/application.css');
-
         }
     }
 }
