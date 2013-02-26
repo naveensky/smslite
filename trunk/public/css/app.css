@@ -4,6 +4,14 @@ body, input, .btn, label, select, option, textarea, table {
     line-height: 20px;
 }
 
+select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"],
+input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"],
+input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
+    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    line-height: 20px;
+}
+
 .form-actions {
     background-color: transparent;
     border-top: none;
@@ -74,39 +82,38 @@ div.control-group .text-success {
     border-right: 1px solid #ccc;
 }
 
-
 /*Styles for Upload */
 
-.file-uploader-wrapper a.file-uploader{
+.file-uploader-wrapper a.file-uploader {
     display: block;
     margin-bottom: 10px;
 }
 
-.file-uploader-wrapper .progress-wrapper{
+.file-uploader-wrapper .progress-wrapper {
     margin-left: 0px;
 }
 
-select{
-    width:190px !important;
+select {
+    width: 190px !important;
 }
 
-.padding-left-12{
+.padding-left-12 {
     padding-left: 12px;
 }
 
-.smsresend{
-    margin-left:138px;
-    width:35%;
+.smsresend {
+    margin-left: 138px;
+    width: 35%;
 }
 
-.mobile-update{
-    margin-left:138px;
-    width:44%;
+.mobile-update {
+    margin-left: 138px;
+    width: 44%;
 }
 
-.user-register{
-    margin-left:245px;
-    width:36%;
+.user-register {
+    margin-left: 245px;
+    width: 36%;
 }
 
 /*Ajax Loader styles*/
@@ -123,7 +130,7 @@ select{
     width: 100%;
 }
 
-.forgot-password{
+.forgot-password {
 
-    width:50%;
+    width: 50%;
 }

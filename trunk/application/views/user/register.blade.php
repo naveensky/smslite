@@ -1,7 +1,5 @@
 <section class="container" style="margin-top:20px;">
     <div class="box">
-        <!--<div class="tabbable">-->
-
         <!-- Tabs
        ================================================== -->
         <ul class="nav nav-tabs" id="register-tabs">

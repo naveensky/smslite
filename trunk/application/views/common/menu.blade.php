@@ -28,6 +28,7 @@
             <div class="nav-collapse collapse">
                 <ul class="nav pull-right">
                     <li><a href="#/user/register"><i class="icon-user"></i>Create an Account</a></li>
+                    <li><a href="#/user/login"><i class="icon-signin"></i>Sign In</a></li>
                 </ul>
             </div>
         </div>

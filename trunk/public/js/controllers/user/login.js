@@ -2,9 +2,8 @@
 
 //for route user/login
 angular.module('app')
-    .controller('User_Login', ['$scope', '$http', function ($scope, $http) {
+    .controller('User_Login', ['$scope', '$http', '$window', function ($scope, $http, $window) {
         $scope.showError = false;
-
         $scope.login = function (user) {
             $scope.showError = false;
             $http.post(
@@ -12,14 +11,15 @@ angular.module('app')
                 {
                     "email": user.email,
                     "password": user.password
-                },
-                function ($data) {
-                    //todo: redirect to dashboard
-                    console.log($data);
+                }).
+                success(function (data) {
+                    if (data.status) {
+                        $window.location.href = data.url;
+                    }
                 }
-            ).error(function () {
+            ).error(function (data) {
                     $scope.showError = true;
+                    log('error', data);
                 });
-            console.log(user);
         }
     }]);
