@@ -14,7 +14,12 @@ class User_Controller extends Base_Controller
         //add auth filter
         $this->filter('before', 'auth')
             ->except(
-            array('login', 'post_login', 'register', 'post_register'));
+            array(
+                'login', 'post_login', 'register',
+                'post_register', 'forgot_password',
+                'post_forgot_password', 'send_password_mobile',
+                'password_reset_success', 'reset_password',
+                'invalid_code','post_set_password'));
 
         $this->userRepo = new UserRepository();
         $this->schoolRepo = new SchoolRepository();
@@ -87,7 +92,7 @@ class User_Controller extends Base_Controller
         $mobile = isset($data->mobile) ? $data->mobile : "";
         $isValidEmail = $this->userRepo->validateEmail($email);
         if (!$isValidEmail)
-            return Response::json(array('status' => false, 'message' => 'Email address is already used'), HTTPConstants::SUCCESS_CODE);
+            return Response::json(array('status' => false, 'message' => __('responsemessages.email_used')), HTTPConstants::SUCCESS_CODE);
 
         $school = $this->schoolRepo->createEmptySchool();
         if (!$school)
@@ -218,7 +223,7 @@ class User_Controller extends Base_Controller
         try {
             $user = $this->userRepo->setForgotActivationCode($email);
         } catch (InvalidArgumentException $ie) {
-            return Response::json(array('status' => false, 'message' => 'Please check your email or either you have not created any account yet'), HTTPConstants::SUCCESS_CODE);
+            return Response::json(array('status' => false, 'message' => __('responsemessages.forgot_password_by_email_error')), HTTPConstants::SUCCESS_CODE);
         }
 
         if (empty($user))
@@ -226,7 +231,7 @@ class User_Controller extends Base_Controller
 
         //fire respective events
         Event::fire(ListenerConstants::APP_USER_PASSWORD_FORGOT, array($user));
-        return Response::json(array('status' => true, 'message' => 'Email containing further instructions is sent to your email id'), HTTPConstants::SUCCESS_CODE);
+        return Response::json(array('status' => true, 'message' => __('responsemessages.forgot_password_by_email_success')), HTTPConstants::SUCCESS_CODE);
     }
 
     public function action_send_password_mobile()
@@ -239,11 +244,14 @@ class User_Controller extends Base_Controller
         $email = isset($data->email) ? $data->email : "";
         $mobile = isset($data->mobile) ? $data->mobile : "";
 
+        if (empty($email) || empty($mobile))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
         try {
             $data = $this->userRepo->send_new_password_to_mobile($email, $mobile);
         } catch (InvalidArgumentException $ie) {
-            log::exception($ie);
-            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+            Log::exception($ie);
+            return Response::json(array('status' => false, 'message' => __('responsemessages.forgot_password_by_mobile_error')),HTTPConstants::SUCCESS_CODE);
         }
 
         if (empty($data))
@@ -251,20 +259,40 @@ class User_Controller extends Base_Controller
 
         $newPasswordMessage = __('smstemplate.new_password_message', array('code' => $data['password']));
         $this->appSmsRepo->createAppSms($data['user']->mobile, $newPasswordMessage, Config::get('sms.senderid'), $data['user']->id);
+        return Response::json(array('status' => true, 'message' => __('responsemessages.forgot_password_by_mobile_success')),HTTPConstants::SUCCESS_CODE);
     }
 
-    public function action_post_reset_password($code)
+    public function action_reset_password($code = null)
     {
+        //return invalid code view if empty code found
+        if (empty($code))
+            return Redirect::to('/#/user/invalid_code');
+
         try {
             $user = $this->userRepo->forgotten_password_complete($code);
         } catch (InvalidArgumentException $ie) {
             Log::exception($ie);
-            return Response::error('404');
+            return Redirect::to('/#/user/invalid_code');
         }
         if (empty($user))
-            return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
+            return Redirect::to('/#/user/invalid_code');
+        $email = $user[0]->email; //getting email to be sent as hidden field
+        //encrypting email
+        $email = Crypter::encrypt($email);
+        Session::put('email', $email);
+        Session::put('id', $user[0]->id);
+        return Redirect::to('/#/user/password_reset_success');
+    }
 
-        return View::make('user/changePassword');
+    public function action_password_reset_success()
+    {
+        $email = Session::get('email');
+        return View::make('user.changePassword')->with('email', $email); //encrypted email id passed as data to view
+    }
+
+    public function action_invalid_code()
+    {
+        return View::make('error.404');
     }
 
     public function action_post_set_password()
@@ -273,14 +301,21 @@ class User_Controller extends Base_Controller
         if (empty($data))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
-        $newPassword = isset($data->newPassword) ? $data->newPassword : "";
-        $email = isset($data->email) ? $data->email : "";
+        $newPassword = isset($data->password) ? $data->password : "";
+        $x_token = isset($data->x_token) ? $data->x_token : "";
 
-        try {
-            $user = $this->userRepo->setNewPassword($email, $newPassword);
-        } catch (InvalidArgumentException $ie) {
-            log::exception($ie);
+        if (empty($newPassword) || empty($x_token))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        //gettting decrypted email from x_token
+        $email = Crypter::decrypt($x_token);
+        $id = Session::get('id');
+        Session::flush(); //flushing all of the session data
+        try {
+            $user = $this->userRepo->setNewPassword($email, $id, $newPassword);
+        } catch (InvalidArgumentException $ie) {
+            Log::exception($ie);
+            return Response::json(array('status' => false, 'message', __('responsemessages.error_occured_password_reset')), HTTPConstants::SUCCESS_CODE);
         }
         if (empty($user))
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
@@ -289,8 +324,10 @@ class User_Controller extends Base_Controller
         $senderId = Config::get('sms.senderid');
         $this->appSmsRepo->createAppSms($user->mobile, $password_reset_message, $senderId, $user->id);
 
+        //setting success message for password change on session to show to user
+        Session::flash('password_change_success', __('responsemessages.password_changed_successfully'));
         Event::fire(ListenerConstants::APP_USER_PASSWORD_RESET, array($user));
-        return "view password successfully changed";
+        return Response::json(array('status' => true), HTTPConstants::SUCCESS_CODE);
     }
 
     public function action_resend_sms()
@@ -391,7 +428,6 @@ class User_Controller extends Base_Controller
         //fire user created event
         Event::fire(ListenerConstants::APP_USER_CREATED, array($user));
         return Response::json(array('status' => true), HTTPConstants::SUCCESS_CODE);
-
     }
 
     public function action_update_email()

@@ -150,7 +150,7 @@ class UserRepository
     public function setForgotActivationCode($email)
     {
         $user = User::where_email($email)->first();
-        if ($user==NULL) {
+        if ($user == NULL) {
             throw new InvalidArgumentException("No user with email id $email");
         }
 
@@ -192,15 +192,12 @@ class UserRepository
         return false;
     }
 
-    public function setNewPassword($email, $newPassword)
+    public function setNewPassword($email, $id, $newPassword)
     {
-        if (empty($email) || empty($newPassword))
-            throw new InvalidArgumentException("Empty newpassword or email");
-
-        $user = User::where_email($email)->first();
+        $user = User::where_id_and_email($id,$email)->first();
 
         if ($user == NULL)
-            return false;
+            throw new InvalidArgumentException("User Not Found");
 
         $data = array(
             'password' => Hash::make($newPassword)
@@ -263,13 +260,10 @@ class UserRepository
 
     public function send_new_password_to_mobile($email, $mobile)
     {
-        if (empty($email) || empty($mobile))
-            throw new InvalidArgumentException("Empty email or mobile");
-
         $user = User::where_email($email)->where_mobile($mobile)->first();
 
         if ($user == NULL)
-            return false;
+            throw new InvalidArgumentException("User Not Found");
 
         $password = mt_rand(100000, 999999);
         $updateData = array(

@@ -33,7 +33,8 @@ angular.module('app', ['LoaderServices']).
         .when('/user/register/3', {templateUrl:'/user/register/3', controller:'User_Register'})
         .when('/user/register/4', {templateUrl:'/user/register/4', controller:'User_Register'})
         .when('/user/forgot-password', {templateUrl:'/user/forgot_password', controller:'User_Forgot_Password'})
-        .when('/user/change-password/:code', {templateUrl:'/user/post_reset_password', controller:'User_change_Password'});
+        .when('/user/password_reset_success', {templateUrl:'/user/password_reset_success', controller:'User_Change_Password'})
+        .when('/user/invalid_code', {templateUrl:'/user/invalid_code' });
 
     //student routes
     $routeProvider

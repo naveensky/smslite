@@ -48,7 +48,7 @@ class MailServices
             $message->to($user['email']);
             $message->from(Config::get('email.from_email'), Config::get('email.adminName'));
             $message->subject(__('emailsubjects.new_password_email_subject'));
-            $message->body("view: user.email.newpassword");
+            $message->body("view: user.email.passwordReset");
             // You can add View data by simply setting the value
             // to the message.
             $message->body->result = $user;

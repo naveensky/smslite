@@ -139,9 +139,11 @@ angular.module('app')
         })
             .success(function ($data) {
                 if ($data.status == true) {
+                    $scope.IsMobileUpdatedError = false;
                     $scope.IsMobileUpdated = true;
                 }
                 else {
+                    $scope.IsMobileUpdated = false;
                     $scope.IsMobileUpdatedError = true;
                     console.log($data);
                 }

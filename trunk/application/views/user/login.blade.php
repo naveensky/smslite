@@ -1,7 +1,12 @@
 <div class="span4 offset3 well">
-    <form name="form">
+        <form name="form">
         <legend><i class="icon-lock"></i> Sign In</legend>
-
+            @if ( Session::has('password_change_success'))
+            <div class="alert alert-success margin-top-20">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <?php echo Session::get('password_change_success');?>
+            </div>
+            @endif
         <div ng-show="showError" class="alert alert-error">
              <i class="icon-remove"></i> Invalid email or password, Try again.
         </div>

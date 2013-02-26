@@ -35,16 +35,39 @@
                                 has been the industry's standard dummy text ever since the 1500s, when an unknown
                                 printer took a galley of type and scrambled it to make a type specimen book.</p>
 
-                            <form class="form-horizontal">
+                            <form name="mobileForm" class="form-horizontal">
 
                                 <div class="control-group">
                                     <label>Mobile Number</label>
-                                    <input type="text" ng-model="mobileNumber" placeholder="Mobile Number">
-                                        <span class="validation text-success">
-                                        <i class="icon-ok padding-right-5"></i>This number is valid.</span>
+                                    <input type="text" ng-model="mobileNumber" name="mobileNumber" ng-required="true" ng-minLength="8" ng-pattern="/^\+{0,1}\d+$/" placeholder="Mobile Number">
+                                    <span ng-show="mobileForm.mobileNumber.$error.required && !mobileForm.mobileNumber.$pristine "
+                                          class="validation invalid"><i class="icon-remove padding-right-5"></i>Please enter your mobile number</span>
+                            <span ng-show="mobileForm.mobileNumber.$invalid && !mobileForm.mobileNumber.$pristine && !mobileForm.mobileNumber.$error.required" class="validation invalid"><i
+                                    class="icon-remove padding-right-5"></i>The mobile number must be at least 8 digits</span>
+                                                        <span ng-show="mobileForm.mobileNumber.$valid && !mobileForm.mobileNumber.$pristine"
+                                                              class="validation valid"><i
+                                                                class="icon-ok padding-right-5"></i></span>
                                 </div>
                                 <div class="control-group">
-                                    <button type="submit" class="btn">Reset Password</button>
+                                    <label>Email</label>
+                                    <input type="email" ng-model="emailId" name="emailId" ng-required="true" placeholder="Email ID">
+                                    <span ng-show="mobileForm.emailId.$error.required && !mobileForm.emailId.$pristine "
+                                          class="validation invalid"><i class="icon-remove padding-right-5"></i>Please enter an email</span>
+                            <span ng-show="mobileForm.emailId.$error.email && !mobileForm.emailId.$pristine && !mobileForm.emailId.$error.required" class="validation invalid"><i
+                                    class="icon-remove padding-right-5"></i>Enter a valid email id. </span>
+                            <span ng-show="mobileForm.emailId.$valid && !mobileForm.emailId.$pristine" class="validation valid"><i
+                                    class="icon-ok padding-right-5"></i></span>
+                                </div>
+                                <div class="alert alert-error margin-top-20 forgot-password" ng-show="errorMobile">
+                                    <button type="button" class="close" data-dismiss="alert">×</button>
+                                    {{errorMobileMessage}}
+                                </div>
+                                <div class="alert alert-success margin-top-20 forgot-password" ng-show="successMobile">
+                                    <button type="button" class="close" data-dismiss="alert">×</button>
+                                    {{successMobileMessage}}
+                                </div>
+                                <div class="control-group">
+                                    <button type="submit" ng-disabled="mobileForm.$invalid" ng-click="sendByMobile()" class="btn">Reset Password</button>
                                     <button type="reset" class="btn">Cancel</button>
                                 </div>
                             </form>
