@@ -1,6 +1,6 @@
 <?php
 
-include 'controllertestcase.php';
+require_once 'controllertestcase.php';
 
 /**
  * Created by JetBrains PhpStorm.
@@ -22,6 +22,12 @@ class TestSmsController extends ControllerTestCase
         $user->save();
         $users = User::all();
         $this->assertEquals(1, sizeof($users));
+    }
+
+    public function testCompose()
+    {
+        $response = $this->get('sms@compose');
+        $this->assertNotNull($response);
     }
 
 

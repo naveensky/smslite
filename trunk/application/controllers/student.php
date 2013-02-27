@@ -24,7 +24,7 @@ class Student_Controller extends Base_Controller
 
     public function action_list()
     {
-        $classes = $this->schoolRepo->getClasses();
+        $classes = $this->schoolRepo->getClasses(Auth::user()->schoolId);
         $morningBusRoutes = $this->schoolRepo->getMorningBusRoutes();
         $eveningBusRoutes = $this->schoolRepo->getEveningBusRoutes();
         $data['classes'] = $classes;
@@ -66,6 +66,7 @@ class Student_Controller extends Base_Controller
 
         return Response::json(array('numberOfStudentInserted' => $studentInserted, 'rowNumbersError' => $result['errorRows']));
     }
+
     public function get_get()
     {
         $get_code = Input::json();
@@ -200,13 +201,13 @@ class Student_Controller extends Base_Controller
         $classSection = isset($data->classSection) ? $data->classSection : array();
         $morningBusRoutes = isset($data->morningBusRoute) ? $data->morningBusRoute : array();
         $eveningBusRoutes = isset($data->eveningBusRoute) ? $data->eveningBusRoute : array();
-        $students=$this->studentRepo->getStudentsToExport(
-            $classSection,$morningBusRoutes,$eveningBusRoutes);
+        $students = $this->studentRepo->getStudentsToExport(
+            $classSection, $morningBusRoutes, $eveningBusRoutes);
 
         if ($students == false && !is_array($students))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
-        $studentsCSV=Student::parseToCSV($students);
+        $studentsCSV = Student::parseToCSV($students);
 
     }
 

@@ -24,7 +24,7 @@ class Teacher_Controller extends Base_Controller
 
     public function action_list()
     {
-        $departments = $this->schoolRepo->getDepartments();
+        $departments = $this->schoolRepo->getDepartments(Auth::user()->schoolId);
         $morningBusRoutes = $this->schoolRepo->getMorningBusRoutesOfTeachers();
         $eveningBusRoutes = $this->schoolRepo->getEveningBusRoutesOfTeachers();
         $data['departments'] = $departments;

@@ -1,12 +1,8 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: hitanshu
- * Date: 1/31/13
- * Time: 1:41 PM
- * To change this template use File | Settings | File Templates.
- */
-class TestAuthcontroller extends PHPUnit_Framework_TestCase
+
+require_once 'controllertestcase.php';
+
+class TestAuthcontroller extends ControllerTestCase
 {
 
     public static function setUpBeforeClass()

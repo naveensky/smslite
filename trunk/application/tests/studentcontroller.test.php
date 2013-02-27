@@ -1,12 +1,8 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: hitanshu
- * Date: 1/17/13
- * Time: 3:02 PM
- * To change this template use File | Settings | File Templates.
- */
-class TestStudentcontroller extends ControllerTestCase
+
+require_once 'controllertestcase.php';
+
+class TestStudentController extends ControllerTestCase
 {
 
     public function testSample()

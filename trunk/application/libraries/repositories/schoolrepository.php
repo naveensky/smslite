@@ -34,7 +34,6 @@ class SchoolRepository
 
     public function updateSchool($schoolCode, $update_data)
     {
-
         $school = School::where_code($schoolCode)->get();
 
         if (empty($school[0])) {
@@ -115,14 +114,13 @@ class SchoolRepository
     public function countStudents($class, $section)
     {
         $schoolId = Auth::user()->schoolId;
-        $students = Student::where_schoolId_and_classStandard_and_classSection($schoolId,$class, $section)->count();
+        $students = Student::where_schoolId_and_classStandard_and_classSection($schoolId, $class, $section)->count();
         return $students;
     }
 
-    public function getClasses()
+    public function getClasses($schoolId)
     {
-        $schoolId = Auth::user()->schoolId;
-
+        //todo: convert this to eloquent expression
         $classes = DB::query('select "classSection", "classStandard" from students where "schoolId"=' . $schoolId . ' group by "classSection", "classStandard"');
         $classSection = array();
         foreach ($classes as $class) {
@@ -157,9 +155,9 @@ class SchoolRepository
         return $eveningRoutes;
     }
 
-    public function getDepartments()
+    public function getDepartments($schoolId)
     {
-        $schoolId = Auth::user()->schoolId;
+        //todo: convert this to eloquent expression
         $departments = DB::query('SELECT DISTINCT lower("department") as department FROM "teachers" WHERE "schoolId" = ' . $schoolId);
         $departmentsData = array();
         foreach ($departments as $department) {
@@ -196,8 +194,7 @@ class SchoolRepository
 
     public function getSchoolFromId($schoolId)
     {
+        //todo: laravel provides out of the box option for this. Why separate function
         return School::where_id($schoolId)->first();
-
     }
-
 }

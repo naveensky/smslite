@@ -8,15 +8,19 @@
  */
 class School_Controller extends Base_Controller
 {
-    public $restful = true;
     private $schoolRepo;
 
     public function __construct()
     {
         parent::__construct();
         $this->schoolRepo = new SchoolRepository();
+        //todo: add authentication
     }
 
+    /**
+     * Not used as of now
+     * @return Laravel\Response
+     */
     public function post_create()
     {
         $new_school = Input::json();
@@ -43,6 +47,10 @@ class School_Controller extends Base_Controller
         }
     }
 
+    /**
+     * Not used as of now
+     * @return Laravel\Response
+     */
     public function post_get()
     {
         $get_code = Input::json();
@@ -62,6 +70,10 @@ class School_Controller extends Base_Controller
         return Response::eloquent($result);
     }
 
+    /**
+     * Not used as of now
+     * @return Laravel\Response
+     */
     public function post_delete()
     {
         $delete_code = Input::Json();
@@ -84,7 +96,7 @@ class School_Controller extends Base_Controller
         }
     }
 
-    public function post_update()
+    public function action_post_update()
     {
         $update_data = Input::json();
 
@@ -111,18 +123,27 @@ class School_Controller extends Base_Controller
         if (isset($update_data->contact_mobile))
             $updateData['contactMobile'] = $update_data->contact_mobile;
 
-        if($school==NULL)
+        if ($school == NULL)
             return Response::make(__('responseerror.not_found'), HTTPConstants::NOT_FOUND_ERROR_CODE);
         try {
             $result = $this->schoolRepo->updateSchool($school->code, $updateData);
         } catch (InvalidArgumentException $ie) {
             Log::exception($ie);
-            return Response::json(array('status'=>false,'message'=>'Please try again'),HTTPConstants::SUCCESS_CODE);
+            return Response::json(array('status' => false, 'message' => 'Please try again'), HTTPConstants::SUCCESS_CODE);
         }
 
         if (empty($result))
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
 
-        return Response::json(array('status'=>true),HTTPConstants::SUCCESS_CODE);
+        return Response::json(array('status' => true), HTTPConstants::SUCCESS_CODE);
+    }
+
+    public function action_get_classes()
+    {
+        return Response::json($this->schoolRepo->getClasses(Auth::user()->schoolId));
+    }
+
+    public function action_get_departments(){
+        return Response::json($this->schoolRepo->getDepartments(Auth::user()->schoolId));
     }
 }
