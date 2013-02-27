@@ -25,11 +25,10 @@ class Report_Controller extends Base_Controller
 
     public function action_sms()
     {
-        $classes = $this->schoolRepo->getClasses();
-        $data['classes'] = $classes;
-        return View::make('report/report',$data);
+        return View::make('report/report');
     }
 
+    //todo:: rename to action_post_filterSMS
     public function action_post_getSMS()
     {
         $data = Input::json();
@@ -47,6 +46,8 @@ class Report_Controller extends Base_Controller
         if ($filterSMS == false && !is_array($filterSMS))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
+        var_dump($filterSMS);
+
         $result = array();
         foreach ($filterSMS as $smsRow) {
             $smsData = array();
@@ -56,11 +57,10 @@ class Report_Controller extends Base_Controller
                 $smsData['name'] = $smsRow->student_name;
             $smsData['message'] = $smsRow->message;
             $smsData['status'] = $smsRow->status;
-            $smsData['mobile']=$smsRow->mobile;
+            $smsData['mobile'] = $smsRow->mobile;
             $smsData['queue_time'] = $smsRow->queue_time;
             $smsData['sent_time'] = $smsRow->sent_time;
             $result[] = $smsData;
-
         }
 
         return Response::json($result);

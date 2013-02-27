@@ -2,12 +2,13 @@
     <div class="row">
         <div class="span3">
             <div class="box" style="padding: 8px 0;">
-                @foreach($classes as $class)
-                <label class="checkbox">
-                    <input type="checkbox" ng-click="setClassSections(<%"$class"%>)">
-                    <% $class %>
-                </label>
-                @endforeach
+                <div ng-repeat="class in classes">
+                    <label class="checkbox">
+                        <input type="checkbox" ng-model="class.selected" ng-click="setClassSections(this,class)">
+                        {{class.class}} {{class.selected}}
+                    </label>
+                </div>
+                {{classSections}}
                 <button class="btn btn-primary" ng-click="filterSMS()">Filter</button>
             </div>
         </div>

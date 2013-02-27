@@ -1,25 +1,41 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: hitanshu
- * Date: 2/27/13
- * Time: 12:45 PM
- * To change this template use File | Settings | File Templates.
- */
+
+require_once 'controllertestcase.php';
 
 class TestReportcontroller extends ControllerTestCase
 {
 
-    public function testgetSms()
-    {
+    public function setUp(){
+        $this->setupBeforeTests();
+    }
 
-        Auth::login(1);
+
+    public function testGetSms()
+    {
+        $school = FactoryMuff::create('School');
+        $school->save();
+
+        $user = FactoryMuff::create('User');
+        $user->schoolId = $school->id;
+        $user->save();
+
+        $student = FactoryMuff::create('Student');
+        $student->schoolId = $school->id;
+
+        $smsTransaction = FactoryMuff::create('SMSTransaction');
+        $smsTransaction->studentId = $student->id;
+        $smsTransaction->userId = $user->id;
+        $smsTransaction->status = 'pending';
+        $smsTransaction->save();
+
+        Auth::login($user->id);
         $parameters = array(
             'classSections' => array(),
         );
+
         Input::$json = (object)$parameters;
         $response = $this->post('report@post_getSMS', array());
-        var_dump($response);
-        $this->assertTrue(true);
+        $this->assertEquals(200,$response->status());
+        var_dump($response->content);
     }
 }

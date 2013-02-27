@@ -8,12 +8,20 @@
  */
 class SMSTransaction extends Eloquent
 {
-    const SMS_STATUS_PENDING='pending';
-    const SMS_STATUS_FAIL='fail';
-    const SMS_STATUS_SENT='sent';
+    const SMS_STATUS_PENDING = 'pending';
+    const SMS_STATUS_FAIL = 'fail';
+    const SMS_STATUS_SENT = 'sent';
 
     public static $table = 'smsTransactions';
     public static $hidden = array('id'); //to exclude id from json array
     public static $timestamps = true;
 
+    public static $factory = array(
+        'mobile' => 'string',
+        'message' => 'string',
+        'credits' => 2,
+        'senderId' => 'string',
+        'userId' => 'factory|User',
+        'status' => 'string'
+    );
 }

@@ -104,7 +104,7 @@ class School_Controller extends Base_Controller
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
         $schoolId = Auth::user()->schoolId; //getting the loggined
-        $school = $this->schoolRepo->getSchoolFromId($schoolId); //getting school from the school id to obtain the school Code
+        $school = School::find($schoolId); //getting school from the school id to obtain the school Code
         $updateData = array();
         if (isset($update_data->name))
             $updateData['name'] = $update_data->name;
@@ -143,7 +143,8 @@ class School_Controller extends Base_Controller
         return Response::json($this->schoolRepo->getClasses(Auth::user()->schoolId));
     }
 
-    public function action_get_departments(){
+    public function action_get_departments()
+    {
         return Response::json($this->schoolRepo->getDepartments(Auth::user()->schoolId));
     }
 }

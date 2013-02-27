@@ -122,11 +122,11 @@ class SchoolRepository
     {
         //todo: convert this to eloquent expression
         $classes = DB::query('select "classSection", "classStandard" from students where "schoolId"=' . $schoolId . ' group by "classSection", "classStandard"');
-        $classSection = array();
+        $data = array();
         foreach ($classes as $class) {
-            $classSection["$class->classStandard-$class->classSection"] = ucfirst($class->classStandard) . '-' . ucfirst($class->classSection);
+            $data[] = ucfirst($class->classStandard) . '-' . ucfirst($class->classSection);
         }
-        return $classSection;
+        return $data;
     }
 
     public function getMorningBusRoutes()
@@ -190,11 +190,5 @@ class SchoolRepository
             $eveningRoutes[] = $route->eveningBusRoute;
         }
         return $eveningRoutes;
-    }
-
-    public function getSchoolFromId($schoolId)
-    {
-        //todo: laravel provides out of the box option for this. Why separate function
-        return School::where_id($schoolId)->first();
     }
 }
