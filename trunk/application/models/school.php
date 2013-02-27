@@ -10,6 +10,19 @@ class School extends Eloquent
 {
     public static $hidden = array('id'); //to exclude id from json array
 
+    public static $factory = array(
+        'name' => 'string',
+        'address' => 'text',
+        'city' => 'string',
+        'state' => 'string',
+        'zip' => 'string',
+        'senderId' => 'string',
+        'contactPerson' => 'string',
+        'contactMobile' => 'string',
+        'code' => 'string'
+    );
+
+
     public function teachers()
     {
         return $this->has_many('Teacher', 'schoolId');
@@ -20,8 +33,9 @@ class School extends Eloquent
         return $this->has_many('Student', 'schoolId');
     }
 
-    public function users(){
-        return $this->has_many('User','schoolId');
+    public function users()
+    {
+        return $this->has_many('User', 'schoolId');
     }
 
 }

@@ -70,7 +70,7 @@ angular.module('app')
 
     $scope.saveSchoolInfo = function () {
         $http.post(
-            '/school/update',
+            '/school/post_update',
             {
                 "name":$scope.schoolName,
                 "conatct_person":$scope.password,

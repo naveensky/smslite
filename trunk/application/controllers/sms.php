@@ -21,6 +21,13 @@ class SMS_Controller extends Base_Controller
         $this->teacherRepo = new TeacherRepository();
     }
 
+    public function action_compose()
+    {
+//        throw new Exception("Not Implemented");
+        //todo: get classes
+        //get departments
+        //get routes
+    }
 
     public function action_send_to_class()
     {

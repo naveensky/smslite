@@ -14,12 +14,12 @@ class User_Controller extends Base_Controller
         //add auth filter
         $this->filter('before', 'auth')
             ->except(
-            array(
-                'login', 'post_login', 'register',
-                'post_register', 'forgot_password',
-                'post_forgot_password', 'send_password_mobile',
-                'password_reset_success', 'reset_password',
-                'invalid_code','post_set_password'));
+                array(
+                    'login', 'post_login', 'register',
+                    'post_register', 'forgot_password',
+                    'post_forgot_password', 'send_password_mobile',
+                    'password_reset_success', 'reset_password',
+                    'invalid_code', 'post_set_password'));
 
         $this->userRepo = new UserRepository();
         $this->schoolRepo = new SchoolRepository();
@@ -50,8 +50,12 @@ class User_Controller extends Base_Controller
         );
 
         if (Auth::attempt($credentials)) {
-            //if logged in, return success code
-            return Response::make(__('responseerror.login_success'), HTTPConstants::SUCCESS_CODE);
+            $redirectURL = '/home/dashboard';
+            return Response::json(
+                array(
+                    "status" => true,
+                    "url" => URL::base()
+                ));
         } else
             return Response::make(__('responseerror.login_fail'), HTTPConstants::BAD_REQUEST_CODE);
     }
@@ -251,7 +255,7 @@ class User_Controller extends Base_Controller
             $data = $this->userRepo->send_new_password_to_mobile($email, $mobile);
         } catch (InvalidArgumentException $ie) {
             Log::exception($ie);
-            return Response::json(array('status' => false, 'message' => __('responsemessages.forgot_password_by_mobile_error')),HTTPConstants::SUCCESS_CODE);
+            return Response::json(array('status' => false, 'message' => __('responsemessages.forgot_password_by_mobile_error')), HTTPConstants::SUCCESS_CODE);
         }
 
         if (empty($data))
@@ -259,7 +263,7 @@ class User_Controller extends Base_Controller
 
         $newPasswordMessage = __('smstemplate.new_password_message', array('code' => $data['password']));
         $this->appSmsRepo->createAppSms($data['user']->mobile, $newPasswordMessage, Config::get('sms.senderid'), $data['user']->id);
-        return Response::json(array('status' => true, 'message' => __('responsemessages.forgot_password_by_mobile_success')),HTTPConstants::SUCCESS_CODE);
+        return Response::json(array('status' => true, 'message' => __('responsemessages.forgot_password_by_mobile_success')), HTTPConstants::SUCCESS_CODE);
     }
 
     public function action_reset_password($code = null)

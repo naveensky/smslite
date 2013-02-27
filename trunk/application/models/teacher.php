@@ -113,4 +113,21 @@ class Teacher extends Eloquent
         }
         return $csvData;
     }
+
+    public static $factory = array(
+        'name' => 'string',
+        'email' => 'email',
+        'mobile1' => 'string',
+        'mobile2' => 'string',
+        'mobile3' => 'string',
+        'mobile4' => 'string',
+        'mobile5' => 'string',
+        'dob' => '1 jan 2013',
+        'department' => 'string',
+        'morningBusRoute' => 'string',
+        'eveningBusRoute' => 'string',
+        'code' => 'string',
+        'sex' => 'string',
+        'schoolId' => 'factory|School',
+    );
 }

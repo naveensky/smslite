@@ -1,52 +1,31 @@
 'use strict';
 
-//service for loader module
-angular.module('LoaderServices', [])
-    .config(function ($httpProvider) {
-        $httpProvider.responseInterceptors.push('appHttpInterceptor');
-        var spinnerFunction = function (data, headersGetter) {
-            $('#ajax-loader').show();
-            return data;
-        };
-        $httpProvider.defaults.transformRequest.push(spinnerFunction);
-    })
-    // register the interceptor as a service, intercepts ALL angular ajax http calls
-    .factory('appHttpInterceptor', function ($q, $window) {
-        return function (promise) {
-            return promise.then(function (response) {
-                $('#ajax-loader').hide();
-                return response;
-            }, function (response) {
-                $('#ajax-loader').hide();
-                return $q.reject(response);
-            });
-        };
-    });
-
 // Declare app level module which depends on filters, and services
 angular.module('app', ['LoaderServices']).
-    config(['$routeProvider', function ($routeProvider) {
-    $routeProvider.when('/user/login', {templateUrl:'user/login', controller:'User_Login'})
-        .when('/user/register', {templateUrl:'/user/register', controller:'User_Register'})
-        .when('/user/register/1', {templateUrl:'/user/register', controller:'User_Register'})
-        .when('/user/register/2', {templateUrl:'/user/register/2', controller:'User_Register'})
-        .when('/user/register/3', {templateUrl:'/user/register/3', controller:'User_Register'})
-        .when('/user/register/4', {templateUrl:'/user/register/4', controller:'User_Register'})
-        .when('/user/forgot-password', {templateUrl:'/user/forgot_password', controller:'User_Forgot_Password'})
-        .when('/user/password_reset_success', {templateUrl:'/user/password_reset_success', controller:'User_Change_Password'})
-        .when('/user/invalid_code', {templateUrl:'/user/invalid_code' });
+    config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
+        $routeProvider
+            .when('/', {templateUrl: 'home/dashboard' })
+            .when('/user/login', {templateUrl: 'user/login', controller: 'User_Login'})
+            .when('/user/register', {templateUrl: '/user/register', controller: 'User_Register'})
+            .when('/user/register/1', {templateUrl: '/user/register', controller: 'User_Register'})
+            .when('/user/register/2', {templateUrl: '/user/register/2', controller: 'User_Register'})
+            .when('/user/register/3', {templateUrl: '/user/register/3', controller: 'User_Register'})
+            .when('/user/register/4', {templateUrl: '/user/register/4', controller: 'User_Register'})
+            .when('/user/forgot-password', {templateUrl: '/user/forgot_password', controller: 'User_Forgot_Password'})
+            .when('/user/password_reset_success', {templateUrl: '/user/password_reset_success', controller: 'User_Change_Password'})
+            .when('/user/invalid_code', {templateUrl: '/user/invalid_code' });
 
-    //student routes
-    $routeProvider
-        .when('/student', {templateUrl:'/student', controller:'Student_List'})
-        .when('/student/upload', {templateUrl:'/student/upload', controller:'Student_Upload'})
-        .when('/student/list', {templateUrl:'/student/list', controller:'Student_List'});
+        //student routes
+        $routeProvider
+            .when('/student', {templateUrl: '/student', controller: 'Student_List'})
+            .when('/student/upload', {templateUrl: '/student/upload', controller: 'Student_Upload'})
+            .when('/student/list', {templateUrl: '/student/list', controller: 'Student_List'});
 
-    ///teacher routes
-    $routeProvider
-        .when('/teacher', {templateUrl:'/teacher', controller:'Teacher_List'})
-        .when('/teacher/upload', {templateUrl:'/teacher/upload', controller:'Teacher_Upload'})
-        .when('/teacher/list', {templateUrl:'/teacher/list', controller:'Teacher_List'});
+        ///teacher routes
+        $routeProvider
+            .when('/teacher', {templateUrl: '/teacher', controller: 'Teacher_List'})
+            .when('/teacher/upload', {templateUrl: '/teacher/upload', controller: 'Teacher_Upload'})
+            .when('/teacher/list', {templateUrl: '/teacher/list', controller: 'Teacher_List'});
 
         ///Report Routes
         $routeProvider
@@ -83,9 +62,9 @@ function initUploader() {
 
         //add uploader api for file input
         fileInput.fileupload({
-            dataType:'json',
-            url:currentElement.data('url'), //url for data to be posted
-            add:function (e, data) {
+            dataType: 'json',
+            url: currentElement.data('url'), //url for data to be posted
+            add: function (e, data) {
                 //init all texts, progress and other things
                 $(this).parent().find('.progress-file-name').text(data.files[0].name);
                 $(this).parent().find('.progress-percentage').text("");
@@ -95,7 +74,7 @@ function initUploader() {
                 //submit file to upload
                 data.submit();
             },
-            done:function (e, data) {
+            done: function (e, data) {
                 //called when upload is finished
                 //find call back function on finish done
                 var callback = currentElement.data('done');
@@ -108,7 +87,7 @@ function initUploader() {
 
                 $(this).parent().find('.progress-wrapper').hide();
             },
-            progressall:function (e, data) {
+            progressall: function (e, data) {
                 var progress = parseInt(data.loaded / data.total * 100, 10);
                 $(this).parent().find('.progress-percentage').text(progress + " %");
                 $(this).parent().find('.progress > .bar ').width(progress + "%");
@@ -126,4 +105,10 @@ function initUploader() {
             $('#' + $(this).data('fid')).trigger('click');
         });
     });
+}
+
+//generic function to log all message
+function log(type, message) {
+    //type of messages - info, error, fatal, debug, trace, warn,
+    console.log(type + " : " + message);
 }

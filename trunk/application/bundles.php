@@ -41,4 +41,5 @@ return array(
     'hashids' => array('auto' => true),
     'messages' => array('auto' => true),
     'compactor' => array('auto' => true),
+    'factorymuff' => array('auto' => true),
 );

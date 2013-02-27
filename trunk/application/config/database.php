@@ -42,7 +42,7 @@ return array(
 	|
 	*/
 
-	'default' => 'pgsql',
+	'default' => 'sqlite',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -63,7 +63,7 @@ return array(
 
 		'sqlite' => array(
 			'driver'   => 'sqlite',
-			'database' => 'application',
+			'database' => ':memory:',
 			'prefix'   => '',
 		),
 
