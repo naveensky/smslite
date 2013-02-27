@@ -123,7 +123,7 @@ class SchoolRepository
     {
         $schoolId = Auth::user()->schoolId;
 
-        $classes = DB::query('select "classSection", "classStandard" from students where "schoolId"=' . $schoolId . ' group by "classSection", "classStandard"');
+        $classes = DB::query('select "classSection", "classStandard" from students where "schoolId"=' . $schoolId . ' group by "classSection", "classStandard" order by "classSection" asc');
         $classSection = array();
         foreach ($classes as $class) {
             $classSection["$class->classStandard-$class->classSection"] = ucfirst($class->classStandard) . '-' . ucfirst($class->classSection);

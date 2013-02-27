@@ -38,6 +38,7 @@ class Minify_Task
             ->combine_directory($jsControllers . "student/")
             ->combine_directory($jsControllers . "teacher/")
             ->combine_directory($jsControllers . "user/")
+            ->combine_directory($jsControllers . "report/")
             ->save_file($jsPath . "application.js");
     }
 }

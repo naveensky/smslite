@@ -223,8 +223,8 @@ class Test_Controller extends Base_Controller
     {
         Auth::login(1);
         $id = Auth::user()->id;
-        $repo=new SMSRepository();
-        $data=$repo->createSMS("Hello",array("AfXiqvOQBLLsYtzjgDobeHOfTWsJVMaxGBkUGmKZxdzKpVWJTrxXvJXCNXrpQEiC"),array(),"123",$id);
+        $repo = new SMSRepository();
+        $data = $repo->createSMS("Hello", array("AfXiqvOQBLLsYtzjgDobeHOfTWsJVMaxGBkUGmKZxdzKpVWJTrxXvJXCNXrpQEiC"), array(), "123", $id);
         var_dump($data);
     }
 
@@ -232,7 +232,7 @@ class Test_Controller extends Base_Controller
     {
         Auth::login(1);
         $repo = new StudentRepository();
-        $data=$repo->getStudentCodeFromBusRoutes(array('70','77'),array('8887'));
+        $data = $repo->getStudentCodeFromBusRoutes(array('70', '77'), array('8887'));
         var_dump($data);
 
     }
@@ -242,6 +242,60 @@ class Test_Controller extends Base_Controller
         $jsPath = path('public') . "js/";
         echo $jsPath . "application.js";
 
+    }
+
+    public function action_join()
+    {
+        Auth::login(1);
+        $classSections = array();
+        $fromDate=new DateTime();
+        $toDate=new DateTime();
+//        $Repo = new ReportRepository();
+        $query = DB::table('smsTransactions')
+            ->left_join('students', 'smsTransactions.studentId', '=', 'students.id')
+            ->left_join('teachers', 'smsTransactions.teacherId', '=', 'teachers.id');
+
+        $studentRepo = new StudentRepository();
+        $schoolId = Auth::user()->schoolId;
+        $query = $query->where(function ($query) use ($schoolId) {
+            $query->where("students.schoolId", '=', $schoolId);
+            $query->or_where("teachers.schoolId", '=', $schoolId);
+        });
+
+        if (!empty($classSections)) {
+            $count = 1; //count is used for making the query
+            foreach ($classSections as $classSection) {
+                $class = $studentRepo->getClass($classSection); //getting class from classSection
+                $section = $studentRepo->getSection($classSection); //getting section from classSection
+                if ($count == 1) {
+                    $query = $query->where(function ($query) use ($class, $section) {
+                        $query->where("classStandard", '=', $class);
+                        $query->where("classSection", '=', $section);
+                    });
+                } else {
+                    $query = $query->or_where(function ($query) use ($class, $section) {
+                        $query->where("classStandard", '=', $class);
+                        $query->where("classSection", '=', $section);
+                    });
+                }
+                $count++;
+            }
+        }
+
+        if ($fromDate != new DateTime()) {
+            $fromDate = date('Y', $fromDate->getTimestamp()) . "-" . date('m', $fromDate->getTimestamp()) . "-" . date('d', $fromDate->getTimestamp()) . " 00:00:00";
+            $fromDate = new DateTime($fromDate);
+            $toDate = date('Y', $toDate->getTimestamp()) . "-" . date('m', $toDate->getTimestamp()) . "-" . date('d', $toDate->getTimestamp()) . " 00:00:00";
+            $toDate = new DateTime($toDate);
+            $toDate->add(new DateInterval('P1D'));
+            $query = $query->where(function ($query) use ($fromDate, $toDate) {
+                $query->where("smsTransactions.created_at", '>=', $fromDate);
+                $query->where("smsTransactions.updated_at", '<', $toDate);
+            });
+        }
+        $query = $query->get();
+        var_dump(DB::last_query());
+        var_dump($query);
     }
 
 

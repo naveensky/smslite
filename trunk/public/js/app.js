@@ -48,6 +48,10 @@ angular.module('app', ['LoaderServices']).
         .when('/teacher/upload', {templateUrl:'/teacher/upload', controller:'Teacher_Upload'})
         .when('/teacher/list', {templateUrl:'/teacher/list', controller:'Teacher_List'});
 
+        ///Report Routes
+        $routeProvider
+            .when('/report/sms', {templateUrl:'/report/sms', controller:'Report_SMS'});
+
 
     $routeProvider.otherwise({redirectTo:'/'});
 }]);
