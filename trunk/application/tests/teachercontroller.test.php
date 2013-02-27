@@ -6,14 +6,16 @@
  * Time: 12:23 PM
  * To change this template use File | Settings | File Templates.
  */
-class TestTeachercontroller extends ControllerTestCase
+class TestTeacherController extends ControllerTestCase
 {
+    public function testSample()
+    {
+        $this->assertTrue(true);
+    }
 
 
 //    public function testCreate()
 //    {
-//
-//
 //        $teachers = array(
 //            (object)array(
 //                'Name' => 'Akhil',
@@ -47,16 +49,19 @@ class TestTeachercontroller extends ControllerTestCase
 //
 //        );
 //
-//       $schoolcode = "BWMaybxcxtSsqgXufGnHUxSjpwswfpFCmESgeEpeAwVkKoNdijoHOiYrjGKEQZeK";
-//       $parameters = (object)array('teachers' => $teachers,
-//           'schoolCode' => $schoolcode
+//        $schoolcode = "BWMaybxcxtSsqgXufGnHUxSjpwswfpFCmESgeEpeAwVkKoNdijoHOiYrjGKEQZeK";
+//        $parameters = (object)array('teachers' => $teachers,
+//            'schoolCode' => $schoolcode
 //        );
 //
 //        $teacher_json = $parameters;
 //        Input::$json = $teacher_json;
 //        $response = $this->post('teacher@create', array());
-//        var_dump($response);
-//        $this->assertTrue(true);
+//        $this->assertNotNull($response);
+
+
+//        $teachers = Teacher::all();
+//        $this->assertEquals(2, sizeof($teachers));
 //    }
 
 //    public function testGet()

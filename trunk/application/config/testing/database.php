@@ -63,7 +63,7 @@ return array(
 
 		'sqlite' => array(
 			'driver'   => 'sqlite',
-			'database' => 'application',
+			'database' => ':memory:',
 			'prefix'   => '',
 		),
 
@@ -80,7 +80,7 @@ return array(
 		'pgsql' => array(
 			'driver'   => 'pgsql',
 			'host'     => 'localhost',
-			'database' => 'smslite',
+			'database' => 'smslite_test',
 			'username' => 'postgres',
 			'password' => 'asdf',
 			'charset'  => 'utf8',

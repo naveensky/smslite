@@ -9,6 +9,11 @@
 class TestStudentcontroller extends ControllerTestCase
 {
 
+    public function testSample()
+    {
+        $this->assertTrue(true);
+    }
+
 //    public function testcreate()
 //    {
 //        $students = array(

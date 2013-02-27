@@ -11,7 +11,6 @@ class SendSMS_Task
 
     public function run($arguments)
     {
-
         $cronRepo = CronRepository::getInstance();
         $cronRepo->sendmessage();
         return "success";

@@ -19,6 +19,11 @@ class TestAuthcontroller extends PHPUnit_Framework_TestCase
         \Session::started() or \Session::load();
     }
 
+    public function testSample()
+    {
+        $this->assertTrue(true);
+    }
+
 
 //    public function testlogin()
 //    {

@@ -1,4 +1,7 @@
 <?php
+
+include 'controllertestcase.php';
+
 /**
  * Created by JetBrains PhpStorm.
  * User: hitanshu
@@ -6,8 +9,22 @@
  * Time: 3:49 PM
  * To change this template use File | Settings | File Templates.
  */
-class TestSmscontroller extends ControllerTestCase
+class TestSmsController extends ControllerTestCase
 {
+    public function setUp()
+    {
+        $this->setupBeforeTests();
+    }
+
+    public function testDB()
+    {
+        $user = FactoryMuff::create('User');
+        $user->save();
+        $users = User::all();
+        $this->assertEquals(1, sizeof($users));
+    }
+
+
 //    public function testCreateSms()
 //    {
 //        $studentCodes = array(
@@ -47,8 +64,8 @@ class TestSmscontroller extends ControllerTestCase
 ////        var_dump($response);
 //    }
 
-    public function testbusroute()
-    {
+//    public function testbusroute()
+//    {
 //        Auth::login(1);
 //        $parameters = array(
 //            'morningBusRoutes'=>array('70','77','647'),
@@ -58,7 +75,7 @@ class TestSmscontroller extends ControllerTestCase
 //        Input::$json = (object)$parameters;
 //        $response = $this->post('SMS@post_send_to_busroutes', array());
 //        var_dump($response);
-    }
+//    }
 
 //    public function testDepartment()
 //    {

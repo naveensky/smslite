@@ -1,14 +1,27 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: hitanshu
- * Date: 1/16/13
- * Time: 12:44 PM
- * To change this template use File | Settings | File Templates.
- */
 
 abstract class ControllerTestCase extends PHPUnit_Framework_TestCase
 {
+    protected function setupBeforeTests()
+    {
+        //start the bundles
+        \Laravel\Bundle::start('factorymuff');
+        $this->createDatabase();
+    }
+
+    private function createDatabase()
+    {
+        // If there is not a declaration that migrations have been run'd
+        shell_exec("php artisan migrate:install --env=testing");
+        shell_exec("php artisan migrate:rebuild --env=testing");
+    }
+
+    protected function resetDatabase()
+    {
+        shell_exec("php artisan migrate:install --env=testing");
+        shell_exec("php artisan migrate:rebuild --env=testing");
+    }
+
     public function call($destination, $parameters = array(), $method = 'GET')
     {
         \Laravel\Request::foundation()->setMethod($method);

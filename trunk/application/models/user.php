@@ -8,6 +8,13 @@
  */
 class User extends Eloquent
 {
+    public static $factory = array(
+        'email' => 'email',
+        'password' => 'string',
+        'mobile' => 'string',
+        'schoolId' => 'factory|School'
+    );
+
     public function roles()
     {
         return $this->has_many_and_belongs_to('Role');
