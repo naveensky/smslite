@@ -80,7 +80,7 @@ return array(
 		'pgsql' => array(
 			'driver'   => 'pgsql',
 			'host'     => 'localhost',
-			'database' => 'smslite_test',
+			'database' => 'smslite',
 			'username' => 'postgres',
 			'password' => 'asdf',
 			'charset'  => 'utf8',

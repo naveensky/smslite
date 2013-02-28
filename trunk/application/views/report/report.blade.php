@@ -1,14 +1,31 @@
 <section class="container">
     <div class="row">
         <div class="span3">
-            <div class="box" style="padding: 8px 0;">
+            <div class="box">
+                <label><strong>Queue Date</strong></label>
+
+                <div class="input-append date date-input" data-date-format="dd M yyyy">
+                    <input class="span2" type="text" ng-model="queueDate" id="dpd1" readonly="readonly">
+                    <span class="add-on"><i class="icon-calendar"></i></span>
+                </div>
+                <label><strong>Sent Date</strong></label>
+
+                <div class="input-append date date-input">
+                    <input class="span2" type="text" ng-model="sentDate" id="dpd2" readonly>
+                    <span class="add-on"><i class="icon-calendar"></i></span>
+                </div>
+                <label><strong>Search by student</strong></label>
+                <input type="text" class="width-86" ng-model="studentName" placeholder="Student name..">
+                <label><strong>Search by teacher</strong></label>
+                <input type="text" class="width-86" ng-model="teacherName" placeholder="Teacher name..">
+                <label><strong>Select Classes</strong></label>
                 <div ng-repeat="class in classes">
                     <label class="checkbox">
-                        <input type="checkbox" ng-model="class.selected" ng-click="setClassSections(this,class)">
-                        {{class.class}} {{class.selected}}
+                        <input type="checkbox" ng-model="class.selected"
+                               ng-click="setClassSections(class.class,class.selected)">
+                        {{class.class}}
                     </label>
                 </div>
-                {{classSections}}
                 <button class="btn btn-primary" ng-click="filterSMS()">Filter</button>
             </div>
         </div>
@@ -21,7 +38,7 @@
             <div class="box">
                 <!-- Recent users email-verify -->
                 <h3 class="margin-top-0"><i class="icon-file-alt icon-large padding-right-5"></i>Reports</h3>
-                <table class="table table-striped table-hover table-condensed">
+                <table class="table table-striped">
                     <thead>
                     <tr>
                         <th class="width-20">Name</th>
@@ -36,9 +53,10 @@
                     <tr ng-repeat="smsRow in smsRows" ng-class="getStatusCss(smsRow)">
                         <td class="width-20">{{ smsRow.name }}</td>
                         <td class="width-15">{{ smsRow.mobile }}</td>
-                        <td class="width-40">{{ smsRow.message }}</td>
-                        <td class="width-15">{{ smsRow.queue_time }}</td>
-                        <td class="width-15" ng-show="smsRow.status=='sent'">{{ smsRow.sent_time }}</td>
+                        <td class="width-30">{{ smsRow.message }}</td>
+                        <td class="width-20">{{ getFormattedDate(smsRow.queue_time) }}</td>
+                        <td class="width-20"><span ng-show="smsRow.status=='sent'">{{getFormattedDate(smsRow.sent_time)}}</span>
+                        </td>
                     </tr>
                     </tbody>
                     <tbody ng-show="smsRows.length==0">
@@ -66,3 +84,7 @@
     </div>
     </div>
 </section>
+<script type="text/javascript">
+    initComponents();
+</script>
+

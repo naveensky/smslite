@@ -37,16 +37,15 @@ class Report_Controller extends Base_Controller
         $toDate = isset($data->toDate) ? new DateTime($data->toDate) : new DateTime();
         $fromDate = isset($data->fromDate) ? new DateTime($data->fromDate) : new DateTime();
         $classSections = isset($data->classSections) ? $data->classSections : array();
-        $name = isset($data->name) ? $data->name : '';
+        $studentName = isset($data->studentName) ? $data->studentName : '';
+        $teacherName = isset($data->teacherName) ? $data->teacherName : '';
         $pageCount = isset($data->pageCount) ? $data->pageCount : 25;
         $pageNumber = isset($data->pageNumber) ? $data->pageNumber : 1;
         $skip = $pageCount * ($pageNumber - 1);
 
-        $filterSMS = $this->reportRepo->getSMS($classSections, $toDate, $fromDate, $name, $pageCount, $skip);
+        $filterSMS = $this->reportRepo->getSMS(Auth::user()->schoolId, $classSections, $toDate, $fromDate, $studentName,$teacherName, $pageCount, $skip);
         if ($filterSMS == false && !is_array($filterSMS))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
-
-        var_dump($filterSMS);
 
         $result = array();
         foreach ($filterSMS as $smsRow) {

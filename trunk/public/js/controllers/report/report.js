@@ -4,12 +4,15 @@
 angular.module('app')
     .controller('Report_SMS', ['$scope', '$http', 'ReportService', 'SchoolService', function ($scope, $http, reportService, schoolService) {
         $scope.classSections = [];
-        $scope.name = '';
+        $scope.studentName = '';
+        $scope.teacherName = '';
         $scope.smsRows = [];
         $scope.classes = [];
         $scope.pageNumber = 1;
         $scope.pageCount = 25;
         $scope.previousPage = 0;
+        $scope.queueDate;
+        $scope.sentDate;
         $scope.nextPage = $scope.pageNumber + 1;
 
         $scope.classes = schoolService.getClasses().then(function (classes) {
@@ -19,9 +22,15 @@ angular.module('app')
         });
 
         $scope.filterSMS = function () {
+            $scope.queueDate = $('#dpd1').val();
+            $scope.sentDate = $('#dpd2').val();
+
             $scope.smsRows = reportService.getSMS(
                 $scope.classSections,
-                $scope.name,
+                $scope.studentName,
+                $scope.teacherName,
+                $scope.queueDate,
+                $scope.sentDate,
                 $scope.pageNumber,
                 $scope.pageCount
             );
@@ -42,6 +51,10 @@ angular.module('app')
 
         }
 
+        $scope.getFormattedDate = function ($date) {
+            return moment($date).format('Do MMMM  YYYY');
+        }
+
         $scope.getStatusCss = function ($smsRow) {
             switch ($smsRow.status) {
                 case 'pending':
@@ -58,11 +71,16 @@ angular.module('app')
             }
         }
 
-        $scope.setClassSections = function (input, $class) {
-            console.log($('#' + input.$id));
-            $scope.classSections.push($class);
-        }
+        $scope.setClassSections = function (value, status) {
+            if (status) {
+                $scope.classSections.push(value);
+            }
 
+            else {
+                $scope.classSections.pop(value);
+            }
+
+        }
 
         //init data for first page load
         $scope.filterSMS();

@@ -3,7 +3,7 @@ module.factory('ReportService', ["$http", "$q", function ($http, $q) {
     return {
 
         //function to get sms Reports as per various filters. All filters are optional
-        getSMS: function (classSections, name, pageNumber, pageCount) {
+        getSMS: function (classSections, studentName, teacherName, queueDate, sentDate, pageNumber, pageCount) {
 
             //create a defer
             var deferred = $q.defer();
@@ -13,7 +13,10 @@ module.factory('ReportService', ["$http", "$q", function ($http, $q) {
                 '/report/post_getSMS',
                 {
                     "classSections": classSections,
-                    "name": name,
+                    "studentName": studentName,
+                    "teacherName": teacherName,
+                    "fromDate": queueDate,
+                    "toDate": sentDate,
                     "pageNumber": pageNumber,
                     "pageCount": pageCount
                 }

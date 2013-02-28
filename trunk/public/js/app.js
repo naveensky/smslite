@@ -1,5 +1,4 @@
 'use strict';
-
 // Declare app level module which depends on filters, and services
 angular.module('app', ['LoaderServices']).
     config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
@@ -29,14 +28,15 @@ angular.module('app', ['LoaderServices']).
 
         ///Report Routes
         $routeProvider
-            .when('/report/sms', {templateUrl:'/report/sms', controller:'Report_SMS'});
+            .when('/report/sms', {templateUrl: '/report/sms', controller: 'Report_SMS'});
 
 
-    $routeProvider.otherwise({redirectTo:'/'});
-}]);
+        $routeProvider.otherwise({redirectTo: '/'});
+    }]);
 
 function initComponents() {
     initUploader();
+    initDatePicker();
 }
 
 function initUploader() {
@@ -107,6 +107,40 @@ function initUploader() {
     });
 }
 
+function initDatePicker() {
+    //initialize datepicker component
+    $(".datetime-input,.date-input").datepicker({
+        format: "dd MM yyyy",
+        autoclose: true,
+        todayBtn: true,
+        todayHighlight: true
+    });
+
+    var nowTemp = new Date();
+    var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+
+    var checkin = $('#dpd1').datepicker({
+        onRender: function (date) {
+            return date.valueOf() < now.valueOf() ? 'disabled' : '';
+        }
+    }).on('changeDate',function (ev) {
+            if (ev.date.valueOf() > checkout.date.valueOf()) {
+                var newDate = new Date(ev.date)
+                newDate.setDate(newDate.getDate() + 1);
+                checkout.setValue(newDate);
+            }
+            checkin.hide();
+            $('#dpd2')[0].focus();
+        }).data('datepicker');
+    var checkout = $('#dpd2').datepicker({
+        onRender: function (date) {
+            return date.valueOf() <= checkin.date.valueOf() ? 'disabled' : '';
+        }
+    }).on('changeDate',function (ev) {
+            checkout.hide();
+        }).data('datepicker');
+
+}
 //generic function to log all message
 function log(type, message) {
     //type of messages - info, error, fatal, debug, trace, warn,
