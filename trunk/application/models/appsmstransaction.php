@@ -12,4 +12,13 @@ class AppSMSTransaction extends Eloquent
     const APP_SMS_STATUS_PENDING='pending';
     const APP_SMS_STATUS_FAIL='fail';
     const APP_SMS_STATUS_SENT='sent';
+
+    public static $factory = array(
+        'mobile' => 'string',
+        'message' => 'string',
+        'credits' => 2,
+        'senderId' => 'string',
+        'userId' => 'factory|User',
+        'status' => 'string'
+    );
 }

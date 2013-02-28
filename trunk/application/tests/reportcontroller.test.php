@@ -5,6 +5,10 @@ require_once 'controllertestcase.php';
 class TestReportcontroller extends ControllerTestCase
 {
 
+    public function testSample()
+    {
+        $this->assertTrue(true);
+    }
     public function setUp(){
         $this->setupBeforeTests();
     }
@@ -24,11 +28,13 @@ class TestReportcontroller extends ControllerTestCase
 
         $smsTransaction = FactoryMuff::create('SMSTransaction');
         $smsTransaction->studentId = $student->id;
+        $smsTransaction->teacherId=NULL;
         $smsTransaction->userId = $user->id;
         $smsTransaction->status = 'pending';
         $smsTransaction->save();
 
         Auth::login($user->id);
+
         $parameters = array(
             'classSections' => array(),
         );
