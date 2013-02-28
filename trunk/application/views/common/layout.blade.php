@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>TBD</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="http://greenapplesolutions.com/">
     <!--styles-->
     <% Asset::styles() %>

@@ -24,9 +24,10 @@ class Student_Controller extends Base_Controller
 
     public function action_list()
     {
-        $classes = $this->schoolRepo->getClasses(Auth::user()->schoolId);
-        $morningBusRoutes = $this->schoolRepo->getMorningBusRoutes();
-        $eveningBusRoutes = $this->schoolRepo->getEveningBusRoutes();
+        $user = Auth::user();
+        $classes = $this->schoolRepo->getClasses($user->schoolId);
+        $morningBusRoutes = $this->schoolRepo->getMorningBusRoutes($user->schoolId);
+        $eveningBusRoutes = $this->schoolRepo->getEveningBusRoutes($user->schoolId);
         $data['classes'] = $classes;
         $data['morningRoutes'] = $morningBusRoutes;
         $data['eveningRoutes'] = $eveningBusRoutes;

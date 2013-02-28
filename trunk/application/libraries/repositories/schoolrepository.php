@@ -129,9 +129,8 @@ class SchoolRepository
         return $classSection;
     }
 
-    public function getMorningBusRoutes()
+    public function getMorningBusRoutes($schoolId)
     {
-        $schoolId = Auth::user()->schoolId;
         $query = Student::where('schoolId', '=', $schoolId);
         $query = $query->distinct('morningBusRoute');
         $routes = $query->get('morningBusRoute');
@@ -142,9 +141,8 @@ class SchoolRepository
         return $morningRoutes;
     }
 
-    public function getEveningBusRoutes()
+    public function getEveningBusRoutes($schoolId)
     {
-        $schoolId = Auth::user()->schoolId;
         $query = Student::where('schoolId', '=', $schoolId);
         $query = $query->distinct('eveningBusRoute');
         $routes = $query->get('eveningBusRoute');
@@ -166,9 +164,8 @@ class SchoolRepository
         return $departmentsData;
     }
 
-    public function getMorningBusRoutesOfTeachers()
+    public function getMorningBusRoutesOfTeachers($schoolId)
     {
-        $schoolId = Auth::user()->schoolId;
         $query = Teacher::where('schoolId', '=', $schoolId);
         $query = $query->distinct('morningBusRoute');
         $routes = $query->get('morningBusRoute');
@@ -179,9 +176,8 @@ class SchoolRepository
         return $morningRoutes;
     }
 
-    public function getEveningBusRoutesOfTeachers()
+    public function getEveningBusRoutesOfTeachers($schoolId)
     {
-        $schoolId = Auth::user()->schoolId;
         $query = Teacher::where('schoolId', '=', $schoolId);
         $query = $query->distinct('eveningBusRoute');
         $routes = $query->get('eveningBusRoute');
@@ -190,11 +186,5 @@ class SchoolRepository
             $eveningRoutes[] = $route->eveningBusRoute;
         }
         return $eveningRoutes;
-    }
-
-    public function getSchoolFromId($schoolId)
-    {
-        //todo: laravel provides out of the box option for this. Why separate function
-        return School::where_id($schoolId)->first();
     }
 }

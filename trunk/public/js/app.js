@@ -28,6 +28,11 @@ angular.module('app', ['LoaderServices']).
             .when('/teacher/list', {templateUrl: '/teacher/list', controller: 'Teacher_List'});
 
 
+        ///sms routes
+        $routeProvider
+            .when('/sms/', {redirectTo: '/sms/compose'})
+            .when('/sms/compose', {templateUrl: '/sms/compose', controller: 'Sms_Compose'});
+
         $routeProvider.otherwise({redirectTo: '/'});
     }]);
 

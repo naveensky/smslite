@@ -22,7 +22,7 @@ class User extends Eloquent
 
     public function school()
     {
-        return $this->belongs_to('School');
+        return $this->belongs_to('School', 'schoolId');
     }
 
 }

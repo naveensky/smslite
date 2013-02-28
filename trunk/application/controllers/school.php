@@ -9,12 +9,18 @@
 class School_Controller extends Base_Controller
 {
     private $schoolRepo;
+    private $smsRepo;
 
     public function __construct()
     {
         parent::__construct();
+
+        //add auth filter
+        $this->filter('before', 'auth');
+
         $this->schoolRepo = new SchoolRepository();
-        //todo: add authentication
+        $this->smsRepo = new SMSRepository();
+
     }
 
     /**
@@ -104,7 +110,7 @@ class School_Controller extends Base_Controller
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
         $schoolId = Auth::user()->schoolId; //getting the loggined
-        $school = $this->schoolRepo->getSchoolFromId($schoolId); //getting school from the school id to obtain the school Code
+        $school = School::find($schoolId); //getting school from the school id to obtain the school Code
         $updateData = array();
         if (isset($update_data->name))
             $updateData['name'] = $update_data->name;
@@ -143,7 +149,41 @@ class School_Controller extends Base_Controller
         return Response::json($this->schoolRepo->getClasses(Auth::user()->schoolId));
     }
 
-    public function action_get_departments(){
+    public function action_get_departments()
+    {
         return Response::json($this->schoolRepo->getDepartments(Auth::user()->schoolId));
+    }
+
+    public function action_get_morning_routes($ignoreStudents = false, $ignoreTeachers = false)
+    {
+        $data = array();
+        $user = Auth::user();
+
+        if (!$ignoreStudents)
+            array_push($data, $this->schoolRepo->getMorningBusRoutes($user->schoolId));
+
+        if (!$ignoreTeachers)
+            array_push($data, $this->schoolRepo->getMorningBusRoutesOfTeachers($user->schoolId));
+
+        return Response::json($data);
+    }
+
+    public function action_get_evening_routes($ignoreStudents = false, $ignoreTeachers = false)
+    {
+        $data = array();
+        $user = Auth::user();
+
+        if (!$ignoreStudents)
+            array_push($data, $this->schoolRepo->getEveningBusRoutes($user->schoolId));
+
+        if (!$ignoreTeachers)
+            array_push($data, $this->schoolRepo->getEveningBusRoutes($user->schoolId));
+
+        return Response::json($data);
+    }
+
+    public function action_get_available_credits()
+    {
+        return Response::json($this->smsRepo->getRemainingCredits(Auth::user()->schoolId));
     }
 }

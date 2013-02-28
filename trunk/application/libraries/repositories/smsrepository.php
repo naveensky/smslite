@@ -43,20 +43,13 @@ class SMSRepository
         return $message;
     }
 
-    /**
-     * @param $message - Message to be sent
-     * @param $studentCodes - array of codes of students to be messaged
-     * @param $teachersCodes - array of codes of teachers to be messaged
-     * @param $senderId - UNIQUE SENDER ID for School
-     * @param $userId - auth userId for person sending message
-     * @return array|bool
-     */
-
-    public function remainingCredits($schoolId)
+    public function getRemainingCredits($schoolId)
     {
-        //todo:get remaing credit from smsCredit table for the current login school
-        $schoolId = Auth::user()->schoolId;
-        return SMSCredit::where('schoolId', '=', $schoolId)->first('credits');
+        $schoolCredits = SMSCredit::where('schoolId', '=', $schoolId)->first();
+        if (empty($schoolCredits))
+            return 0;
+
+        return $schoolCredits->credits;
     }
 
     public function updateCredits($totalCreditsUsed)

@@ -32,7 +32,7 @@ class Base_Controller extends Controller
             Asset::add('application', 'js/application.js', array('jquery', 'bootstrap', 'angular'));
 
             //add css
-            Asset::add('bootstrap-css', 'https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap.no-icons.min.css');
+            Asset::add('bootstrap-css', 'https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap-combined.no-icons.min.css');
             Asset::add('application-css', 'css/application.css');
         } else {
             //add scripts
@@ -42,7 +42,7 @@ class Base_Controller extends Controller
             Asset::add('application', 'js/application.js', array('jquery', 'bootstrap', 'angular'));
 
             //add css
-            Asset::add('bootstrap-css', 'https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap.no-icons.min.css');
+            Asset::add('bootstrap-css', 'https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap-combined.no-icons.min.css');
             Asset::add('application-css', 'css/application.css');
         }
     }
