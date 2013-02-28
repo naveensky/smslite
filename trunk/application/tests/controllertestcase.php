@@ -22,6 +22,18 @@ abstract class ControllerTestCase extends PHPUnit_Framework_TestCase
         shell_exec("php artisan migrate:rebuild --env=testing");
     }
 
+    protected function getSampleUser()
+    {
+        $school = FactoryMuff::create('School');
+        $school->save();
+
+        $user = FactoryMuff::create('User');
+        $user->schoolId = $school->id;
+        $user->save();
+
+        return $user;
+    }
+
     public function call($destination, $parameters = array(), $method = 'GET')
     {
         \Laravel\Request::foundation()->setMethod($method);

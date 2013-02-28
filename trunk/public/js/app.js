@@ -31,6 +31,11 @@ angular.module('app', ['LoaderServices']).
             .when('/report/sms', {templateUrl: '/report/sms', controller: 'Report_SMS'});
 
 
+        ///sms routes
+        $routeProvider
+            .when('/sms/', {redirectTo: '/sms/compose'})
+            .when('/sms/compose', {templateUrl: '/sms/compose', controller: 'Sms_Compose'});
+
         $routeProvider.otherwise({redirectTo: '/'});
     }]);
 

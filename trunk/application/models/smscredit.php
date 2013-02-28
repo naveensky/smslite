@@ -12,4 +12,8 @@ class SMSCredit extends Eloquent
     public static $hidden = array('id'); //to exclude id from json array
     public static $timestamps = true;
 
+    public static $factory = array(
+        'credits' => 25,
+        'schoolId' => 'factory|School'
+    );
 }

@@ -16,6 +16,10 @@ class SMS_Controller extends Base_Controller
     public function __construct()
     {
         parent::__construct();
+
+        //add auth filter
+        $this->filter('before', 'auth');
+
         $this->smsRepo = new SMSRepository();
         $this->studentRepo = new StudentRepository();
         $this->teacherRepo = new TeacherRepository();
@@ -23,10 +27,7 @@ class SMS_Controller extends Base_Controller
 
     public function action_compose()
     {
-//        throw new Exception("Not Implemented");
-        //todo: get classes
-        //get departments
-        //get routes
+        return View::make('sms.compose');
     }
 
     public function action_send_to_class()
