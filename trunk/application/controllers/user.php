@@ -73,13 +73,13 @@ class User_Controller extends Base_Controller
                 return View::make('user.register');
                 break;
             case 2:
-                return View::make('user.schoolInfo')->with('senderId', Config::get('sms.senderid'));
+                return View::make('user.schoolinfo')->with('senderId', Config::get('sms.senderid'));
                 break;
             case 3:
-                return View::make('user.mobileVerify');
+                return View::make('user.mobileverify');
                 break;
             case 4:
-                return View::make('user.emailVerify');
+                return View::make('user.emailverify');
                 break;
             default:
                 //show page 1
@@ -289,7 +289,7 @@ class User_Controller extends Base_Controller
     public function action_password_reset_success()
     {
         $email = Session::get('email');
-        return View::make('user.changePassword')->with('email', $email); //encrypted email id passed as data to view
+        return View::make('user.changepassword')->with('email', $email); //encrypted email id passed as data to view
     }
 
     public function action_invalid_code()

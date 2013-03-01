@@ -32,7 +32,7 @@ class MailServices
             $message->to($user['email']);
             $message->from(Config::get('email.from_email'), Config::get('email.adminName'));
             $message->subject(__('emailsubjects.forgot_password_email_subject'));
-            $message->body("view: user.email.forgotPassword");
+            $message->body("view: user.email.forgotpassword");
             // You can add View data by simply setting the value
             // to the message.
             $message->body->result = $user;
@@ -48,7 +48,7 @@ class MailServices
             $message->to($user['email']);
             $message->from(Config::get('email.from_email'), Config::get('email.adminName'));
             $message->subject(__('emailsubjects.new_password_email_subject'));
-            $message->body("view: user.email.passwordReset");
+            $message->body("view: user.email.passwordreset");
             // You can add View data by simply setting the value
             // to the message.
             $message->body->result = $user;
@@ -63,7 +63,7 @@ class MailServices
             $message->to($user['email']);
             $message->from(Config::get('email.from_email'), Config::get('email.adminName'));
             $message->subject(__('emailsubjects.deactivate_account_email_subject'));
-            $message->body("view: user.email.accountDeactivate");
+            $message->body("view: user.email.accountdeactivate");
             // You can add View data by simply setting the value
             // to the message.
             $message->body->result = $user;
@@ -78,7 +78,7 @@ class MailServices
             $message->to($user['email']);
             $message->from(Config::get('email.from_email'), Config::get('email.adminName'));
             $message->subject(__('emailsubjects.delete_account_email_subject'));
-            $message->body("view: user.email.accountDeleted");
+            $message->body("view: user.email.accountdeleted");
             $message->body->result = $user;
             $message->html(true);
         });
@@ -104,7 +104,7 @@ class MailServices
             $message->to($user['email']);
             $message->from(Config::get('email.from_email'), Config::get('email.adminName'));
             $message->subject(__('emailsubjects.account_email_update_subject'));
-            $message->body("view: user.email.userEmailUpdate");
+            $message->body("view: user.email.useremailupdate");
             $message->body->result = $user;
             $message->html(true);
         });
