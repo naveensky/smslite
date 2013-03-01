@@ -5,9 +5,10 @@ require_once 'controllertestcase.php';
 class TestAuthcontroller extends ControllerTestCase
 {
 
-    public static function setUpBeforeClass()
+    public function setUp()
     {
-        TestAuthcontroller::loadSession();
+        $this->setupBeforeTests();
+        $this->loadSession();
     }
 
     protected static function loadSession()
@@ -21,39 +22,42 @@ class TestAuthcontroller extends ControllerTestCase
     }
 
 
-//    public function testlogin()
-//    {
-//        $data = array(
-//            'email' => 'admin@admin.com',
-//            'password' => 'password'
-//
-//        );
-//
-//        Input::$json = (object)$data;
-//        Request::setMethod('POST');
-//        $response = Controller::call('user@post_login');
-//        var_dump($response);
-//        $this->assertNotNull($response);
-//        $this->assertEquals(200, $response->status());
-//    }
+    public function testLogin()
+    {
+        $school = FactoryMuff::create('School');
+        $school->save();
 
-//    public function testCreateUser()
-//    {
-//        Bundle::start('messages');
-//        $data = array(
-//            'email' => 'hitanshumalhotra@gmail.com',
-//            'password' => 'password',
-//            'mobile' => '95358938953'
-//        );
-//
-//        Input::$json = (object)$data;
-//        Request::setMethod('POST');
-//        $response = Controller::call('user@post_signUp');
-//        var_dump($response);
-//        $this->assertNotNull($response);
-//        $this->assertEquals(200, $response->status());
-//
-//    }
+        $user = FactoryMuff::create('User');
+        $user->schoolId = $school->id;
+        $user->password = Hash::make("asdf1234");
+        $user->save();
+
+        $parameters = array(
+            'email' => $user->email,
+            'password' => "asdf1234"
+        );
+
+        Input::$json = (object)$parameters;
+        $response = $this->post('user@post_login', array());
+        $this->assertEquals(200, $response->status());
+    }
+
+
+    public function testCreateUser()
+    {
+        Bundle::start('messages');
+        $data = array(
+            'email' => 'hmalhotra@greenapplesolutions.com',
+            'password' => '123456',
+            'mobile' => '3855935358'
+        );
+
+        Input::$json = (object)$data;
+        Request::setMethod('POST');
+        $response = Controller::call('user@post_register');
+        $this->assertEquals(200, $response->status());
+
+    }
 
 //    public function testActivation()
 //    {

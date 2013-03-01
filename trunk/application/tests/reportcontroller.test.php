@@ -9,7 +9,9 @@ class TestReportcontroller extends ControllerTestCase
     {
         $this->assertTrue(true);
     }
-    public function setUp(){
+
+    public function setUp()
+    {
         $this->setupBeforeTests();
     }
 
@@ -28,7 +30,7 @@ class TestReportcontroller extends ControllerTestCase
 
         $smsTransaction = FactoryMuff::create('SMSTransaction');
         $smsTransaction->studentId = $student->id;
-        $smsTransaction->teacherId=NULL;
+        $smsTransaction->teacherId = NULL;
         $smsTransaction->userId = $user->id;
         $smsTransaction->status = 'pending';
         $smsTransaction->save();
@@ -41,7 +43,6 @@ class TestReportcontroller extends ControllerTestCase
 
         Input::$json = (object)$parameters;
         $response = $this->post('report@post_getSMS', array());
-        $this->assertEquals(200,$response->status());
-        var_dump($response->content);
+        $this->assertEquals(200, $response->status());
     }
 }
