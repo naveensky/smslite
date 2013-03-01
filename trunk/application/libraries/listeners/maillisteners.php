@@ -8,37 +8,39 @@ class MailListener
 {
     private $mailService;
 
-    public function __construct()
-    {
-        $this->mailService = new MailServices();
-    }
-
     /**
      * Run all events in class
      */
     public function runEvents()
     {
         Event::listen(ListenerConstants::APP_USER_CREATED, function ($user) {
-            $this->mailService->sendActivationEmail($user);
+            $mailService = new MailServices();
+            $mailService->sendActivationEmail($user);
         });
 
         Event::listen(ListenerConstants::APP_USER_DEACTIVATED, function ($user) {
-            $this->mailService->sendDeactivateAccountEmail($user);
+            $mailService = new MailServices();
+            $mailService->sendDeactivateAccountEmail($user);
         });
         Event::listen(ListenerConstants::APP_USER_RESTORE, function ($user) {
-            $this->mailService->sendDeactivateAccountEmail($user);
+            $mailService = new MailServices();
+            $mailService->sendDeactivateAccountEmail($user);
         });
         Event::listen(ListenerConstants::APP_USER_EMAIL_UPDATE, function ($user) {
-            $this->mailService->sendUserEmailUpdate($user);
+            $mailService = new MailServices();
+            $mailService->sendUserEmailUpdate($user);
         });
         Event::listen(ListenerConstants::APP_USER_PASSWORD_FORGOT, function ($user) {
-            $this->mailService->sendForgottenPasswordEmail($user);
+            $mailService = new MailServices();
+            $mailService->sendForgottenPasswordEmail($user);
         });
         Event::listen(ListenerConstants::APP_USER_DELETE, function ($user) {
-            $this->mailService->sendDeleteAccountEmail($user);
+            $mailService = new MailServices();
+            $mailService->sendDeleteAccountEmail($user);
         });
         Event::listen(ListenerConstants::APP_USER_PASSWORD_RESET, function ($user) {
-            $this->mailService->sendForgottenPasswordCompleteEmail($user);
+            $mailService = new MailServices();
+            $mailService->sendForgottenPasswordCompleteEmail($user);
         });
 
     }
