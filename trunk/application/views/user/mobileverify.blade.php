@@ -69,7 +69,7 @@
                             </button>
 
                             <div ng-show="mobileUpdateForm.newNumber.$error.required && !mobileUpdateForm.newNumber.$pristine "
-                                  class="validation invalid"><i class="icon-remove padding-right-5"></i>Please enter your mobile number</div>
+                                 class="validation invalid"><i class="icon-remove padding-right-5"></i>Please enter your mobile number</div>
                             <div ng-show="mobileUpdateForm.newNumber.$invalid && !mobileUpdateForm.newNumber.$pristine && !mobileUpdateForm.newNumber.$error.required" class="validation invalid"><i
                                     class="icon-remove padding-right-5"></i>The mobile number must be at least 8 digits</div>
 
