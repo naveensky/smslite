@@ -16,7 +16,7 @@ class ReportRepository
         $this->studentRepo = new StudentRepository();
     }
 
-    public function getSMS($schoolId, $classSections, DateTime $toDate, DateTime $fromDate, $studentName,$teacherName, $perPage, $skip)
+    public function getSMS($schoolId, $classSections, DateTime $toDate, DateTime $fromDate, $studentName, $teacherName, $perPage, $skip)
     {
         $query = DB::table('smsTransactions')
             ->left_join('students', 'smsTransactions.studentId', '=', 'students.id')
@@ -30,8 +30,9 @@ class ReportRepository
             $query = $query->where(function ($query) use ($classSections) {
                 $count = 1;
                 foreach ($classSections as $classSection) {
-                    $class = $this->studentRepo->getClass($classSection); //getting class from classSection
-                    $section = $this->studentRepo->getSection($classSection); //getting section from classSection
+                    $that=$this;//to use context to anonymous function
+                    $class = $that->studentRepo->getClass($classSection); //getting class from classSection
+                    $section = $that->studentRepo->getSection($classSection); //getting section from classSection
 
                     if ($count == 1) {
                         $query = $query->where(function ($query) use ($class, $section) {
@@ -55,21 +56,16 @@ class ReportRepository
             $query = $query->where('students.name', 'LIKE', "%$studentName%");
         }
 
-        if(!empty($teacherName) && empty($studentName))
-        {
+        if (!empty($teacherName) && empty($studentName)) {
             $query = $query->where('teachers.name', 'LIKE', "%$teacherName%");
         }
 
-        if(!empty($teacherName) && !empty($studentName))
-        {
+        if (!empty($teacherName) && !empty($studentName)) {
             $query = $query->where(function ($query) use ($teacherName, $studentName) {
                 $query->where("students.name", 'LIKE', "%$studentName%");
                 $query->where("teachers.name", 'LIKE', "%$teacherName%");
             });
         }
-
-
-
 
 
         if ($fromDate != new DateTime()) {
