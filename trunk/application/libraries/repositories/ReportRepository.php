@@ -27,12 +27,13 @@ class ReportRepository
             });
 
         if (!empty($classSections)) {
-            $query = $query->where(function ($query) use ($classSections) {
+            $that=$this->studentRepo;//to use context to anonymous function
+            $query = $query->where(function ($query) use ($classSections,$that) {
                 $count = 1;
                 foreach ($classSections as $classSection) {
-                    $that=$this;//to use context to anonymous function
-                    $class = $that->studentRepo->getClass($classSection); //getting class from classSection
-                    $section = $that->studentRepo->getSection($classSection); //getting section from classSection
+
+                    $class = $that->getClass($classSection); //getting class from classSection
+                    $section = $that->getSection($classSection); //getting section from classSection
 
                     if ($count == 1) {
                         $query = $query->where(function ($query) use ($class, $section) {
