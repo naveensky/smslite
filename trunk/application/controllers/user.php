@@ -15,11 +15,11 @@ class User_Controller extends Base_Controller
         $this->filter('before', 'auth')
             ->except(
                 array(
-                    'login', 'post_login', 'register',
+                    'login', 'post_login', 'activate', 'register',
                     'post_register', 'forgot_password',
                     'post_forgot_password', 'send_password_mobile',
                     'password_reset_success', 'reset_password',
-                    'invalid_code', 'post_set_password'));
+                    'invalid_code', 'post_set_password', 'restore_account'));
 
         $this->userRepo = new UserRepository();
         $this->schoolRepo = new SchoolRepository();
@@ -125,8 +125,10 @@ class User_Controller extends Base_Controller
     public function action_activate($activationCode)
     {
         $activationCode = isset($activationCode) ? $activationCode : "";
+
         if (empty($activationCode))
             return "You have entered incorrect code view missing";
+
         try {
             $status = $this->userRepo->activate($activationCode);
         } catch (InvalidArgumentException $ie) {
@@ -159,14 +161,13 @@ class User_Controller extends Base_Controller
         $this->appSmsRepo->createAppSms(Auth::user()->mobile, $deactivation_message, Config::get('sms.senderid'), $userId);
 
         //fire event for user deactivation
-        Event::fire(ListenerConstants::APP_USER_DEACTIVATED, array(Auth::user()->id));
+        Event::fire(ListenerConstants::APP_USER_DEACTIVATED, array(User::find($userId)));
         return Response::make(__('responseerror.activate_success'), HTTPConstants::SUCCESS_CODE);
     }
 
     public function action_restore_account($reactivationCode)
     {
         $reactivationCode = isset($reactivationCode) ? $reactivationCode : "";
-
         //if empty reactivation code open the view showing invalid Reactivation Code
         if (empty($reactivationCode))
             return "view showing empty reactivation code";
@@ -180,13 +181,11 @@ class User_Controller extends Base_Controller
         if (empty($user))
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
 
-        if ($user)
-            $restore_message = __('smstemplate.restore_message');
 
+        $restore_message = __('smstemplate.restore_message');
         $this->appSmsRepo->createAppSms($user->mobile, $restore_message, Config::get('sms.senderid'), $user->id);
-
         //fire user restore event
-        Event::fire(ListenerConstants::APP_USER_RESTORE, array(Auth::user()->id));
+        Event::fire(ListenerConstants::APP_USER_RESTORE, array($user));
         return Response::make(__('responseerror.activate_success'), HTTPConstants::SUCCESS_CODE);
     }
 
@@ -207,7 +206,7 @@ class User_Controller extends Base_Controller
         $this->appSmsRepo->createAppSms(Auth::user()->mobile, $deletion_message, Config::get('sms.senderid'), $userId);
 
         //todo: send complete user here rather than ID
-        Event::fire(ListenerConstants::APP_USER_DELETE, array(Auth::user()->id));
+        Event::fire(ListenerConstants::APP_USER_DELETE, array(User::find($userId)));
         return Response::make(__('responseerror.activate_success'), HTTPConstants::SUCCESS_CODE);
     }
 
@@ -271,7 +270,6 @@ class User_Controller extends Base_Controller
         //return invalid code view if empty code found
         if (empty($code))
             return Redirect::to('/#/user/invalid_code');
-
         try {
             $user = $this->userRepo->forgotten_password_complete($code);
         } catch (InvalidArgumentException $ie) {
@@ -415,7 +413,7 @@ class User_Controller extends Base_Controller
         }
         if (!empty($user)) {
             $mobilePhoneUpdated = __('smstemplate.mobile_updated_message');
-            $this->appSmsRepo->createAppSms($user->mobile, $mobilePhoneUpdated, Config::get('sms.senderid'), $user);
+            $this->appSmsRepo->createAppSms($user->mobile, $mobilePhoneUpdated, Config::get('sms.senderid'), $user->id);
             return Response::json(array('status' => true), HTTPConstants::SUCCESS_CODE);
         }
         return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);

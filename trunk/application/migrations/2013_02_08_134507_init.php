@@ -39,7 +39,7 @@ class Init {
             $table->integer('isVerified')->default(false);
             $table->integer('isDeactivated')->default(false);
             $table->integer('isDeleted')->default(false);
-            $table->integer('reactivateCode')->nullable()->default(NULL);
+            $table->string('reactivateCode',64)->nullable()->default(NULL);
             $table->timestamps();
         });
 

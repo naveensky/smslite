@@ -194,7 +194,7 @@ class UserRepository
 
     public function setNewPassword($email, $id, $newPassword)
     {
-        $user = User::where_id_and_email($id,$email)->first();
+        $user = User::where_id_and_email($id, $email)->first();
 
         if ($user == NULL)
             throw new InvalidArgumentException("User Not Found");
@@ -213,7 +213,6 @@ class UserRepository
 
     public function change_password($id, $old_password, $new_password)
     {
-
         if (empty($old_password) || empty($new_password)) {
             throw new InvalidArgumentException("Empty id or Old Password or New Password");
         }
@@ -221,7 +220,6 @@ class UserRepository
         if (empty($user))
             return false;
         if (Hash::check($old_password, $user[0]->password)) {
-
             $user = User::find($id);
             $user->password = Hash::make($new_password);
             $user->save();
@@ -244,7 +242,7 @@ class UserRepository
         if (count($user) == 1) {
 
             $updateData = array('reactivateCode' => NULL,
-                'isDeactivated' => false
+                'isDeactivated' => 0
             );
             try {
                 User::update($user->id, $updateData);

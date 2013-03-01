@@ -47,7 +47,7 @@ class TestAuthcontroller extends ControllerTestCase
     {
         Bundle::start('messages');
         $data = array(
-            'email' => 'hmalhotra@greenapplesolutions.com',
+            'email' => "clash@exampledomain.org",
             'password' => '123456',
             'mobile' => '3855935358'
         );
@@ -59,145 +59,248 @@ class TestAuthcontroller extends ControllerTestCase
 
     }
 
-//    public function testActivation()
-//    {
-//        $data = array(
-//            'code' => 'WcdeoFKIcESkIGCiVjCvkjyEpbAMUoitrcDOYQIHNMOsQRTKzSjqJgJFRExiFzeA',
-//        );
-////
-////        Input::$json = (object)$data;
-//
-//
-////
-//        Request::setMethod('GET');
-//        $response = Controller::call('user@activate', $data);
-//        var_dump($response);
-//    }
+    public function testActivation()
+    {
+        $school = FactoryMuff::create('School');
+        $school->save();
 
-//    public function testDeactivation()
-//    {
-////        Input::$json = (object)$data;
-////
-//        Auth::login(16);
-//        Request::setMethod('GET');
-//        $response = Controller::call('user@deactivate', array());
-//        var_dump($response);
-//    }
+        $user = FactoryMuff::create('User');
+        $user->schoolId = $school->id;
+        $user->password = Hash::make("asdf1234");
+        $user->emailVerificationCode = Str::random(64, 'alpha');
+        $user->save();
 
-//    public function testDelete()
-//    {
-//        $data = array(
-//            'id' => 's+NC0N4z7QBK2zDCto86J5npj/XBxr8FAlwOzYIUGHUCh2lSPRvAK2SVFdGm4bV1B5JJE6jKLswxdK53lo8Z0Q==',
-//        );
-//
-//        Input::$json = (object)$data;
-////
-//        Request::setMethod('POST');
-//        $response = Controller::call('auth@delete',array());
-//        var_dump($response);
-//    }
+        $data = array(
+            'code' => $user->emailVerificationCode,
+        );
+        $response = $this->get('user@activate', $data);
+        $this->assertEquals(200, $response->status());
+    }
 
-//    public function testForgotten()
-//    {
-//        $data = array(
-//            'email' => 'hitanshumalhotra@gmail.com'
-//        );
-//        Input::$json = (object)$data;
-//        Request::setMethod('POST');
-//        $response = Controller::call('user@post_forgot_password');
-//        $this->assertNotNull($response);
-//        $this->assertEquals(200, $response->status());
-//    }
+    public function testDeactivation()
+    {
+        Bundle::start('messages');
+        $school = FactoryMuff::create('School');
+        $school->save();
 
-//    public function testforgottenComplete()
-//    {
-//        $data = array(
-//            'code' => 'uqkRYwAvUzohfDaxcCglGiGMXIUyAHqKhJmOEFyGSMDQKnbCInzckmbUlQgCtefD',
-//        );
-//        Request::setMethod('GET');
-//        $response = Controller::call('user@post_reset_password', $data);
-//        var_dump($response);
-//    }
+        $user = FactoryMuff::create('User');
+        $user->schoolId = $school->id;
+        $user->save();
 
-//    public function testMobileVerify()
-//    {
-//        Auth::login(18);
-//        $data = array(
-//            'mobileActivationCode' => '200200',
-//        );
-////
-////        Input::$json = (object)$data;
-//
-////
-//        Request::setMethod('GET');
-//        $response = Controller::call('user@verify_mobile', $data);
-//        var_dump($response);
-//        $this->assertEquals(200, $response->status());
-//    }
+        Auth::login($user->id);
+        $response = $this->get('user@post_deactivate', array());
+        $this->assertEquals(200, $response->status());
+    }
 
-//    public function testRestore()
-//    {
-//        $data = array(
-//            'reactivationCode' => 'OXOrGnmPbXlxsbOTuUWGdgcmnIVQrmuDspRQHFUFzSAvdKkwfDtSLJNctPSQXosr',
-//
-//        );
-//
-//        Request::setMethod('GET');
-//        $response = Controller::call('user@restore_account', $data);
-//        var_dump($response);
-//    }
+    public function testDelete()
+    {
+        Bundle::start('messages');
+        $school = FactoryMuff::create('School');
+        $school->save();
 
-//    public function testResendSms()
-//    {
-//        Auth::login(16);
-//        Request::setMethod('GET');
-//        $response = Controller::call('user@resend_sms', array());
-//        var_dump($response);
-//    }
+        $user = FactoryMuff::create('User');
+        $user->schoolId = $school->id;
+        $user->save();
 
-//    public function testUpdatePassword()
-//    {
-//        Auth::login(16);
-//        $data = array(
-//            'oldPassword' => 'password',
-//            'newPassword' => 'password'
-//        );
-//        Input::$json = (object)$data;
-//
-//        Request::setMethod('POST');
-//        $response = Controller::call('user@update_password');
-//
-//        $this->assertNotNull($response);
-//        $this->assertEquals(200, $response->status());
-//    }
+        Auth::login($user->id);
+        $response = $this->get('user@post_delete', array());
+        $this->assertEquals(200, $response->status());
+    }
 
-//    public function testUpdateMobile()
-//    {
-//        Auth::login(16);
-//        $data = array(
-//            'mobile' => '89684866846'
-//        );
-//        Input::$json = (object)$data;
-//        Request::setMethod('POST');
-//        $response = Controller::call('user@update_mobile');
-//        var_dump($response);
-//        $this->assertNotNull($response);
-//        $this->assertEquals(200, $response->status());
-//    }
+    public function testForgotten()
+    {
+        Bundle::start('messages');
+        $school = FactoryMuff::create('School');
+        $school->save();
 
-//public function testsetPassword()
-//{
-//    $data = array(
-//            'email' => 'hitanshumalhotra1@gmail.com',
-//            'newPassword'=>'password'
-//        );
-//        Input::$json = (object)$data;
-//        Request::setMethod('POST');
-//        $response = Controller::call('user@post_set_password');
-//        var_dump($response);
-//        $this->assertNotNull($response);
-//        $this->assertEquals(200, $response->status());
-//}
+        $user = FactoryMuff::create('User');
+        $user->schoolId = $school->id;
+        $user->save();
+
+        $data = array(
+            'email' => $user->email
+        );
+        Input::$json = (object)$data;
+        Request::setMethod('POST');
+        $response = Controller::call('user@post_forgot_password');
+        $this->assertNotNull($response);
+        $this->assertEquals(200, $response->status());
+    }
+
+    public function testForgottenByMobile()
+    {
+        Bundle::start('messages');
+        $school = FactoryMuff::create('School');
+        $school->save();
+
+        $user = FactoryMuff::create('User');
+        $user->schoolId = $school->id;
+        $user->mobile = '9999999999';
+        $user->save();
+
+        $data = array(
+            'mobile' => $user->mobile,
+            'email' => $user->email
+        );
+        Input::$json = (object)$data;
+        Request::setMethod('POST');
+        $response = Controller::call('user@send_password_mobile');
+        $this->assertNotNull($response);
+        $this->assertEquals(200, $response->status());
+    }
+
+    public function testForgottenComplete()
+    {
+        Bundle::start('messages');
+        $school = FactoryMuff::create('School');
+        $school->save();
+
+        $user = FactoryMuff::create('User');
+        $user->schoolId = $school->id;
+        $user->forgottenPasswordCode = Str::random(64, 'alpha');
+        $user->save();
+        $data = array(
+            'code' => $user->forgottenPasswordCode,
+        );
+        $response = $this->get('user@reset_password', $data);
+        $user = User::find($user->id);
+        $this->assertEquals(302, $response->status());
+        $this->assertNull($user->forgottenPasswordCode);
+
+    }
+
+    public function testMobileVerify()
+    {
+        Bundle::start('messages');
+        $school = FactoryMuff::create('School');
+        $school->save();
+
+        $user = FactoryMuff::create('User');
+        $user->schoolId = $school->id;
+        $user->mobileVerificationCode = "123456";
+        $user->mobile = '9999999999';
+        $user->save();
+
+        Auth::login($user->id);
+
+        $data = array(
+            'mobileActivationCode' => $user->mobileVerificationCode,
+        );
+
+        Input::$json = (object)$data;
+        $response = $this->post('user@verify_mobile', array());
+        $this->assertEquals(200, $response->status());
+    }
+
+    public function testRestore()
+    {
+        Bundle::start('messages');
+        $school = FactoryMuff::create('School');
+        $school->save();
+
+        $user = FactoryMuff::create('User');
+        $user->schoolId = $school->id;
+        $user->mobileVerificationCode = "123456";
+        $user->reactivateCode = Str::random(64, 'alpha');
+        $user->isDeactivated = 1;
+        $user->mobile = '9999999999';
+        $user->save();
+
+        $data = array(
+            'reactivationCode' => $user->reactivateCode,
+        );
+        $response = $this->get('user@restore_account', $data);
+        $this->assertEquals(200, $response->status());
+    }
+
+    public function testResendSMS()
+    {
+        Bundle::start('messages');
+        $school = FactoryMuff::create('School');
+        $school->save();
+
+        $user = FactoryMuff::create('User');
+        $user->schoolId = $school->id;
+        $user->mobileVerificationCode = "123456";
+        $user->mobile = '9999999999';
+        $user->save();
+
+        Auth::login($user->id);
+        Request::setMethod('GET');
+        $response = Controller::call('user@resend_sms', array());
+        $this->assertEquals(200, $response->status());
+    }
+
+    public function testUpdatePassword()
+    {
+        Bundle::start('messages');
+        $school = FactoryMuff::create('School');
+        $school->save();
+
+        $user = FactoryMuff::create('User');
+        $user->schoolId = $school->id;
+        $user->mobileVerificationCode = "123456";
+        $user->password = Hash::make("password");
+        $user->mobile = '9999999999';
+        $user->save();
+
+        Auth::login($user->id);
+
+        $data = array(
+            'oldPassword' => "password",
+            'newPassword' => 'asdf'
+        );
+        Input::$json = (object)$data;
+        $response = $this->post('user@update_password', array());
+        $this->assertNotNull($response);
+        $this->assertEquals(200, $response->status());
+    }
+
+    public function testUpdateMobile()
+    {
+        Bundle::start('messages');
+        $school = FactoryMuff::create('School');
+        $school->save();
+
+        $user = FactoryMuff::create('User');
+        $user->schoolId = $school->id;
+        $user->mobileVerificationCode = "123456";
+        $user->password = Hash::make("password");
+        $user->mobile = '9999999999';
+        $user->save();
+
+        Auth::login($user->id);
+        $data = array(
+            'mobile' => '89684866846'
+        );
+        Input::$json = (object)$data;
+        $response = $this->post('user@update_mobile', array());
+        $this->assertNotNull($response);
+        $this->assertEquals(200, $response->status());
+    }
+
+    public function testSetPassword()
+    {
+        Bundle::start('messages');
+        $school = FactoryMuff::create('School');
+        $school->save();
+
+        $user = FactoryMuff::create('User');
+        $user->schoolId = $school->id;
+        $user->mobileVerificationCode = "123456";
+        $user->password = Hash::make("password");
+        $user->mobile = '9999999999';
+        $user->save();
+
+        $data = array(
+            'x_token' => Crypter::encrypt($user->email),
+            'password' => 'password'
+        );
+        Input::$json = (object)$data;
+        $response = $this->post('user@post_set_password', array());
+        $this->assertNotNull($response);
+        $this->assertEquals(200, $response->status());
+    }
 
 
 }

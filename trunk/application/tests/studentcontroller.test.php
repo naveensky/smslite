@@ -5,10 +5,17 @@ require_once 'controllertestcase.php';
 class TestStudentController extends ControllerTestCase
 {
 
-    public function testSample()
+    public function setUp()
     {
-        $this->assertTrue(true);
+        $this->setupBeforeTests();
+        $this->loadSession();
     }
+
+    protected static function loadSession()
+    {
+        \Session::started() or \Session::load();
+    }
+
 
 //    public function testcreate()
 //    {
@@ -123,6 +130,31 @@ class TestStudentController extends ControllerTestCase
 //        var_dump($response);
 //        $this->assertTrue(true);
 //    }
+
+    public function testGetStudents()
+    {
+        $user = $this->getSampleUser();
+        Auth::login($user->id);
+
+        $firstStudent = FactoryMuff::create('Student');
+        $firstStudent->schoolId = $user->school()->first()->id;
+        $firstStudent->classStandard = "6";
+        $firstStudent->classSection = "A";
+        $firstStudent->save();
+
+        $firstStudent = FactoryMuff::create('Student');
+        $firstStudent->schoolId = $user->school()->first()->id;
+        $firstStudent->classStandard = "7";
+        $firstStudent->classSection = "A";
+        $firstStudent->save();
+        $parameters = array(
+            'classSection' => array('6-A')
+        );
+        Input::$json = (object)$parameters;
+        $response = $this->post('student@getStudents', array());
+        $this->assertEquals(200, $response->status());
+        $this->assertEquals(1, count(json_decode($response->content, true)));
+    }
 
 //    public function testimport()
 //    {
