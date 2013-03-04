@@ -33,28 +33,57 @@ class TestSmsController extends ControllerTestCase
 
 //    public function testCreateSms()
 //    {
+//        $school = FactoryMuff::create('School');
+//        $school->save();
+//
+//        $user = FactoryMuff::create('User');
+//        $user->schoolId = $school->id;
+//        $user->save();
+//
+//        Auth::login($user->id);
+//        $student = FactoryMuff::create('Student');
+//        $student->classStandard = "6";
+//        $student->classSection = "A";
+//        $student->schoolId = $school->id;
+//        $student->save();
+//
+//        $student2 = FactoryMuff::create('student');
+//        $student2->classStandard = "7";
+//        $student2->classSection = "A";
+//        $student2->schoolId = $school->id;
+//        $student2->save();
+//
+//        $teacher = FactoryMuff::create('Teacher');
+//        $teacher->schoolId = $school->id;
+//        $teacher->department = "Hindi";
+//        $teacher->save();
+//
+//        $teacher2 = FactoryMuff::create('Teacher');
+//        $teacher2->schoolId = $school->id;
+//        $teacher2->department = "English";
+//        $teacher2->save();
+//
 //        $studentCodes = array(
-//            "GnhMctVgzEOIuydKaPtULVNZFvSTyvwvqOBSqmgTPQrMyKvCJkdmHiKCogSecZqX",
-//            "mIEMgxNTlaZsKPBJFLnYpFNzwQNUrrzjrXUiBLRcfYwfzOTCWbVsqlOaMJSmKnZl"
+//            $student->code,
+//            $student2->code
 //        );
 //
 //        $teacherCodes = array(
-//            "vXwtfkYoNNExNqVmkxrewOtWDvoCpSRfOTjAFvmtVbgUgkqJBUjeRMpuKhZhgoTV",
-//            "wXJaVeTMqNMbJXuESgjDiRyATlVpvFdUtquFLZHDWzhJIgxvvulBUBAlfmGoPzBH"
+//            $teacher->code,
+//            $teacher2->code
 //        );
 //
 //        $message = "Dear parents, your child was absent today.";
 //        $parameters = (object)array('studentCodes' => $studentCodes,
 //            'teacherCodes' => $teacherCodes,
 //            'message' => $message,
-//            'user_id' => 2,
-//            'sender_id' => 'ABCDEF'
+//            'user_id' => $user->id,
+//            'sender_id' => 'GAPS'
 //        );
 //
 //        Input::$json = $parameters;
-//        $response = $this->post('SMS@create', array());
-//        var_dump($response);
-//        $this->assertTrue(true);
+//        $response = $this->post('SMS@post_create', array());
+//        $this->assertEquals(200,$response->status());
 //    }
 
 

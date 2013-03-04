@@ -120,7 +120,7 @@ class SMS_Controller extends Base_Controller
         return Response::json($result);
     }
 
-    public function post_create()
+    public function action_post_create()
     {
         $data = Input::json();
         if (empty($data) || count($data) == 0) {

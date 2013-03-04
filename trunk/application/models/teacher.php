@@ -101,7 +101,7 @@ class Teacher extends Eloquent
         }
 
         $csvData = "";
-        $headerRow = "Full Name,Gender,Email,Mobile1,Mobile2,Mobile3,Mobile4,Mobile5,DOB,Morning Bus Route,Evening Bus Route \n";
+        $headerRow = "Full Name,Department,Gender,Email,Mobile1,Mobile2,Mobile3,Mobile4,Mobile5,DOB,Morning Bus Route,Evening Bus Route \n";
         $csvData .= $headerRow;
         foreach ($teachersData as $data) {
             $dataRow = "";

@@ -9,128 +9,119 @@ class TestTeacherController extends ControllerTestCase
         $this->setupBeforeTests();
     }
 
-//    public function testCreate()
-//    {
-//        $teachers = array(
-//            (object)array(
-//                'Name' => 'Akhil',
-//                'Email' => '1@1.com',
-//                'Mobile1' => 93535395355,
-//                'Mobile2' => 835858735357,
-//                'Mobile3' => 64264246264,
-//                'Mobile4' => 424764524654,
-//                'Mobile5' => 223332424223,
-//                'DOB' => '1991-02-01',
-//                'Department' => 'Hindi',
-//                'MorningBusRoute' => '203',
-//                'EveningBusRoute' => '205',
-//                'Sex' => 'M'
-//            ),
-//
-//            (object)array(
-//                'Name' => 'Lakshay',
-//                'Email' => '1@1.com',
-//                'Mobile1' => 93535395355,
-//                'Mobile2' => 835858735357,
-//                'Mobile3' => 64264246264,
-//                'Mobile4' => 424764524654,
-//                'Mobile5' => 223332424223,
-//                'DOB' => '1991-02-01',
-//                'Department' => 'Hindi',
-//                'MorningBusRoute' => '203',
-//                'EveningBusRoute' => '205',
-//                'Sex' => 'M'
-//            )
-//
-//        );
-//
-//        $schoolcode = "BWMaybxcxtSsqgXufGnHUxSjpwswfpFCmESgeEpeAwVkKoNdijoHOiYrjGKEQZeK";
-//        $parameters = (object)array('teachers' => $teachers,
-//            'schoolCode' => $schoolcode
-//        );
-//
-//        $teacher_json = $parameters;
-//        Input::$json = $teacher_json;
-//        $response = $this->post('teacher@create', array());
-//        $this->assertNotNull($response);
 
+    public function testGetTeacher()
+    {
+        $user = $this->getSampleUser();
+        Auth::login($user->id);
 
-//        $teachers = Teacher::all();
-//        $this->assertEquals(2, sizeof($teachers));
-//    }
+        $teacher = FactoryMuff::create('Teacher');
+        $teacher->schoolId = $user->school()->first()->id;
+        $teacher->department = "Hindi";
+        $teacher->save();
+        $parameters = array(
+            'code' => $teacher->code
+        );
+        $response = $this->get('teacher@get', $parameters);
+        $this->assertEquals(200, $response->status());
+    }
 
-//    public function testGet()
-//    {
-//        $parameters = array(
-//
-//            'code' => 'PtcdGWLmoakpuFJneCRUsYIBPLizGxZOkacMLJGDWTtoujWljrsHYeYVOvfjAdSq'
-//
-//        );
-//
-//        Input::$json = (object)$parameters;
-//        var_dump((object)$parameters);
-//        $response = $this->get('teacher@get');
-//        var_dump($response);
-//        $this->assertTrue(true);
-//    }
+    public function testDeleteTeacher()
+    {
+        $user = $this->getSampleUser();
+        Auth::login($user->id);
 
-//    public function testDelete()
-//    {
-//        $parameters = array(
-//
-//            'code' => 'PtcdGWLmoakpuFJneCRUsYIBPLizGxZOkacMLJGDWTtoujWljrsHYeYVOvfjAdSq'
-//
-//        );
-//
-//        Input::$json = (object)$parameters;
-//        var_dump((object)$parameters);
-//        $response = $this->post('teacher@delete',array());
-//        var_dump($response);
-//        $this->assertTrue(true);
-//    }
+        $teacher = FactoryMuff::create('Teacher');
+        $teacher->schoolId = $user->school()->first()->id;
+        $teacher->department = "Hindi";
+        $teacher->save();
+        $parameters = array(
+            'code' => $teacher->code
+        );
+        $response = $this->get('teacher@delete', $parameters);
+        $this->assertEquals(200, $response->status());
+    }
 
+    public function testUpdateTeacher()
+    {
+        $school = FactoryMuff::create('School');
+        $school->save();
 
-//    public function testupdate()
-//    {
-//        $parameters = array(
-//
-//            'Mobile1' => 999999990000,
-//            'Code' => 'UDSeFenZkZbbIOhmyXhwzhHEiLdlMEvWXrBbuMxZCOgMDJgRspoPumzUUikvsJHa'
-//        );
-//
-//
-//
-//        Input::$json = (object)$parameters;
-//        $response = $this->post('teacher@update', array());
-//        var_dump($response);
-//        $this->assertTrue(true);
-//    }
+        $user = FactoryMuff::create('User');
+        $user->schoolId = $school->id;
+        $user->save();
 
-//    public function testimportteacher()
-//    {
-//        Auth::login(1);
-//        $parameters = array(
-//            'filePath' => 'tmp/teacher-upload.csv'
-//        );
-//        Input::$json = (object)$parameters;
-//        $response = $this->post('teacher@post_upload', array());
-//        var_dump($response);
-//        $this->assertTrue(true);
-//    }
+        Auth::login($user->id);
+        $teacher = FactoryMuff::create('Teacher');
+        $teacher->schoolId = $user->school()->first()->id;
+        $teacher->department = "Hindi";
+        $teacher->save();
 
-//    public function testimport()
-//    {
-//        Auth::login(1);
-//        $parameters = array(
-//            'department' => array('science','maths'),
-//            'morningBusRoute' => array('647','205'),
-//        );
-//        Input::$json = (object)$parameters;
-//        $response = $this->post('teacher@getTeachers', array());
-//
-//        var_dump($response);
-//        $this->assertTrue(true);
-//    }
+        $parameters = array(
+            'Mobile1' => 999999990000,
+            'Code' => $teacher->code
+        );
+
+        Input::$json = (object)$parameters;
+        $response = $this->post('teacher@post_update', array());
+        $this->assertEquals(200, $response->status());
+    }
+
+    public function testImportTeachers()
+    {
+        $school = FactoryMuff::create('School');
+        $school->save();
+
+        $user = FactoryMuff::create('User');
+        $user->schoolId = $school->id;
+        $user->save();
+
+        Auth::login($user->id);
+
+        $teachersData = array(
+            array('name' => 'teacher1', 'department' => 'Hindi',
+                'sex' => 'Male',
+                'email' => '123@gmail.com', 'mobile1' => '8858353353', 'mobile2' => '',
+                'mobile3' => '', 'mobile4' => '', 'mobile5' => '', 'dob' => '02-01-91', 'morningBusRoute' => '405', 'eveningBusRoute' => '607'),
+            array('name' => 'teacher2', 'department' => 'Hindi',
+                'sex' => 'Male',
+                'email' => '123@gmail.com', 'mobile1' => '8858353353', 'mobile2' => '',
+                'mobile3' => '', 'mobile4' => '', 'mobile5' => '', 'dob' => '02-01-91', 'morningBusRoute' => '405', 'eveningBusRoute' => '607'),
+            array('name' => 'teacher3', 'department' => 'Hindi',
+                'sex' => 'Male',
+                'email' => '123@gmail.com', 'mobile1' => '8858353353', 'mobile2' => '',
+                'mobile3' => '', 'mobile4' => '', 'mobile5' => '', 'dob' => '02-01-91', 'morningBusRoute' => '405', 'eveningBusRoute' => '607'),
+            array('name' => 'teacher4', 'department' => 'Hindi',
+                'sex' => 'Male',
+                'email' => '123@gmail.com', 'mobile1' => '8858353353', 'mobile2' => '',
+                'mobile3' => '', 'mobile4' => '', 'mobile5' => '', 'dob' => '02-01-91', 'morningBusRoute' => '405', 'eveningBusRoute' => '607'),
+            array('name' => 'teacher5', 'department' => 'Hindi',
+                'sex' => 'Male',
+                'email' => '123@gmail.com', 'mobile1' => '8858353353', 'mobile2' => '',
+                'mobile3' => '', 'mobile4' => '', 'mobile5' => '', 'dob' => '02-01-91', 'morningBusRoute' => '405', 'eveningBusRoute' => '607'),
+        );
+
+        $csvData = "";
+        $headerRow = "Full Name,Department,Gender,Email,Mobile1,Mobile2,Mobile3,Mobile4,Mobile5,DOB,Morning Bus Route,Evening Bus Route \n";
+        $csvData .= $headerRow;
+        foreach ($teachersData as $data) {
+            $dataRow = "";
+            foreach ($data as $key => $value) {
+                $dataRow .= "\"$value\",";
+            }
+            $dataRow = rtrim($dataRow, ",");
+            $csvData .= "$dataRow \n";
+        }
+        $directory = path('public') . 'tmp/';
+        File::put($directory . 'teacher_test_list.csv', $csvData);
+        $parameters = array(
+            'filePath' => 'tmp/teacher_test_list.csv'
+        );
+        Input::$json = (object)$parameters;
+        $response = $this->post('teacher@post_upload', array());
+        $this->assertEquals(200, $response->status());
+        File::delete($directory . 'teacher_test_list.csv');
+    }
 
 
     public function testGetTeachers()
@@ -157,6 +148,8 @@ class TestTeacherController extends ControllerTestCase
         $this->assertEquals(1, count(json_decode($response->content, true)));
 
     }
+
+
 
 
 }

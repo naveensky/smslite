@@ -64,15 +64,10 @@ class Teacher_Controller extends Base_Controller
         return Response::json(array('numberOfTeacherInserted' => $teacherInserted, 'rowNumbersError' => $result['errorRows']));
     }
 
-    public function action_get()
+    public function action_get($code = NULL)
     {
-        $get_code = Input::json();
-
-        if (empty($get_code))
+        if (empty($code))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
-
-
-        $code = $get_code->code;
 
         try {
             $result = $this->teacherRepo->getTeacher($code);
@@ -87,15 +82,11 @@ class Teacher_Controller extends Base_Controller
     }
 
 
-    public function action_post_delete()
+    public function action_delete($code = NULL)
     {
-        $delete_code = Input::Json();
-
-        if (empty($delete_code))
+        if (empty($code))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
-
-        $code = $delete_code->code;
         try {
 
             $result = $this->teacherRepo->deleteTeacher($code);
@@ -108,7 +99,6 @@ class Teacher_Controller extends Base_Controller
             Log::exception($e);
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
         }
-
     }
 
 

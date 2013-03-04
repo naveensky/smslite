@@ -86,7 +86,7 @@ class TeacherRepository
             log::exception($e);
             throw new PDOException("Exception while bulk insertion");
         } catch (Exception $e) {
-            log::exception($e);
+            Log::exception($e);
             return false;
         }
 
