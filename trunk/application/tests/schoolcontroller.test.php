@@ -152,4 +152,26 @@ class TestSchoolController extends ControllerTestCase
 
         $this->assertEquals(25, $smsCredits);
     }
+
+    public function testSchoolUpdate()
+    {
+        $user = $this->getSampleUser();
+        $school = $user->school()->first();
+
+        Auth::login($user->id);
+        $parameters=array(
+            'name'=>"Salwan Public School",
+            'address'=>"Karol Bagh",
+            'city'=>"New Delhi",
+            'state'=>"Delhi",
+            'zip'=>"110067",
+            'sender_id'=>'GAPS',
+            'contact_person'=>'Anuj Kumar',
+            'contact_mobile'=>'999999999'
+        );
+
+        Input::$json=(object)$parameters;
+        $response=$this->post('school@post_update',array());
+        $this->assertEquals(200,$response->status());
+    }
 }

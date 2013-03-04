@@ -8,12 +8,7 @@ class TestReportcontroller extends ControllerTestCase
     public function setUp()
     {
         $this->setupBeforeTests();
-        $this->loadSession();
-    }
 
-    protected static function loadSession()
-    {
-        \Session::started() or \Session::load();
     }
 
     public function testGetSms()
@@ -79,7 +74,7 @@ class TestReportcontroller extends ControllerTestCase
         Auth::login($user->id);
 
         $parameters = array(
-            'classSections' => array("7-A","6-A"),
+            'classSections' => array("7-A", "6-A"),
         );
 
         Input::$json = (object)$parameters;

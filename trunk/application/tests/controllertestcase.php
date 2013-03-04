@@ -7,6 +7,13 @@ abstract class ControllerTestCase extends PHPUnit_Framework_TestCase
         //start the bundles
         \Laravel\Bundle::start('factorymuff');
         $this->createDatabase();
+        $this->loadSession();
+    }
+
+
+    protected function loadSession()
+    {
+        \Session::started() or \Session::load();
     }
 
     private function createDatabase()

@@ -224,7 +224,10 @@ class Test_Controller extends Base_Controller
         Auth::login(1);
         $id = Auth::user()->id;
         $repo = new SMSRepository();
-        $data = $repo->createSMS("Hello", array("AfXiqvOQBLLsYtzjgDobeHOfTWsJVMaxGBkUGmKZxdzKpVWJTrxXvJXCNXrpQEiC"), array(), "123", $id);
+        $studentRepo=new StudentRepository();
+        $studentCodes = $studentRepo->getStudentCodes(array('8-A'));
+        $studentCodes = $repo->getFormattedMessage($studentCodes, "hello123");
+        $data = $repo->createSMS($studentCodes, array(), "123", $id);
         var_dump($data);
     }
 

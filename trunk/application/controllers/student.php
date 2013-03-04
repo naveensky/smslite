@@ -68,14 +68,10 @@ class Student_Controller extends Base_Controller
         return Response::json(array('numberOfStudentInserted' => $studentInserted, 'rowNumbersError' => $result['errorRows']));
     }
 
-    public function get_get()
+    public function action_get($code = NULL)
     {
-        $get_code = Input::json();
-
-        if (empty($get_code))
+        if (empty($code))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
-
-        $code = $get_code->code;
 
         try {
             $result = $this->studentRepo->getStudent($code);
@@ -90,14 +86,10 @@ class Student_Controller extends Base_Controller
     }
 
 
-    public function post_delete()
+    public function action_delete($code = NULL)
     {
-        $delete_code = Input::Json();
-
-        if (empty($delete_code))
+        if (empty($code))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
-
-        $code = $delete_code->code;
 
         try {
             $result = $this->studentRepo->deleteStudent($code);
@@ -113,7 +105,7 @@ class Student_Controller extends Base_Controller
 
     }
 
-    public function post_update()
+    public function action_update()
     {
         $update_data = Input::json();
 

@@ -7,12 +7,6 @@ class TestTeacherController extends ControllerTestCase
     public function setUp()
     {
         $this->setupBeforeTests();
-        $this->loadSession();
-    }
-
-    protected static function loadSession()
-    {
-        \Session::started() or \Session::load();
     }
 
 //    public function testCreate()

@@ -27,8 +27,8 @@ class ReportRepository
             });
 
         if (!empty($classSections)) {
-            $that=$this->studentRepo;//to use context to anonymous function
-            $query = $query->where(function ($query) use ($classSections,$that) {
+            $that = $this->studentRepo; //to use context to anonymous function (passing $that to function)
+            $query = $query->where(function ($query) use ($classSections, $that) {
                 $count = 1;
                 foreach ($classSections as $classSection) {
 
@@ -53,18 +53,19 @@ class ReportRepository
         }
 
         if (!empty($studentName) && empty($teacherName)) {
-            //todo: add for teachers too
-            $query = $query->where('students.name', 'LIKE', "%$studentName%");
+            $studentName=Str::lower($studentName);
+            $query = $query->where(("students.name"), '~*', ".*$studentName.*");//todo:check for match alternative use like
         }
 
         if (!empty($teacherName) && empty($studentName)) {
-            $query = $query->where('teachers.name', 'LIKE', "%$teacherName%");
+            $teacherName=Str::lower($teacherName);
+            $query = $query->where('teachers.name', '~*', ".*$teacherName.*");//todo:check for match alternative use like
         }
 
         if (!empty($teacherName) && !empty($studentName)) {
             $query = $query->where(function ($query) use ($teacherName, $studentName) {
-                $query->where("students.name", 'LIKE', "%$studentName%");
-                $query->where("teachers.name", 'LIKE', "%$teacherName%");
+                $query->where("students.name", '~*', ".*$studentName.*");//todo:check for match alternative use like
+                $query->or_where("teachers.name", '~*', ".*$teacherName.*");//todo:check for match alternative use like
             });
         }
 
