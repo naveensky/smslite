@@ -87,6 +87,13 @@ angular.module('app')
             {"name": "Keshav Ashta", "mobiles": ["9891410701", "9810140705"]},
             {"name": "Raman Mittal", "mobiles": ["9891410701", "9810140705"]}
         ];
+
+        $scope.updatePreviewList = function (studentCodes, teacherCodes) {
+
+
+
+
+        }
     }
     ])
 ;
