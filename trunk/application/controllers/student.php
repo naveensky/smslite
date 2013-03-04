@@ -180,8 +180,8 @@ class Student_Controller extends Base_Controller
         $classSection = isset($data->classSection) ? $data->classSection : array();
         $morningBusRoutes = isset($data->morningBusRoute) ? $data->morningBusRoute : array();
         $eveningBusRoutes = isset($data->eveningBusRoute) ? $data->eveningBusRoute : array();
-        $pageCount = isset($data->pageCount) ? $data->pageCount : 25;
-        $pageNumber = isset($data->pageNumber) ? $data->pageNumber : 1;
+        $pageCount = isset($data->pageCount) ? $data->pageCount : AppConstants::PAGE_COUNT;
+        $pageNumber = isset($data->pageNumber) ? $data->pageNumber : AppConstants::PAGE_DEFAULT;
         $skip = $pageCount * ($pageNumber - 1);
         $filterStudents = $this->studentRepo->getStudents(
             $classSection, $morningBusRoutes, $eveningBusRoutes, $pageCount, $skip);
@@ -192,6 +192,38 @@ class Student_Controller extends Base_Controller
         return Response::eloquent($filterStudents);
     }
 
+    /**
+     * Function returns codes for students in json format as per the filter provided
+     *
+     * @return Laravel\Response - Json array for student code found
+     */
+    public function action_getStudentCodes()
+    {
+        $data = Input::json();
+        if (empty($data))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        $classSection = isset($data->classSection) ? $data->classSection : array();
+        $morningBusRoutes = isset($data->morningBusRoute) ? $data->morningBusRoute : array();
+        $eveningBusRoutes = isset($data->eveningBusRoute) ? $data->eveningBusRoute : array();
+        $pageCount = isset($data->pageCount) ? $data->pageCount : PHP_INT_MAX;
+        $pageNumber = isset($data->pageNumber) ? $data->pageNumber : 0;
+        $skip = $pageCount > 0 ? $pageCount * ($pageNumber - 1) : 0;
+
+        $filterStudents = $this->studentRepo->getStudents(
+            $classSection, $morningBusRoutes, $eveningBusRoutes, $pageCount, $skip);
+
+        if ($filterStudents == false && !is_array($filterStudents))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        $codes = array();
+
+        foreach ($filterStudents as $student) {
+            $codes[] = $student->code;
+        }
+
+        return Response::json($codes);
+    }
 
     public function action_exportStudent()
     {

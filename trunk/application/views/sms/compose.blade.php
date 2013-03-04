@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="span4">
+    <div class="span3">
         <div class="box">
             <h3><i class="icon-group icon-large"></i> Select People</h3>
             <label>Choose Filter</label>
@@ -48,13 +48,20 @@
             </div>
 
             <div id="filter-class" ng-show="filterType=='classFilter'">
-                <label>Choose classes</label>
+                <div class="control-group">
+                    <label class="control-label">Choose Classes</label>
 
-                <div ng-repeat="classVar in classes">
-                    <label class="checkbox">
-                        <input type="checkbox" ng-model="classVar.selected">{{classVar.class}}
-                    </label>
+                    <div ng-repeat="classVar in classes">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-model="classVar.selected">{{classVar.class}}
+                        </label>
+                    </div>
                 </div>
+
+                <div class="control-group">
+                    <button class="btn" ng-click="addByClass()">Add to List</button>
+                </div>
+
 
             </div>
             <div id="filter-department" ng-show="filterType=='departmentFilter'">
@@ -78,7 +85,7 @@
 
         </div>
     </div>
-    <div class="span5">
+    <div class="span6">
         <div class="box">
             <h3><i class="icon-envelope-alt icon-large"></i>Compose Message</h3>
 

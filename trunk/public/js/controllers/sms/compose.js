@@ -49,11 +49,15 @@ angular.module('app')
             return $scope.selectedStudents.length + $scope.selectedTeachers.length;
         }
 
+        $scope.addByClass = function(){
+
+        }
+
         $scope.selectedStudents = [];
 
         $scope.selectedTeachers = [];
 
-        $scope.selectedPeople = [
+                $scope.selectedPeople = [
             {"name": "Naveen Gupta", "mobiles": ["9891410701", "9810140705"]},
             {"name": "Hitanshu Malhotra", "mobiles": ["9891410701", "9810140705"]},
             {"name": "Akhil Gupta", "mobiles": ["9891410701", "9810140705"]},
