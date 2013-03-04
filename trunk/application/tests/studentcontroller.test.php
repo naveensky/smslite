@@ -201,4 +201,28 @@ class TestStudentController extends ControllerTestCase
         $this->markTestIncomplete('Test for more filters.');
     }
 
+    public function testGetStudentByCodes()
+    {
+        $user = $this->getSampleUser();
+        Auth::login($user->id);
+
+        $firstStudent = FactoryMuff::create('Student');
+        $firstStudent->schoolId = $user->school()->first()->id;
+        $firstStudent->code = 'code1';
+        $firstStudent->save();
+
+        $firstStudent = FactoryMuff::create('Student');
+        $firstStudent->schoolId = $user->school()->first()->id;
+        $firstStudent->code = 'code2';
+        $firstStudent->save();
+
+        $parameters = array(array('code1'));
+
+        Input::$json = (object)$parameters;
+
+        $response = $this->post('student@getStudentByCodes', array());
+        $this->assertEquals(200, $response->status());
+        $this->assertEquals(1, count(json_decode($response->content, true)));
+    }
+
 }
