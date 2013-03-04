@@ -7,6 +7,7 @@ abstract class ControllerTestCase extends PHPUnit_Framework_TestCase
         //start the bundles
         \Laravel\Bundle::start('factorymuff');
         $this->createDatabase();
+        ControllerTestCase::loadSession();
     }
 
     private function createDatabase()
@@ -20,6 +21,11 @@ abstract class ControllerTestCase extends PHPUnit_Framework_TestCase
     {
         shell_exec("php artisan migrate:install --env=testing");
         shell_exec("php artisan migrate:rebuild --env=testing");
+    }
+
+    protected static function loadSession()
+    {
+        \Session::started() or \Session::load();
     }
 
     protected function getSampleUser()
