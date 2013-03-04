@@ -68,7 +68,7 @@ class SMSRepository
         $codes = array_keys($studentCodes);
 
         //find all students for given codes
-        $students = $this->studentRepo->getStudentsFromCode($codes);
+        $students = $this->studentRepo->getStudentsFromCodes($codes);
 
         //array containing data for sms to be sent
         $insertedTransactions = array();

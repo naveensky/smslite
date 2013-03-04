@@ -217,6 +217,24 @@ class Student_Controller extends Base_Controller
         return Response::json($codes);
     }
 
+    public function action_getStudentByCodes()
+    {
+        $data = Input::json();
+
+        if (empty($data))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        try {
+            $students = $this->studentRepo->getStudentsFromCodes($data);
+        } catch (Exception $e) {
+            Log::exception($e);
+            return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
+        }
+
+        return Response::eloquent($students);
+    }
+
+
     public function action_exportStudent()
     {
         $data = Input::json();
