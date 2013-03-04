@@ -29,11 +29,6 @@ abstract class ControllerTestCase extends PHPUnit_Framework_TestCase
         shell_exec("php artisan migrate:rebuild --env=testing");
     }
 
-    protected static function loadSession()
-    {
-        \Session::started() or \Session::load();
-    }
-
     protected function getSampleUser()
     {
         $school = FactoryMuff::create('School');
