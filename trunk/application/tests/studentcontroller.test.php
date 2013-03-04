@@ -109,11 +109,56 @@ class TestStudentController extends ControllerTestCase
         $parameters = array(
             'classSection' => array('6-A')
         );
+
         Input::$json = (object)$parameters;
         $response = $this->post('student@getStudents', array());
         $this->assertEquals(200, $response->status());
         $this->assertEquals(1, count(json_decode($response->content, true)));
+
+        $this->markTestIncomplete('Test for more filters.');
     }
 
+    public function testGetStudentCodes()
+    {
+        $user = $this->getSampleUser();
+        Auth::login($user->id);
+
+        $firstStudent = FactoryMuff::create('Student');
+        $firstStudent->schoolId = $user->school()->first()->id;
+        $firstStudent->classStandard = "6";
+        $firstStudent->classSection = "A";
+        $firstStudent->save();
+
+        $firstStudent = FactoryMuff::create('Student');
+        $firstStudent->schoolId = $user->school()->first()->id;
+        $firstStudent->classStandard = "7";
+        $firstStudent->classSection = "A";
+        $firstStudent->save();
+
+        $parameters = array(
+            'classSection' => array('6-A')
+        );
+
+        Input::$json = (object)$parameters;
+        $response = $this->post('student@getStudentCodes', array());
+        $this->assertEquals(200, $response->status());
+        $this->assertEquals(1, count(json_decode($response->content, true)));
+
+        $this->markTestIncomplete('Test for more filters.');
+    }
+
+//    public function testimport()
+//    {
+//        Auth::login(1);
+//        $parameters = array(
+//            'class' => array('vi', 'x'),
+//            'section' => array('a', 'b', 'e'),
+//            'pageNumber'=>2
+//        );
+//        Input::$json = (object)$parameters;
+//        $response = $this->post('student@getStudents', array());
+//        var_dump($response);
+//        $this->assertTrue(true);
+//    }
 
 }

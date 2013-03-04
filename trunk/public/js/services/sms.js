@@ -28,6 +28,7 @@ module.factory('SmsService', ["$http", "$q", function ($http, $q) {
         getAvailableCredits: function () {
             var deferred = $q.defer();          //defer for data
 
+            //todo: think about updating it every 10 secs
             $http.get(
                     '/school/get_available_credits'
                 ).success(function (data) {

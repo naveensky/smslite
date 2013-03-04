@@ -73,6 +73,10 @@ class StudentRepository
     }
 
 
+    /**
+     * @param $students_codes
+     * @return array
+     */
     public function getStudentsFromCode($students_codes)
     {
         if (empty($students_codes))
@@ -181,7 +185,7 @@ class StudentRepository
         try {
             $student = $query->skip($skip)->take($perPage)->get();
         } catch (Exception $e) {
-            log::exception($e);
+            Log::exception($e);
             return false;
         }
 

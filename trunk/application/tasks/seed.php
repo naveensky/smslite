@@ -14,6 +14,8 @@ class Seed_Task
 {
     public function run($arguments)
     {
+        Bundle::start('factorymuff');
+
         //create sample school
         $school = new School();
         $school->name = "Sample School";
@@ -35,5 +37,19 @@ class Seed_Task
         $user->mobile = "9891410701";
 
         $school->users()->insert($user);
+
+        $smsCredit = new SMSCredit();
+        $smsCredit->schoolId = $school->id;
+        $smsCredit->credits = 100;
+        $smsCredit->save();
+
+        $student = FactoryMuff::create('Student');
+        $student->schoolId = $school->id;
+        $student->save();
+
+
+        $teacher = FactoryMuff::create('Teacher');
+        $teacher->schoolId = $school->id;
+        $teacher->save();
     }
 }

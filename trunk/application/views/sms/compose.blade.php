@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="span4">
+    <div class="span3">
         <div class="box">
             <h3><i class="icon-group icon-large"></i> Select People</h3>
             <label>Choose Filter</label>
@@ -48,18 +48,44 @@
             </div>
 
             <div id="filter-class" ng-show="filterType=='classFilter'">
-                <label>Choose classes</label>
+                <div class="control-group">
+                    <label class="control-label">Choose Classes</label>
+
+                    <div ng-repeat="classVar in classes">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-model="classVar.selected">{{classVar.class}}
+                        </label>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <button class="btn" ng-click="addByClass()">Add to List</button>
+                </div>
+
+
             </div>
             <div id="filter-department" ng-show="filterType=='departmentFilter'">
                 <label>Choose Departments</label>
+
+                <div ng-repeat="department in departments">
+                    <label class="checkbox">
+                        <input type="checkbox" ng-model="department.selected">{{department.department}}
+                    </label>
+                </div>
             </div>
             <div id="filter-route" ng-show="filterType=='routeFilter'">
                 <label>Choose Routes</label>
+
+                <div ng-repeat="route in morningRoutes">
+                    <label class="checkbox">
+                        <input type="checkbox" ng-model="route.selected">{{route.route}}
+                    </label>
+                </div>
             </div>
 
         </div>
     </div>
-    <div class="span5">
+    <div class="span6">
         <div class="box">
             <h3><i class="icon-envelope-alt icon-large"></i>Compose Message</h3>
 
@@ -121,7 +147,7 @@
                 <label>Credits Available <a href="#" class="pull-right">
                         <small><i class="icon-money"></i> Buy Credits</small></label>
                 </a>
-                <input class="input-block-level" type="text" readonly="readonly" ng-model="getSingleMessageCredit">
+                <input class="input-block-level" type="text" readonly="readonly" ng-model="creditsAvailable">
             </div>
             <button class="btn btn-block btn-success"><i class="icon-add"></i> Add to SMS Queue</button>
         </div>
