@@ -140,6 +140,7 @@ class TestStudentController extends ControllerTestCase
         );
 
         Input::$json = (object)$parameters;
+
         $response = $this->post('student@getStudentCodes', array());
         $this->assertEquals(200, $response->status());
         $this->assertEquals(1, count(json_decode($response->content, true)));

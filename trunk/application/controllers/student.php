@@ -200,7 +200,7 @@ class Student_Controller extends Base_Controller
         $eveningBusRoutes = isset($data->eveningBusRoute) ? $data->eveningBusRoute : array();
         $pageCount = isset($data->pageCount) ? $data->pageCount : PHP_INT_MAX;
         $pageNumber = isset($data->pageNumber) ? $data->pageNumber : 0;
-        $skip = $pageCount > 0 ? $pageCount * ($pageNumber - 1) : 0;
+        $skip = $pageNumber > 0 ? $pageCount * ($pageNumber - 1) : 0;
 
         $filterStudents = $this->studentRepo->getStudents(
             $classSection, $morningBusRoutes, $eveningBusRoutes, $pageCount, $skip);
