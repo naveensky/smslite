@@ -202,4 +202,52 @@ class Teacher_Controller extends Base_Controller
 
     }
 
+
+    /**
+     * Function returns codes for teachers and key map total mobile numbers in json format as per the filter provided
+     *
+     * @return Laravel\Response - Json array for teacher code and total mobile numbers credits found
+     */
+    public function action_getTeacherCodes()
+    {
+        $data = Input::json();
+        if (empty($data))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        $departments = isset($data->departments) ? $data->departments : array();
+        $morningBusRoutes = isset($data->morningBusRoute) ? $data->morningBusRoute : array();
+        $eveningBusRoutes = isset($data->eveningBusRoute) ? $data->eveningBusRoute : array();
+        $pageCount = isset($data->pageCount) ? $data->pageCount : PHP_INT_MAX;
+        $pageNumber = isset($data->pageNumber) ? $data->pageNumber : 0;
+        $skip = $pageNumber > 0 ? $pageCount * ($pageNumber - 1) : 0;
+
+        $FilterTeachers = $this->teacherRepo->getTeachers(
+            $departments, $morningBusRoutes, $eveningBusRoutes, $pageCount, $skip);
+
+        if ($FilterTeachers == false && !is_array($FilterTeachers))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        $codes = array();
+        foreach ($FilterTeachers as $teacher) {
+            $code=array();
+            $mobileCount = 0;
+            if ($teacher->mobile1 != "")
+                $mobileCount++;
+            if ($teacher->mobile2 != "")
+                $mobileCount++;
+            if ($teacher->mobile3 != "")
+                $mobileCount++;
+            if ($teacher->mobile4 != "")
+                $mobileCount++;
+            if ($teacher->mobile5 != "")
+                $mobileCount++;
+
+            $code['code'] = $teacher->code;
+            $code['mobileCount']=$mobileCount;
+            $codes[]=$code;
+        }
+
+        return Response::json($codes);
+    }
+
 }

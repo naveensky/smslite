@@ -209,9 +209,22 @@ class Student_Controller extends Base_Controller
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
         $codes = array();
-
         foreach ($filterStudents as $student) {
-            $codes[] = $student->code;
+            $code=array();
+            $mobileCount = 0;
+            if ($student->mobile1 != "")
+                $mobileCount++;
+            if ($student->mobile2 != "")
+                $mobileCount++;
+            if ($student->mobile3 != "")
+                $mobileCount++;
+            if ($student->mobile4 != "")
+                $mobileCount++;
+            if ($student->mobile5 != "")
+                $mobileCount++;
+            $code['code'] = $student->code;
+            $code['mobileCount']=$mobileCount;
+            $codes[]=$code;
         }
 
         return Response::json($codes);
@@ -223,9 +236,12 @@ class Student_Controller extends Base_Controller
 
         if (empty($data))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+        $studentCodes = isset($data->codes) ? $data->codes : array();
+        if (empty($studentCodes) || count($studentCodes) == 0)
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
         try {
-            $students = $this->studentRepo->getStudentsFromCodes($data);
+            $students = $this->studentRepo->getStudentsFromCodes($studentCodes);
         } catch (Exception $e) {
             Log::exception($e);
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);

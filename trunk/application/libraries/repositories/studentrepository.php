@@ -79,12 +79,6 @@ class StudentRepository
      */
     public function getStudentsFromCodes($students_codes)
     {
-        var_dump($students_codes);
-
-
-        if (empty($students_codes))
-            return array();
-
         $students = Student::where_in('code', $students_codes)->get();
         return $students;
     }

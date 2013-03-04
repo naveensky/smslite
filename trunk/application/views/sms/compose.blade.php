@@ -72,14 +72,29 @@
                         <input type="checkbox" ng-model="department.selected">{{department.department}}
                     </label>
                 </div>
+
+                <div class="control-group">
+                    <button class="btn" ng-click="addByDepartments()">Add to List</button>
+                </div>
             </div>
             <div id="filter-route" ng-show="filterType=='routeFilter'">
-                <label>Choose Routes</label>
+                <label>Choose Morning Routes</label>
 
                 <div ng-repeat="route in morningRoutes">
                     <label class="checkbox">
                         <input type="checkbox" ng-model="route.selected">{{route.route}}
                     </label>
+                </div>
+                <hr>
+                <label>Choose Evening Routes</label>
+
+                <div ng-repeat="route in eveningRoutes">
+                    <label class="checkbox">
+                        <input type="checkbox" ng-model="route.selected">{{route.route}}
+                    </label>
+                </div>
+                <div class="control-group">
+                    <button class="btn" ng-click="addByBusRoutes()">Add to List</button>
                 </div>
             </div>
 

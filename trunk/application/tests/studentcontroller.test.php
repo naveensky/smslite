@@ -216,7 +216,9 @@ class TestStudentController extends ControllerTestCase
         $firstStudent->code = 'code2';
         $firstStudent->save();
 
-        $parameters = array(array('code1'));
+        $parameters = array(
+            'codes'=>array('code1')
+        );
 
         Input::$json = (object)$parameters;
 

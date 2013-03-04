@@ -160,11 +160,13 @@ class School_Controller extends Base_Controller
         $user = Auth::user();
 
         if (!$ignoreStudents)
-            $data = array_merge($data, $this->schoolRepo->getMorningBusRoutes($user->schoolId));
+            $data1 = array_merge($data, $this->schoolRepo->getMorningBusRoutes($user->schoolId));
 
+        $data2 = $this->schoolRepo->getMorningBusRoutesOfTeachers($user->schoolId);
         if (!$ignoreTeachers)
-            $data = array_merge($data, $this->schoolRepo->getMorningBusRoutesOfTeachers($user->schoolId));
+            $data3 = array_merge($data1, $data2);
 
+        $data = array_diff($data3, array_intersect($data1, $data2));
         return Response::json($data);
     }
 
@@ -174,11 +176,13 @@ class School_Controller extends Base_Controller
         $user = Auth::user();
 
         if (!$ignoreStudents)
-            $data = array_merge($data, $this->schoolRepo->getEveningBusRoutes($user->schoolId));
+            $data1 = array_merge($data, $this->schoolRepo->getEveningBusRoutes($user->schoolId));
 
+        $data2 = $this->schoolRepo->getEveningBusRoutesOfTeachers($user->schoolId);
         if (!$ignoreTeachers)
-            $data = array_merge($data, $this->schoolRepo->getEveningBusRoutes($user->schoolId));
+            $data3 = array_merge($data1, $data2);
 
+        $data = array_diff($data3, array_intersect($data1, $data2));
         return Response::json($data);
     }
 
