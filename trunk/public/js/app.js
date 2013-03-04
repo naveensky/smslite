@@ -151,3 +151,6 @@ function log(type, message) {
     //type of messages - info, error, fatal, debug, trace, warn,
     console.log(type + " : " + message);
 }
+
+
+

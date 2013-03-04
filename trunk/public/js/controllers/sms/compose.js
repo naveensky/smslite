@@ -7,26 +7,26 @@ angular.module('app')
         $scope.message = "";
         $scope.creditsAvailable = smsService.getAvailableCredits();
 
-        $scope.classes = schoolService.getClasses().then(function (classes) {
-            return classes.map(function (value) {
+        schoolService.getClasses().then(function (classes) {
+            $scope.classes = classes.map(function (value) {
                 return {"class": value, "selected": false};
             })
         });
 
-        $scope.morningRoutes = schoolService.getMorningBusRoutes(false, false).then(function (routes) {
-            return routes.map(function (value) {
+        schoolService.getMorningBusRoutes(false, false).then(function (routes) {
+            $scope.morningRoutes = routes.map(function (value) {
                 return {"route": value, "selected": false};
             })
         });
 
-        $scope.eveningRoutes = schoolService.getEveningBusRoutes(false, false).then(function (routes) {
-            return routes.map(function (value) {
+        schoolService.getEveningBusRoutes(false, false).then(function (routes) {
+            $scope.eveningRoutes = routes.map(function (value) {
                 return {"route": value, "selected": false};
             })
         });
 
-        $scope.departments = schoolService.getDepartments().then(function (deparments) {
-            return deparments.map(function (value) {
+        schoolService.getDepartments().then(function (deparments) {
+            $scope.departments = deparments.map(function (value) {
                 return {"department": value, "selected": false};
             })
         });
@@ -49,19 +49,44 @@ angular.module('app')
             return $scope.selectedStudents.length + $scope.selectedTeachers.length;
         }
 
-        $scope.addByClass = function(){
+        $scope.addByClass = function () {
+            var selectedClasses = [];
 
+            //get all selected classes
+            for (var i = 0; i < $scope.classes.length; ++i) {
+                if ($scope.classes[i].selected)
+                    selectedClasses.push($scope.classes[i].class);
+            }
+
+            //make post call for students
+            $http.post(
+                '/student/getStudentCodes',
+                {"classSection": selectedClasses}
+            ).success(function (data) {
+                    if (Array.isArray(data)) {
+                        $scope.selectedStudents.push(data);
+                        $scope.selectedStudents = $scope.selectedStudents.unique();
+                    }
+
+                    console.log(Array.isArray(data));
+
+                    //todo: log this as this is not an array
+                }).error(function (e) {
+                    log('error', e)
+                });
         }
 
         $scope.selectedStudents = [];
 
         $scope.selectedTeachers = [];
 
-                $scope.selectedPeople = [
+        $scope.selectedPeople = [
             {"name": "Naveen Gupta", "mobiles": ["9891410701", "9810140705"]},
             {"name": "Hitanshu Malhotra", "mobiles": ["9891410701", "9810140705"]},
             {"name": "Akhil Gupta", "mobiles": ["9891410701", "9810140705"]},
             {"name": "Keshav Ashta", "mobiles": ["9891410701", "9810140705"]},
             {"name": "Raman Mittal", "mobiles": ["9891410701", "9810140705"]}
         ];
-    }]);
+    }
+    ])
+;
