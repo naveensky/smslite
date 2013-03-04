@@ -150,7 +150,6 @@ class SMS_Controller extends Base_Controller
         return Response::make(__('responseerror.sms_transaction'), HTTPConstants::SUCCESS_CODE);
     }
 
-
     public function get_get()
     {
         $sms_code = Input::json();

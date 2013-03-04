@@ -73,6 +73,10 @@ class StudentRepository
     }
 
 
+    /**
+     * @param $students_codes
+     * @return array
+     */
     public function getStudentsFromCode($students_codes)
     {
         if (empty($students_codes))

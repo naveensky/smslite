@@ -160,10 +160,10 @@ class School_Controller extends Base_Controller
         $user = Auth::user();
 
         if (!$ignoreStudents)
-            array_push($data, $this->schoolRepo->getMorningBusRoutes($user->schoolId));
+            $data = array_merge($data, $this->schoolRepo->getMorningBusRoutes($user->schoolId));
 
         if (!$ignoreTeachers)
-            array_push($data, $this->schoolRepo->getMorningBusRoutesOfTeachers($user->schoolId));
+            $data = array_merge($data, $this->schoolRepo->getMorningBusRoutesOfTeachers($user->schoolId));
 
         return Response::json($data);
     }
@@ -174,10 +174,10 @@ class School_Controller extends Base_Controller
         $user = Auth::user();
 
         if (!$ignoreStudents)
-            array_push($data, $this->schoolRepo->getEveningBusRoutes($user->schoolId));
+            $data = array_merge($data, $this->schoolRepo->getEveningBusRoutes($user->schoolId));
 
         if (!$ignoreTeachers)
-            array_push($data, $this->schoolRepo->getEveningBusRoutes($user->schoolId));
+            $data = array_merge($data, $this->schoolRepo->getEveningBusRoutes($user->schoolId));
 
         return Response::json($data);
     }
