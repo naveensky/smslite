@@ -185,7 +185,7 @@ class StudentRepository
         try {
             $student = $query->skip($skip)->take($perPage)->get();
         } catch (Exception $e) {
-            log::exception($e);
+            Log::exception($e);
             return false;
         }
 
