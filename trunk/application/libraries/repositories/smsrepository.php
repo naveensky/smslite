@@ -255,9 +255,12 @@ class SMSRepository
 
     public function getFormattedMessage($studentCodes, $messageTemplate)
     {
+
         $messages = array();
         foreach ($studentCodes as $studentCode) {
-            $messages["$studentCode"] = $this->formatMessage($messageTemplate);
+
+            $code=$studentCode->code;
+            $messages["$code"] = $this->formatMessage($messageTemplate);
         }
         return $messages;
     }
@@ -266,6 +269,7 @@ class SMSRepository
     {
         $messages = array();
         foreach ($teacherCodes as $teacherCode) {
+            $code=$teacherCode->code;
             $messages["$teacherCode"] = $this->formatMessage($messageTemplate);
         }
         return $messages;
@@ -275,7 +279,8 @@ class SMSRepository
     {
         $messages = array();
         foreach ($teacherCodes as $teacherCode) {
-            $messages["$teacherCode"] = $this->formatMessage($messageTemplate);
+            $code=$teacherCode->code;
+            $messages["$code"] = $this->formatMessage($messageTemplate);
         }
         return $messages;
     }

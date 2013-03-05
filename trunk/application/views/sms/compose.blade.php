@@ -1,9 +1,17 @@
+<div class="row" ng-show="queueMessageSuccess" style="margin-left:0px">
+    <div class="alert alert-success">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        <h5><i class="icon-ok-sign"></i> Message Successfully Queued</h5>
+         Total credits consumed {{finalCreditUsed}}<br/>
+        <a href="#/sms">Click here to send new sms</a>
+    </div>
+</div>
 <div class="row">
     <div class="span3">
         <div class="box">
             <h3><i class="icon-group icon-large"></i> Select People</h3>
             <label>Choose Filter</label>
-            <select ng-model="filterType">
+            <select class="filter" ng-model="filterType" ng-change="changeFilterSelection(filterType)">
                 <option value="classFilter">By Classes</option>
                 <option value="routeFilter">By Bus Routes</option>
                 <option value="departmentFilter">By Departments</option>
@@ -15,7 +23,7 @@
                 <label>Enter a Name or a Mobile No.</label>
 
                 <div class="input-append">
-                    <input type="text" class="span3">
+                    <input type="text" class="span2">
                     <button class="btn" type="button"><i class="icon-search"></i></button>
                 </div>
                 <table class="table table-condensed">
@@ -59,7 +67,8 @@
                 </div>
 
                 <div class="control-group">
-                    <button class="btn" ng-click="addByClass()">Add to List</button>
+                    <button class="btn" ng-disabled="countSelectedClasses()==0" ng-click="addByClass()">Add to List
+                    </button>
                 </div>
 
 
@@ -74,7 +83,9 @@
                 </div>
 
                 <div class="control-group">
-                    <button class="btn" ng-click="addByDepartments()">Add to List</button>
+                    <button class="btn" ng-disabled="countSelectedDepartments()==0" ng-click="addByDepartments()">Add to
+                        List
+                    </button>
                 </div>
             </div>
             <div id="filter-route" ng-show="filterType=='routeFilter'">
@@ -104,12 +115,18 @@
         <div class="box">
             <h3><i class="icon-envelope-alt icon-large"></i>Compose Message</h3>
 
-            <textarea class="input-block-level" rows="5" ng-model="message"
+            <textarea class="input-block-level" rows="5" ng-model="message" ng-required="true"
                       placeholder="enter your message here..."></textarea>
             <span ng-show="message.length>0" class="help-block">
                 <i>
                     {{message.length}} character, {{getSingleMessageCredit()}} credit(s) required per person to
                     send this text.
+                </i>
+
+            </span>
+            <span ng-show="message.length>320" class="text-error">
+                <i>
+                    maximum character limit exceeded {{320-message.length}}
                 </i>
             </span>
 
@@ -164,7 +181,7 @@
                 </a>
                 <input class="input-block-level" type="text" readonly="readonly" ng-model="creditsAvailable">
             </div>
-            <button class="btn btn-block btn-success"><i class="icon-add"></i> Add to SMS Queue</button>
+            <button ng-disabled="checkBeforeSend()" ng-click="queueSMS()" class="btn btn-block btn-success"><i class="icon-add"></i> Add to SMS Queue</button>
         </div>
     </div>
 </div>

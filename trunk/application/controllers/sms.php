@@ -130,16 +130,17 @@ class SMS_Controller extends Base_Controller
         if (empty($data->studentCodes) && empty($data->teachersCodes) && empty($data->message))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
-        if (empty($data->user_id))
-            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
-
         $message = $data->message;
         $studentCodes = $data->studentCodes;
-        $user_id = $data->user_id;
+        $userId = Auth::user()->id;
         $sender_id = isset($data->sender_id) ? $data->sender_id : "GAPS";
         $teacherCodes = $data->teacherCodes;
+        //calling function for creating key value pair for studentCode => message
+        $studentCodes = $this->smsRepo->getFormattedMessage($studentCodes, $message);
+        //getting key value pair for the teacherCode => message
+        $teacherCodes = $this->smsRepo->getFormattedMessageDepartment($teacherCodes, $message);
         try {
-            $result = $this->smsRepo->createSMS($message, $studentCodes, $teacherCodes, $sender_id, $user_id);
+            $result = $this->smsRepo->createSMS($studentCodes, $teacherCodes, $sender_id, $userId);
         } catch (PDOException $e) {
             Log::exception($e);
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
@@ -147,7 +148,7 @@ class SMS_Controller extends Base_Controller
         if (empty($result))
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
 
-        return Response::make(__('responseerror.sms_transaction'), HTTPConstants::SUCCESS_CODE);
+        return Response::json(array('status'=>true,'result'=>$result));
     }
 
     public function get_get()

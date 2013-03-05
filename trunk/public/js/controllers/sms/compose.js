@@ -5,6 +5,16 @@ angular.module('app')
     .controller('Sms_Compose', ['$scope', '$http', 'SmsService', 'SchoolService', function ($scope, $http, smsService, schoolService) {
         $scope.filterType = 'classFilter';
         $scope.message = "";
+        $scope.selectedStudents = [];
+        $scope.selectedTeachers = [];
+        $scope.filterChange = false;
+        $scope.queueMessageSuccess = false;
+        $scope.finalCreditUsed = '';
+        $scope.monitorFunction = function () {
+            $scope.previousFilterSelected = $scope.filterType;
+        }
+
+        $scope.monitorFunction();
         $scope.creditsAvailable = smsService.getAvailableCredits();
 
         schoolService.getClasses().then(function (classes) {
@@ -36,18 +46,55 @@ angular.module('app')
         };
 
         $scope.getCreditsRequired = function () {
-            return 5;
-            //todo:pending
+            return ($scope.getSingleMessageCredit($scope.message) * $scope.totalSMS());
         };
 
         $scope.totalSMS = function () {
-            return 10;
-            //todo: pending
-        };
+
+            var countSMS = 0;
+            angular.forEach($scope.selectedStudents, function (selectedStudent) {
+                countSMS += selectedStudent.mobileCount;
+            })
+
+            angular.forEach($scope.selectedTeachers, function (selectedTeacher) {
+                countSMS += selectedTeacher.mobileCount;
+            })
+
+            return countSMS;
+        }
+
 
         $scope.getPeopleCount = function () {
             return $scope.selectedStudents.length + $scope.selectedTeachers.length;
         }
+
+        $scope.countSelectedClasses = function () {
+            if (!Array.isArray($scope.classes))
+                return 0;
+
+            //count selected classes
+            var count = 0;
+            for (var i = 0; i < $scope.classes.length; ++i) {
+                if ($scope.classes[i].selected)
+                    count++;
+            }
+
+            return count;
+        }
+
+        $scope.countSelectedDepartments = function () {
+            if (!Array.isArray($scope.departments))
+                return 0;
+
+            //count selected departments
+            var count = 0;
+            for (var i = 0; i < $scope.departments.length; ++i) {
+                if ($scope.departments[i].selected)
+                    count++;
+            }
+            return count;
+        }
+
 
         $scope.addByClass = function () {
             var selectedClasses = [];
@@ -64,22 +111,24 @@ angular.module('app')
                 {"classSection": selectedClasses}
             ).success(function (data) {
                     if (Array.isArray(data)) {
-                        $scope.selectedStudents.push(data.code);
+//                        $scope.selectedStudents = $scope.selectedStudents.concat(data);
+                        $scope.selectedTeachers = [];
+                        $scope.selectedStudents = data;
                         $scope.selectedStudents = $scope.selectedStudents.unique();
                     }
-
-                    console.log(Array.isArray(data));
 
                     //todo: log this as this is not an array
                 }).error(function (e) {
                     log('error', e)
                 });
+
+
         }
 
         $scope.addByDepartments = function () {
             var selectedDepartments = [];
 
-            //get all selected classes
+            //get all selected departments
             for (var i = 0; i < $scope.departments.length; ++i) {
                 if ($scope.departments[i].selected)
                     selectedDepartments.push($scope.departments[i].department);
@@ -91,13 +140,11 @@ angular.module('app')
                 {"departments": selectedDepartments}
             ).success(function (data) {
                     if (Array.isArray(data)) {
-                        $scope.selectedTeachers.push(data);
+                        $scope.selectedStudents = [];
+                        $scope.selectedTeachers = data;
                         $scope.selectedTeachers = $scope.selectedTeachers.unique();
                     }
-
-                    console.log(Array.isArray(data));
-
-                    //todo: log this as this is not an array
+                    //todo: log if not array
                 }).error(function (e) {
                     log('error', e)
                 });
@@ -121,80 +168,94 @@ angular.module('app')
 
 
             //make post call for studentcodes from morningBusRoutes
-            $http.post(
-                '/student/getStudentCodes',
-                {"morningBusRoute": selectedMorningBusRoutes}
+            if (selectedMorningBusRoutes.length != 0) {
+                $http.post(
+                    '/student/getStudentCodes',
+                    {"morningBusRoute": selectedMorningBusRoutes}
 
-            ).success(function (data) {
-                    if (Array.isArray(data)) {
-                        $scope.selectedStudents.push(data);
-                        $scope.selectedStudents = $scope.selectedStudents.unique();
-                    }
-                    console.log(Array.isArray(data));
+                ).success(function (data) {
+                        if (Array.isArray(data)) {
+                            $scope.selectedStudents = data;
+                            $scope.selectedStudents = $scope.selectedStudents.unique();
+                        }
+                        console.log(Array.isArray(data));
 
-                    //todo: log this as this is not an array
-                }).error(function (e) {
-                    log('error', e)
-                });
+                        //todo: log this as this is not an array
+                    }).error(function (e) {
+                        log('error', e)
+                    });
 
-            //make post call for studentcodes from morningBusRoutes
-            $http.post(
-                '/student/getStudentCodes',
-                {"eveningBusRoute": selectedEveningBusRoutes}
-
-            ).success(function (data) {
-                    if (Array.isArray(data)) {
-                        $scope.selectedStudents.push(data);
-                        $scope.selectedStudents = $scope.selectedStudents.unique();
-                    }
-                    console.log(Array.isArray(data));
-
-                    //todo: log this as this is not an array
-                }).error(function (e) {
-                    log('error', e)
-                });
-
-
-            //make post call for teacherCodes from morning bus routes
-            $http.post(
-                '/teacher/getTeacherCodes',
-                {"morningBusRoute": selectedMorningBusRoutes
-                    }
-            ).success(function (data) {
-                    if (Array.isArray(data)) {
-                        $scope.selectedTeachers.push(data);
-                        $scope.selectedTeachers = $scope.selectedTeachers.unique();
-                    }
-                    console.log(Array.isArray(data));
-
-                    //todo: log this as this is not an array
-                }).error(function (e) {
-                    log('error', e)
-                });
-
-
-        //make post call for teacherCodes from morning bus routes
-        $http.post(
-            '/teacher/getTeacherCodes',
-            {"EveningBusRoute": selectedEveningBusRoutes
             }
-        ).success(function (data) {
-                if (Array.isArray(data)) {
-                    $scope.selectedTeachers.push(data);
-                    $scope.selectedTeachers = $scope.selectedTeachers.unique();
-                }
-                console.log(Array.isArray(data));
+            //make post call for studentcodes from morningBusRoutes
+            if (selectedEveningBusRoutes.length != 0) {
+                $http.post(
+                    '/student/getStudentCodes',
+                    {"eveningBusRoute": selectedEveningBusRoutes}
 
-                //todo: log this as this is not an array
-            }).error(function (e) {
-                log('error', e)
-            });
-    }
+                ).success(function (data) {
+                        if (Array.isArray(data)) {
+                            $scope.selectedStudents = data;
+                            $scope.selectedStudents = $scope.selectedStudents.unique();
+                        }
+                        console.log(Array.isArray(data));
 
-        $scope.selectedStudents = [];
+                        //todo: log this as this is not an array
+                    }).error(function (e) {
+                        log('error', e)
+                    });
+            }
+            if (selectedMorningBusRoutes.length != 0) {
+                //make post call for teacherCodes from morning bus routes
+                $http.post(
+                    '/teacher/getTeacherCodes',
+                    {"morningBusRoute": selectedMorningBusRoutes
+                    }
+                ).success(function (data) {
+                        if (Array.isArray(data)) {
+                            $scope.selectedTeachers = data;
+                            $scope.selectedTeachers = $scope.selectedTeachers.unique();
+                        }
+                        console.log(Array.isArray(data));
 
-        $scope.selectedTeachers = [];
+                        //todo: log this as this is not an array
+                    }).error(function (e) {
+                        log('error', e)
+                    });
+            }
+            if (selectedEveningBusRoutes.length != 0) {
+                //make post call for teacherCodes from morning bus routes
+                $http.post(
+                    '/teacher/getTeacherCodes',
+                    {"eveningBusRoute": selectedEveningBusRoutes
+                    }
+                ).success(function (data) {
+                        if (Array.isArray(data)) {
+                            $scope.selectedTeachers = data;
+                            $scope.selectedTeachers = $scope.selectedTeachers.unique();
+                        }
+                        console.log(Array.isArray(data));
 
+                        //todo: log this as this is not an array
+                    }).error(function (e) {
+                        log('error', e)
+                    });
+            }
+
+        }
+
+        $scope.changeFilterSelection = function (selection) {
+            var confirmation = confirm("Are you sure you want to change the filter?");
+            if (confirmation) {
+                $scope.filterType = selection;
+                $scope.monitorFunction();
+                $scope.selectedStudents = [];
+                $scope.selectedTeachers = [];
+            }
+            else {
+                $scope.filterType = $scope.previousFilterSelected;
+            }
+
+        }
         $scope.selectedPeople = [
             {"name": "Naveen Gupta", "mobiles": ["9891410701", "9810140705"]},
             {"name": "Hitanshu Malhotra", "mobiles": ["9891410701", "9810140705"]},
@@ -208,7 +269,40 @@ angular.module('app')
 
         }
 
-        $scope.get
+        $scope.checkBeforeSend = function () {
+
+            if ($scope.message == "")
+                return true;
+            if ($scope.message.length > 320 || $scope.getCreditsRequired() > $scope.creditsAvailable || $scope.totalSMS() <= 0 || $scope.message.length == 0 || $scope.queueMessageSuccess == true)
+                return true;
+
+            return false;
+        }
+
+        $scope.queueSMS = function () {
+
+            //make post call for queue the message
+            $http.post(
+                '/sms/post_create',
+                {"studentCodes": $scope.selectedStudents,
+                    "teacherCodes": $scope.selectedTeachers,
+                    "message": $scope.message
+                }
+            ).success(function (data) {
+                    if (data.status = true) {
+                        $scope.queueMessageSuccess = true;
+                        if (data.result.numberOfCreditsUsed)
+                            $scope.finalCreditUsed = data.result.numberOfCreditsUsed;
+                        if (data.result.numberOfCreditsUsedTeachers)
+                            $scope.finalCreditUsed += data.result.numberOfCreditsUsedTeachers;
+                    }
+                    console.log(data);
+//                    console.log(Array.isArray(data));
+                    //todo: log this as this is not an array
+                }).error(function (e) {
+                    log('error', e)
+                });
+        }
     }
     ])
 ;

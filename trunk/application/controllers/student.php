@@ -210,7 +210,7 @@ class Student_Controller extends Base_Controller
 
         $codes = array();
         foreach ($filterStudents as $student) {
-            $code=array();
+            $row = array();
             $mobileCount = 0;
             if ($student->mobile1 != "")
                 $mobileCount++;
@@ -222,12 +222,11 @@ class Student_Controller extends Base_Controller
                 $mobileCount++;
             if ($student->mobile5 != "")
                 $mobileCount++;
-            $code['code'] = $student->code;
-            $code['mobileCount']=$mobileCount;
-            $codes[]=$code;
+            $row['code'] = $student->code;
+            $row['mobileCount'] = $mobileCount;
+            $codes[] = $row;
         }
-
-        return Response::json($codes);
+        return Response::json($codes, HTTPConstants::SUCCESS_CODE);
     }
 
     public function action_getStudentByCodes()

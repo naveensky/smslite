@@ -158,6 +158,9 @@ class School_Controller extends Base_Controller
     {
         $data = array();
         $user = Auth::user();
+        $data1 = array();
+        $data2 = array();
+        $data3 = array();
 
         if (!$ignoreStudents)
             $data1 = array_merge($data, $this->schoolRepo->getMorningBusRoutes($user->schoolId));
@@ -174,7 +177,9 @@ class School_Controller extends Base_Controller
     {
         $data = array();
         $user = Auth::user();
-
+        $data1 = array();
+        $data2 = array();
+        $data3 = array();
         if (!$ignoreStudents)
             $data1 = array_merge($data, $this->schoolRepo->getEveningBusRoutes($user->schoolId));
 
@@ -188,6 +193,6 @@ class School_Controller extends Base_Controller
 
     public function action_get_available_credits()
     {
-        return Response::json($this->smsRepo->getRemainingCredits(Auth::user()->schoolId));
+        return Response::json(array($this->smsRepo->getRemainingCredits(Auth::user()->schoolId)));
     }
 }
