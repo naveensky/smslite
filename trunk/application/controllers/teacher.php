@@ -250,4 +250,49 @@ class Teacher_Controller extends Base_Controller
         return Response::json($codes);
     }
 
+    public function action_findTeacherByNameOrMobile()
+    {
+        $data = Input::json();
+        if (empty($data))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+        $searchValue = isset($data->searchValue) ? $data->searchValue : '';
+
+        if (empty($searchValue))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        Auth::login(1);
+        $schoolId = Auth::user()->schoolId;
+        $teachers = $this->teacherRepo->getTeacherByNameOrMobile($schoolId, $searchValue);
+        if ($teachers == false && !is_array($teachers))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        $teacherData=array();
+        foreach($teachers as $teacher)
+        {
+            $row=array();
+            $mobileCount = 0;
+            if ($teacher->mobile1 != "")
+                $mobileCount++;
+            if ($teacher->mobile2 != "")
+                $mobileCount++;
+            if ($teacher->mobile3 != "")
+                $mobileCount++;
+            if ($teacher->mobile4 != "")
+                $mobileCount++;
+            if ($teacher->mobile5 != "")
+                $mobileCount++;
+            $row['name']=$teacher->name;
+            $row['mobile1']=$teacher->mobile1;
+            $row['mobile2']=$teacher->mobile2;
+            $row['mobile3']=$teacher->mobile3;
+            $row['mobile4']=$teacher->mobile4;
+            $row['mobile5']=$teacher->mobile5;
+            $row['code']=$teacher->code;
+            $row['mobileCount']=$mobileCount;
+            $teacherData[]=$row;
+        }
+        return Response::json($teacherData);
+
+    }
+
 }

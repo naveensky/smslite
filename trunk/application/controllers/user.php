@@ -28,6 +28,10 @@ class User_Controller extends Base_Controller
 
     public function action_login()
     {
+        if (Auth::check())
+        {
+            return "You are already Login";
+        }
         return View::make('user/login');
     }
 

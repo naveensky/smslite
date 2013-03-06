@@ -2,7 +2,7 @@
     <div class="alert alert-success">
         <button type="button" class="close" data-dismiss="alert">×</button>
         <h5><i class="icon-ok-sign"></i> Message Successfully Queued</h5>
-         Total credits consumed {{finalCreditUsed}}<br/>
+        Total credits consumed {{finalCreditUsed}}<br/>
         <a href="#/sms">Click here to send new sms</a>
     </div>
 </div>
@@ -23,10 +23,11 @@
                 <label>Enter a Name or a Mobile No.</label>
 
                 <div class="input-append">
-                    <input type="text" class="span2">
-                    <button class="btn" type="button"><i class="icon-search"></i></button>
+                    <input type="text" ng-model="searchValue" class="span2">
+                    <button class="btn" ng-disabled="searchValue.length==0" ng-click="searchPeople()" type="button"><i
+                            class="icon-search"></i></button>
                 </div>
-                <table class="table table-condensed">
+                <table ng-show="searchResults.length>0" class="table table-condensed">
                     <thead>
                     <tr>
                         <th>&nbsp;</th>
@@ -34,27 +35,35 @@
                         <th>Phone</th>
                     </tr>
                     </thead>
+                    <tfoot>
+                    <td colspan="6">
+                        <div class="pagination pull-right">
+                            <ul>
+                                <li ng-class="{disabled: currentPage == 0}">
+                                    <a href ng-click="prevPage()">« Prev</a>
+                                </li>
+                                <li ng-repeat="n in range(pagedItems.length)"
+                                    ng-class="{active: n == currentPage}"
+                                    ng-click="setPage()">
+                                    <a href ng-bind="n + 1">1</a>
+                                </li>
+                                <li ng-class="{disabled: currentPage == pagedItems.length - 1}">
+                                    <a href ng-click="nextPage()">Next »</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                    </tfoot>
                     <tbody>
-                    <tr>
-                        <td><input type="checkbox"></td>
-                        <td>Naveen Gupta</td>
-                        <td>9891410701, +</td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox"></td>
-                        <td>Naveen Gupta</td>
-                        <td>9891410701, +</td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox"></td>
-                        <td>Naveen Gupta</td>
-                        <td>9891410701 +</td>
+                    <tr ng-class="getStatusCss(people)" ng-repeat="people in pagedItems[currentPage]">
+                        <td><input ng-click="setStatus(people.searchPeople.selected)" ng-model="people.searchPeople.selected" type="checkbox"></td>
+                        <td>{{people.searchPeople.name}}</td>
+                        <td>{{people.searchPeople.mobile1}}, +</td>
                     </tr>
                     </tbody>
                 </table>
-                <button class="btn">Add</button>
+                <button ng-show="searchResults.length>0" class="btn">Add</button>
             </div>
-
             <div id="filter-class" ng-show="filterType=='classFilter'">
                 <div class="control-group">
                     <label class="control-label">Choose Classes</label>
@@ -105,7 +114,7 @@
                     </label>
                 </div>
                 <div class="control-group">
-                    <button class="btn" ng-click="addByBusRoutes()">Add to List</button>
+                    <button class="btn" ng-disabled="countRoutes()==0" ng-click="addByBusRoutes()">Add to List</button>
                 </div>
             </div>
 
@@ -181,7 +190,13 @@
                 </a>
                 <input class="input-block-level" type="text" readonly="readonly" ng-model="creditsAvailable">
             </div>
-            <button ng-disabled="checkBeforeSend()" ng-click="queueSMS()" class="btn btn-block btn-success"><i class="icon-add"></i> Add to SMS Queue</button>
+            <button ng-disabled="checkBeforeSend()" ng-click="queueSMS()" class="btn btn-block btn-success"><i
+                    class="icon-add"></i> Add to SMS Queue
+            </button>
+            <div class="alert alert-error margin-top-20" ng-show="errorSMS">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                {{errorMessage}}
+            </div>
         </div>
     </div>
 </div>

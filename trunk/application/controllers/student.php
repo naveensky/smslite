@@ -271,4 +271,48 @@ class Student_Controller extends Base_Controller
 
     }
 
+    public function action_findStudentByNameOrMobile()
+    {
+        $data = Input::json();
+        if (empty($data))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+        $searchValue = isset($data->searchValue) ? $data->searchValue : '';
+        if (empty($searchValue))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        Auth::login(1);
+        $schoolId = Auth::user()->schoolId;
+        $students = $this->studentRepo->getStudentByNameOrMobile($schoolId, $searchValue);
+        if ($students == false && !is_array($students))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        $studentData = array();
+        foreach ($students as $student) {
+            $row = array();
+            $mobileCount = 0;
+            if ($student->mobile1 != "")
+                $mobileCount++;
+            if ($student->mobile2 != "")
+                $mobileCount++;
+            if ($student->mobile3 != "")
+                $mobileCount++;
+            if ($student->mobile4 != "")
+                $mobileCount++;
+            if ($student->mobile5 != "")
+                $mobileCount++;
+            $row['name'] = $student->name;
+            $row['mobile1'] = $student->mobile1;
+            $row['mobile2'] = $student->mobile2;
+            $row['mobile3'] = $student->mobile3;
+            $row['mobile4'] = $student->mobile4;
+            $row['mobile5'] = $student->mobile5;
+            $row['code'] = $student->code;
+            $row['mobileCount'] = $mobileCount;
+            $studentData[] = $row;
+        }
+
+        return Response::json($studentData);
+
+    }
+
 }

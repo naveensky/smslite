@@ -127,28 +127,36 @@ class SMS_Controller extends Base_Controller
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
         }
 
-        if (empty($data->studentCodes) && empty($data->teachersCodes) && empty($data->message))
+
+        $studentsCodes = isset($data->studentCodes) ? $data->studentCodes : array();
+        $teachersCodes = isset($data->teacherCodes) ? $data->teacherCodes : array();
+        $message = isset($data->message) ? $data->message : '';
+
+        if (empty($studentsCodes) && empty($teachersCodes))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
+        if (empty($message))
+            return Response::json(array('status' => false, 'message' => __('responsemessages.empty_message')), HTTPConstants::SUCCESS_CODE);
+
         $message = $data->message;
-        $studentCodes = $data->studentCodes;
+
         $userId = Auth::user()->id;
         $sender_id = isset($data->sender_id) ? $data->sender_id : "GAPS";
-        $teacherCodes = $data->teacherCodes;
+
         //calling function for creating key value pair for studentCode => message
-        $studentCodes = $this->smsRepo->getFormattedMessage($studentCodes, $message);
+        $studentCodes = $this->smsRepo->getFormattedMessage($studentsCodes, $message);
         //getting key value pair for the teacherCode => message
-        $teacherCodes = $this->smsRepo->getFormattedMessageDepartment($teacherCodes, $message);
+        $teacherCodes = $this->smsRepo->getFormattedMessageDepartment($teachersCodes, $message);
         try {
             $result = $this->smsRepo->createSMS($studentCodes, $teacherCodes, $sender_id, $userId);
         } catch (PDOException $e) {
             Log::exception($e);
-            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+            return Response::json(array('status' => false, 'message' => __('responsemessages.pdo_error_sms')), HTTPConstants::SUCCESS_CODE);
         }
-        if (empty($result))
-            return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
+        if ($result == false && !is_array($result))
+            return Response::json(array('status' => false, 'message' => __('responsemessages.pdo_error_sms')), HTTPConstants::SUCCESS_CODE);
 
-        return Response::json(array('status'=>true,'result'=>$result));
+        return Response::json(array('status' => true, 'result' => $result));
     }
 
     public function get_get()

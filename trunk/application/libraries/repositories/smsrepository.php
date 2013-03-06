@@ -255,10 +255,8 @@ class SMSRepository
 
     public function getFormattedMessage($studentCodes, $messageTemplate)
     {
-
         $messages = array();
         foreach ($studentCodes as $studentCode) {
-
             $code=$studentCode->code;
             $messages["$code"] = $this->formatMessage($messageTemplate);
         }

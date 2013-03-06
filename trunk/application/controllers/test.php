@@ -8,50 +8,6 @@
  */
 class Test_Controller extends Base_Controller
 {
-    function action_list_of_buckets()
-    {
-        echo '<pre>';
-        print_r(S3::listBuckets(true));
-        echo '<pre/>';
-    }
-
-
-    function action_get_bucket()
-    {
-        print_r(S3::getBucket("cswinners.text"));
-    }
-
-    function action_put_file()
-    {
-        $metaHeaders = array("title" => "Sample File");
-        print_r(S3::putObjectFile("C:/Users/saxena.arunesh/Desktop/test.txt", "cswinners.text", "uploads/test.txt", S3::ACL_PUBLIC_READ, $metaHeaders, 'text/plain'));
-    }
-
-    function action_get_file_info()
-    {
-        print_r(S3::getObjectInfo("cswinners.text", "uploads/lo"));
-    }
-
-    function action_download_file()
-    {
-        $file = "http://s3-ap-southeast-1.amazonaws.com/cswinners.text/uploads/general.xlsx";
-        header("Content-type: application/force-download");
-        header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename=' . "general.xlsx");
-        readfile($file);
-        exit;
-//
-//        echo '<a href="http://s3-ap-southeast-1.amazonaws.com/cswinners.text/uploads/test.text?AWSAccessKeyId=AKIAI25JRXEYGHC6RWFQ&Expires=1353666836&Signature=8eIwn%2FuIdTT5r9egXsX2m80UB98%3D">Download</a>';
-//   exit;
-    }
-
-    function action_get_expired_link()
-    {
-        $link = S3::getAuthenticatedURL("cswinners.text", "uploads/test.text", 300);
-        echo $link;
-        echo '<a href="$link">Click</a>';
-    }
-
     function action_pass()
     {
         var_dump(Hash::check('asdf', '$2a$08$dpLbsfeVq4TlIX4ja1X2U.1sYJwdeMedbJmIibdueBL.NnbjE9xdO'));
@@ -224,7 +180,7 @@ class Test_Controller extends Base_Controller
         Auth::login(1);
         $id = Auth::user()->id;
         $repo = new SMSRepository();
-        $studentRepo=new StudentRepository();
+        $studentRepo = new StudentRepository();
         $studentCodes = $studentRepo->getStudentCodes(array('8-A'));
         $studentCodes = $repo->getFormattedMessage($studentCodes, "hello123");
         $data = $repo->createSMS($studentCodes, array(), "123", $id);
@@ -251,8 +207,8 @@ class Test_Controller extends Base_Controller
     {
         Auth::login(1);
         $classSections = array();
-        $fromDate=new DateTime();
-        $toDate=new DateTime();
+        $fromDate = new DateTime();
+        $toDate = new DateTime();
 //        $Repo = new ReportRepository();
         $query = DB::table('smsTransactions')
             ->left_join('students', 'smsTransactions.studentId', '=', 'students.id')
@@ -299,6 +255,18 @@ class Test_Controller extends Base_Controller
         $query = $query->get();
         var_dump(DB::last_query());
         var_dump($query);
+    }
+
+    public function action_searchByName()
+    {
+        Auth::login(1);
+        $schoolId = Auth::user()->schoolId;
+        $pageCount = AppConstants::PAGE_COUNT;
+        $pageNumber = AppConstants::PAGE_DEFAULT;
+        $skip = $pageCount * ($pageNumber - 1);
+        $studentRepo=new StudentRepository();
+        $result=$studentRepo->getStudentByNameOrMobile($schoolId,'9999999',$skip,$pageCount);
+        var_dump($result);
     }
 
 

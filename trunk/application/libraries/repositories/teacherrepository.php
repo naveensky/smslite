@@ -166,5 +166,21 @@ class TeacherRepository
         return $teacherCodes;
     }
 
+    public function getTeacherByNameOrMobile($schoolId, $searchValue)
+    {
+        $query = Teacher::where_schoolId($schoolId)->where(function ($query) use ($searchValue) {
+            $query->where('name', '~*', ".*$searchValue.*");
+            for($i=1;$i<=5;$i++){
+                $query->or_where("mobile$i", '~*', ".*$searchValue.*");
+            }
+        });
+        try {
+            $teachers = $query->get();
+        } catch (Exception $e) {
+            Log::exception($e);
+            return false;
+        }
+        return $teachers;
+    }
 
 }

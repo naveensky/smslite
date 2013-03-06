@@ -8,11 +8,13 @@
  */
 return array(
     'email_used' => 'Email is already used',
-    'forgot_password_by_email_error'=>'Please check your email or either you have not created any account yet.',
-    'forgot_password_by_email_success'=>'Email containing further instructions is sent to your email id.',
-    'forgot_password_by_mobile_error'=>'Please Check the mobile number and email id you have entered.',
-    'forgot_password_by_mobile_success'=>'We have sent a new password to your mobile.',
-    'error_occured_password_reset'=>'Sorry error occured please try again',
-    'password_changed_successfully'=>'Password changed successfully'
+    'forgot_password_by_email_error' => 'Please check your email or either you have not created any account yet.',
+    'forgot_password_by_email_success' => 'Email containing further instructions is sent to your email id.',
+    'forgot_password_by_mobile_error' => 'Please Check the mobile number and email id you have entered.',
+    'forgot_password_by_mobile_success' => 'We have sent a new password to your mobile.',
+    'error_occured_password_reset' => 'Sorry error occured please try again',
+    'password_changed_successfully' => 'Password changed successfully',
+    'empty_message' => 'Please enter the message you want to send',
+    'pdo_error_sms'=>'please try again some internal error occured'
 
 );

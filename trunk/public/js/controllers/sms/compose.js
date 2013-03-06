@@ -2,21 +2,94 @@
 
 //for route student/list
 angular.module('app')
-    .controller('Sms_Compose', ['$scope', '$http', 'SmsService', 'SchoolService', function ($scope, $http, smsService, schoolService) {
+    .controller('Sms_Compose', ['$scope', '$http', 'SmsService', 'SchoolService', 'StudentService', 'TeacherService', function ($scope, $http, smsService, schoolService, studentService, teacherService) {
         $scope.filterType = 'classFilter';
         $scope.message = "";
         $scope.selectedStudents = [];
         $scope.selectedTeachers = [];
+        $scope.searchResults = [];
         $scope.filterChange = false;
         $scope.queueMessageSuccess = false;
         $scope.finalCreditUsed = '';
+        $scope.errorSMS = false;
+        $scope.errorMessage = '';
+        $scope.pagedItems = [];
+        $scope.itemsPerPage = 10;
+        $scope.currentPage = 0;
         $scope.monitorFunction = function () {
             $scope.previousFilterSelected = $scope.filterType;
         }
 
+        $scope.calculatePageItems=function()
+        {
+            for (var i = 0; i < $scope.searchResults.length; i++) {
+                if (i % $scope.itemsPerPage === 0) {
+                    $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)] = [ $scope.searchResults[i] ];
+                } else {
+                    $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)].push($scope.searchResults[i]);
+                }
+            }
+        }
+
+        $scope.setStatus=function(selected)
+        {
+            if(selected==true)
+            {
+
+            }
+        }
+
+        $scope.prevPage = function () {
+            if ($scope.currentPage > 0) {
+                $scope.currentPage--;
+            }
+        };
+
+        $scope.nextPage = function () {
+            if ($scope.currentPage < $scope.pagedItems.length - 1) {
+                $scope.currentPage++;
+            }
+        };
+
+        $scope.setPage = function () {
+            $scope.currentPage = this.n;
+        };
+
+
         $scope.monitorFunction();
         $scope.creditsAvailable = smsService.getAvailableCredits();
 
+        $scope.searchPeople = function () {
+
+            //clear previous results before making new search hit
+            $scope.searchResults = [];
+            $scope.currentPage=0;
+            $scope.pagedItems=[];
+
+            studentService.searchStudents($scope.searchValue).then(function (students) {
+
+                //map the results as per view requirement
+                var result = students.map(function (value) {
+                    return {"searchPeople": value, "selected": false, "isTeacher": false};
+                });
+                $scope.calculatePageItems();
+                //push the results to container array
+                $scope.searchResults = $scope.searchResults.concat(result);
+                console.log($scope.searchResults.length);
+
+            });
+
+            teacherService.searchTeachers($scope.searchValue).then(function (teachers) {
+                var result = teachers.map(function (value) {
+                    return {"searchPeople": value, "selected": false, "isTeacher": true};
+                });
+
+                $scope.searchResults = $scope.searchResults.concat(result);
+                $scope.calculatePageItems();
+                console.log($scope.searchResults.length);
+
+            });
+        }
         schoolService.getClasses().then(function (classes) {
             $scope.classes = classes.map(function (value) {
                 return {"class": value, "selected": false};
@@ -95,6 +168,35 @@ angular.module('app')
             return count;
         }
 
+        $scope.countSelectedEveningRoutes = function () {
+            if (!Array.isArray($scope.eveningRoutes))
+                return 0;
+
+            //count selected departments
+            var count = 0;
+            for (var i = 0; i < $scope.eveningRoutes.length; ++i) {
+                if ($scope.eveningRoutes[i].selected)
+                    count++;
+            }
+            return count;
+        }
+
+        $scope.countSelectedMorningRoutes = function () {
+            if (!Array.isArray($scope.morningRoutes))
+                return 0;
+
+            //count selected departments
+            var count = 0;
+            for (var i = 0; i < $scope.morningRoutes.length; ++i) {
+                if ($scope.morningRoutes[i].selected)
+                    count++;
+            }
+            return count;
+        }
+
+        $scope.countRoutes = function () {
+            return $scope.countSelectedMorningRoutes() + $scope.countSelectedEveningRoutes();
+        }
 
         $scope.addByClass = function () {
             var selectedClasses = [];
@@ -279,6 +381,7 @@ angular.module('app')
             return false;
         }
 
+
         $scope.queueSMS = function () {
 
             //make post call for queue the message
@@ -289,12 +392,17 @@ angular.module('app')
                     "message": $scope.message
                 }
             ).success(function (data) {
-                    if (data.status = true) {
+                    if (data.status == true) {
+                        $scope.errorSMS = false;
                         $scope.queueMessageSuccess = true;
                         if (data.result.numberOfCreditsUsed)
                             $scope.finalCreditUsed = data.result.numberOfCreditsUsed;
                         if (data.result.numberOfCreditsUsedTeachers)
                             $scope.finalCreditUsed += data.result.numberOfCreditsUsedTeachers;
+                    }
+                    else {
+                        $scope.errorSMS = true;
+                        $scope.errorMessage = "Some internal error occured please try again";
                     }
                     console.log(data);
 //                    console.log(Array.isArray(data));

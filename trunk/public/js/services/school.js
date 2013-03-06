@@ -94,9 +94,9 @@ module.factory('SchoolService', ["$http", "$q", function ($http, $q) {
                     deferred.reject($e);
                 }
             );
-
             return deferred.promise;
         }
+
     }
 }]);
 
