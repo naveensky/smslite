@@ -148,9 +148,9 @@ class TestSchoolController extends ControllerTestCase
         $response = $this->get('school@get_available_credits');
         $this->assertEquals(200, $response->status());
 
-        $smsCredits = json_decode($response->content);
 
-        $this->assertEquals(25, $smsCredits);
+        $smsCredits = json_decode($response->content);
+        $this->assertEquals(25, $smsCredits[0]);
     }
 
     public function testSchoolUpdate()
