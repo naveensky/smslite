@@ -4,7 +4,7 @@
 angular.module('app')
     .controller('Sms_Compose', ['$scope', '$http', 'SmsService', 'SchoolService', 'StudentService', 'TeacherService', function ($scope, $http, smsService, schoolService, studentService, teacherService) {
         $scope.filterType = 'classFilter';
-        $scope.message = "";
+        $scope.message;
         $scope.selectedStudents = [];
         $scope.selectedTeachers = [];
         $scope.searchResults = [];
@@ -16,9 +16,13 @@ angular.module('app')
         $scope.pagedItems = [];
         $scope.itemsPerPage = 10;
         $scope.currentPage = 0;
+
+        //monitors the previous value of the filter
         $scope.monitorFunction = function () {
             $scope.previousFilterSelected = $scope.filterType;
         }
+
+        $scope.monitorFunction();
 
         $scope.calculatePageItems = function () {
             for (var i = 0; i < $scope.searchResults.length; i++) {
@@ -49,7 +53,7 @@ angular.module('app')
             }
         };
 
-        $scope.monitorFunction();
+
         $scope.creditsAvailable = smsService.getAvailableCredits();
 
         $scope.searchPeople = function () {
@@ -110,12 +114,16 @@ angular.module('app')
             })
         });
 
-        $scope.getSingleMessageCredit = function (message) {
+        $scope.getSingleMessageCredit = function () {
+            if ($scope.message == null)
+                return 0;
             return Math.ceil($scope.message.length / 160);
         };
 
         $scope.getCreditsRequired = function () {
-            return ($scope.getSingleMessageCredit($scope.message) * $scope.totalSMS());
+            if ($scope.message == null)
+                return 0;
+            return ($scope.getSingleMessageCredit() * $scope.totalSMS());
         };
 
         $scope.totalSMS = function () {
@@ -416,12 +424,11 @@ angular.module('app')
         }
 
         $scope.checkBeforeSend = function () {
-
-            if ($scope.message == "")
+            if ($scope.message == null)
                 return true;
-            if ($scope.message.length > 320 || $scope.getCreditsRequired() > $scope.creditsAvailable || $scope.totalSMS() <= 0 || $scope.message.length == 0 || $scope.queueMessageSuccess == true)
+            if ($scope.message.length > 320 || ($scope.getCreditsRequired() >= $scope.creditsAvailable) || $scope.message == null || $scope.totalSMS() <= 0 || $scope.queueMessageSuccess == true)
                 return true;
-
+            console.log($scope.creditsAvailable);
             return false;
         }
 

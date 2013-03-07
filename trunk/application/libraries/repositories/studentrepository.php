@@ -79,6 +79,8 @@ class StudentRepository
      */
     public function getStudentsFromCodes($students_codes)
     {
+        if (empty($students_codes))
+            return array();
         $students = Student::where_in('code', $students_codes)->get();
         return $students;
     }
@@ -253,7 +255,7 @@ class StudentRepository
     {
         $query = Student::where_schoolId($schoolId)->where(function ($query) use ($searchValue) {
             $query->where('name', '~*', ".*$searchValue.*");
-            for($i=1;$i<=5;$i++){
+            for ($i = 1; $i <= 5; $i++) {
                 $query->or_where("mobile$i", '~*', ".*$searchValue.*");
             }
         });

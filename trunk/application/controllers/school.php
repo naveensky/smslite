@@ -193,6 +193,7 @@ class School_Controller extends Base_Controller
 
     public function action_get_available_credits()
     {
-        return Response::json(array($this->smsRepo->getRemainingCredits(Auth::user()->schoolId)));
+        $creditsRemaining = $this->smsRepo->getRemainingCredits(Auth::user()->schoolId);
+        return Response::json(intval($creditsRemaining));
     }
 }

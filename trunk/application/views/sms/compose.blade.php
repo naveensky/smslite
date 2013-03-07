@@ -6,6 +6,12 @@
         <a href="#/sms">Click here to send new sms</a>
     </div>
 </div>
+<div class="row" ng-show="errorSMS" style="margin-left:0px">
+    <div class="alert alert-error margin-top-20">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        {{errorMessage}}
+    </div>
+</div>
 <div class="row">
     <div class="span3">
         <div class="box">
@@ -57,7 +63,9 @@
                     </tr>
                     </tbody>
                 </table>
-                <button ng-disabled="countSelectedSearchResult()==0" ng-click="addBySearchResult()" ng-show="searchResults.length>0" class="btn">Add to List</button>
+                <button ng-disabled="countSelectedSearchResult()==0" ng-click="addBySearchResult()"
+                        ng-show="searchResults.length>0" class="btn">Add to List
+                </button>
             </div>
             <div id="filter-class" ng-show="filterType=='classFilter'">
                 <div class="control-group">
@@ -188,10 +196,6 @@
             <button ng-disabled="checkBeforeSend()" ng-click="queueSMS()" class="btn btn-block btn-success"><i
                     class="icon-add"></i> Add to SMS Queue
             </button>
-            <div class="alert alert-error margin-top-20" ng-show="errorSMS">
-                <button type="button" class="close" data-dismiss="alert">×</button>
-                {{errorMessage}}
-            </div>
         </div>
     </div>
 </div>
