@@ -49,9 +49,9 @@ input[type="url"], input[type="search"], input[type="tel"], input[type="color"],
     color: #b85355;
 }
 
-.btn-primary {
-    background-color: #5c8846 !important;
-}
+/*.btn-primary {*/
+    /*background-color: #5c8846 !important;*/
+/*}*/
 
 h3 {
     font-size: 16px;

@@ -25,6 +25,13 @@ angular.module('app')
             $scope.queueDate = $('#dpd1').val();
             $scope.sentDate = $('#dpd2').val();
 
+            if ($scope.queueDate != '' && $scope.sentDate != '') {
+                if ($scope.queueDate > $scope.sentDate) {
+                    bootbox.alert('Queue Date can not be greater than sentDate');
+                    return;
+                }
+            }
+
             $scope.smsRows = reportService.getSMS(
                 $scope.classSections,
                 $scope.studentName,

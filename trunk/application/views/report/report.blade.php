@@ -4,14 +4,14 @@
             <div class="box">
                 <label><strong>Queue Date</strong></label>
 
-                <div class="input-append date date-input" data-date-format="dd M yyyy">
-                    <input class="span2" type="text" ng-model="queueDate" id="dpd1" readonly="readonly">
+                <div class="input-append date date-input">
+                    <input class="span2" type="text" id="dpd1" ng-model="queueDate" readonly>
                     <span class="add-on"><i class="icon-calendar"></i></span>
                 </div>
                 <label><strong>Sent Date</strong></label>
 
                 <div class="input-append date date-input">
-                    <input class="span2" type="text" ng-model="sentDate" id="dpd2" readonly>
+                    <input class="span2" type="text" id="dpd2" ng-model="sentDate" readonly>
                     <span class="add-on"><i class="icon-calendar"></i></span>
                 </div>
                 <label><strong>Search by student</strong></label>
@@ -19,6 +19,7 @@
                 <label><strong>Search by teacher</strong></label>
                 <input type="text" class="width-86" ng-model="teacherName" placeholder="Teacher name..">
                 <label><strong>Select Classes</strong></label>
+
                 <div ng-repeat="class in classes">
                     <label class="checkbox">
                         <input type="checkbox" ng-model="class.selected"

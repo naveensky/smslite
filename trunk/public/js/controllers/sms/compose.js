@@ -20,8 +20,7 @@ angular.module('app')
             $scope.previousFilterSelected = $scope.filterType;
         }
 
-        $scope.calculatePageItems=function()
-        {
+        $scope.calculatePageItems = function () {
             for (var i = 0; i < $scope.searchResults.length; i++) {
                 if (i % $scope.itemsPerPage === 0) {
                     $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)] = [ $scope.searchResults[i] ];
@@ -31,12 +30,11 @@ angular.module('app')
             }
         }
 
-        $scope.setStatus=function(selected)
-        {
-            if(selected==true)
-            {
-
+        $scope.getStatusCss = function (people) {
+            if (people.searchPeople.selected) {
+                return 'success';
             }
+            return '';
         }
 
         $scope.prevPage = function () {
@@ -51,11 +49,6 @@ angular.module('app')
             }
         };
 
-        $scope.setPage = function () {
-            $scope.currentPage = this.n;
-        };
-
-
         $scope.monitorFunction();
         $scope.creditsAvailable = smsService.getAvailableCredits();
 
@@ -63,8 +56,10 @@ angular.module('app')
 
             //clear previous results before making new search hit
             $scope.searchResults = [];
-            $scope.currentPage=0;
-            $scope.pagedItems=[];
+            $scope.currentPage = 0;
+            $scope.pagedItems = [];
+            $scope.selectedStudents = [];
+            $scope.selectedTeachers = [];
 
             studentService.searchStudents($scope.searchValue).then(function (students) {
 
@@ -72,9 +67,10 @@ angular.module('app')
                 var result = students.map(function (value) {
                     return {"searchPeople": value, "selected": false, "isTeacher": false};
                 });
-                $scope.calculatePageItems();
+
                 //push the results to container array
                 $scope.searchResults = $scope.searchResults.concat(result);
+                $scope.calculatePageItems();
                 console.log($scope.searchResults.length);
 
             });
@@ -168,6 +164,26 @@ angular.module('app')
             return count;
         }
 
+        $scope.countSelectedSearchResult = function () {
+            if (!Array.isArray($scope.pagedItems))
+                return 0;
+
+            //count selected search result
+            var count = 0;
+            console.log($scope.pagedItems);
+            for (var i = 0; i < $scope.pagedItems.length; ++i) {
+                for (var j = 0; j < $scope.pagedItems[i].length; ++j) {
+                    if ($scope.pagedItems[i][j].searchPeople.selected) {
+                        count = 1;
+                        break;
+                    }
+                }
+                if (count == 1)
+                    break;
+            }
+            return count;
+        }
+
         $scope.countSelectedEveningRoutes = function () {
             if (!Array.isArray($scope.eveningRoutes))
                 return 0;
@@ -196,6 +212,25 @@ angular.module('app')
 
         $scope.countRoutes = function () {
             return $scope.countSelectedMorningRoutes() + $scope.countSelectedEveningRoutes();
+        }
+
+
+        $scope.addBySearchResult = function () {
+
+            //get all selected classes
+
+            for (var i = 0; i < $scope.pagedItems.length; ++i) {
+                for (var j = 0; j < $scope.pagedItems[i].length; ++j) {
+                    if ($scope.pagedItems[i][j].searchPeople.selected) {
+                        if ($scope.pagedItems[i][j].isTeacher)
+                            $scope.selectedTeachers.push($scope.pagedItems[i][j].searchPeople);
+                        else
+                            $scope.selectedStudents.push($scope.pagedItems[i][j].searchPeople);
+                    }
+                }
+            }
+            console.log($scope.selectedStudents);
+            console.log($scope.selectedTeachers);
         }
 
         $scope.addByClass = function () {
@@ -346,17 +381,9 @@ angular.module('app')
         }
 
         $scope.changeFilterSelection = function (selection) {
-            var confirmation = confirm("Are you sure you want to change the filter?");
-            if (confirmation) {
-                $scope.filterType = selection;
-                $scope.monitorFunction();
-                $scope.selectedStudents = [];
-                $scope.selectedTeachers = [];
-            }
-            else {
-                $scope.filterType = $scope.previousFilterSelected;
-            }
-
+            bootbox.confirm("Are you sure you want to change the filter?", function (result) {
+                checkValue(result, selection);
+            });
         }
         $scope.selectedPeople = [
             {"name": "Naveen Gupta", "mobiles": ["9891410701", "9810140705"]},
@@ -366,9 +393,26 @@ angular.module('app')
             {"name": "Raman Mittal", "mobiles": ["9891410701", "9810140705"]}
         ];
 
-        $scope.updatePreviewList = function (studentCodes, teacherCodes) {
+//        $scope.updatePreviewList = function (studentCodes, teacherCodes) {
+//
+//
+//        }
 
+        function checkValue(isChanged, selection) {
 
+            if (isChanged) {
+                $scope.$apply(function () {
+                    $scope.filterType = selection;
+                    $scope.monitorFunction();
+                    $scope.selectedStudents = [];
+                    $scope.selectedTeachers = [];
+                });
+            }
+            else {
+                $scope.$apply(function () {
+                    $scope.filterType = $scope.previousFilterSelected;
+                });
+            }
         }
 
         $scope.checkBeforeSend = function () {

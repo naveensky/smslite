@@ -42,11 +42,6 @@
                                 <li ng-class="{disabled: currentPage == 0}">
                                     <a href ng-click="prevPage()">« Prev</a>
                                 </li>
-                                <li ng-repeat="n in range(pagedItems.length)"
-                                    ng-class="{active: n == currentPage}"
-                                    ng-click="setPage()">
-                                    <a href ng-bind="n + 1">1</a>
-                                </li>
                                 <li ng-class="{disabled: currentPage == pagedItems.length - 1}">
                                     <a href ng-click="nextPage()">Next »</a>
                                 </li>
@@ -56,13 +51,13 @@
                     </tfoot>
                     <tbody>
                     <tr ng-class="getStatusCss(people)" ng-repeat="people in pagedItems[currentPage]">
-                        <td><input ng-click="setStatus(people.searchPeople.selected)" ng-model="people.searchPeople.selected" type="checkbox"></td>
+                        <td><input ng-model="people.searchPeople.selected" type="checkbox"></td>
                         <td>{{people.searchPeople.name}}</td>
                         <td>{{people.searchPeople.mobile1}}, +</td>
                     </tr>
                     </tbody>
                 </table>
-                <button ng-show="searchResults.length>0" class="btn">Add</button>
+                <button ng-disabled="countSelectedSearchResult()==0" ng-click="addBySearchResult()" ng-show="searchResults.length>0" class="btn">Add to List</button>
             </div>
             <div id="filter-class" ng-show="filterType=='classFilter'">
                 <div class="control-group">

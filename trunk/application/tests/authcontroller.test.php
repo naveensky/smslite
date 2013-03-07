@@ -42,7 +42,7 @@ class TestAuthcontroller extends ControllerTestCase
     {
         Bundle::start('messages');
         $data = array(
-            'email' => "clash@exampledomain.org",
+            'email' => "exampledomain.org",
             'password' => '123456',
             'mobile' => '3855935358'
         );
