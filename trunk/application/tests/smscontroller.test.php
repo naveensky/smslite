@@ -93,6 +93,16 @@ class TestSmsController extends ControllerTestCase
         $content = json_decode($response->content, true);
         $this->assertEquals(true, $content['status']);
 
+        $parameters = (object)array('studentCodes' => array(),
+            'teacherCodes' => array(),
+            'message' => $message,
+            'sender_id' => 'GAPS'
+        );
+
+        Input::$json = $parameters;
+        $response = $this->post('SMS@post_create', array());
+        $this->assertEquals(400, $response->status());
+
     }
 
 

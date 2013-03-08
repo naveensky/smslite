@@ -53,8 +53,10 @@ angular.module('app')
             }
         };
 
-
-        $scope.creditsAvailable = smsService.getAvailableCredits();
+        smsService.getAvailableCredits().then(function(result) {
+            $scope.creditsAvailable= result;
+        });
+//        $scope.creditsAvailable = smsService.getAvailableCredits();
 
         $scope.searchPeople = function () {
 

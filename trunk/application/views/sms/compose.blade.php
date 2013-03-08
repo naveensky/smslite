@@ -46,10 +46,10 @@
                         <div class="pagination pull-right">
                             <ul>
                                 <li ng-class="{disabled: currentPage == 0}">
-                                    <a href ng-click="prevPage()">« Prev</a>
+                                    <a href ng-click="prevPage()">«</a>
                                 </li>
                                 <li ng-class="{disabled: currentPage == pagedItems.length - 1}">
-                                    <a href ng-click="nextPage()">Next »</a>
+                                    <a href ng-click="nextPage()">»</a>
                                 </li>
                             </ul>
                         </div>
