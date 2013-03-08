@@ -264,9 +264,36 @@ class Test_Controller extends Base_Controller
         $pageCount = AppConstants::PAGE_COUNT;
         $pageNumber = AppConstants::PAGE_DEFAULT;
         $skip = $pageCount * ($pageNumber - 1);
-        $studentRepo=new StudentRepository();
-        $result=$studentRepo->getStudentByNameOrMobile($schoolId,'9999999',$skip,$pageCount);
+        $studentRepo = new StudentRepository();
+        $result = $studentRepo->getStudentByNameOrMobile($schoolId, '9999999', $skip, $pageCount);
         var_dump($result);
+    }
+
+    public function action_test_template()
+    {
+        $subject = 'Dear Parents, <% text_teacher_name %> is asking for a meet on <% text_PTM_date %>';
+        $pattern = '/<%[^%>]*%>/';
+        preg_match_all($pattern, $subject, $matches);
+        $matches = $matches[0];
+        $messageVars = array();
+        foreach ($matches as $match) {
+            $key = preg_replace(array('/<%/', '/%>/'), ' ', $match);
+            $value = explode("_", $key);
+            $value = ucfirst($value[1]) . ' ' . ucfirst($value[2]);
+            $messageVars[trim($key)] = trim($value);
+        }
+        var_dump($messageVars);
+        $subject = str_replace('text_', '$text_', $subject);
+        $filePath = path('app') . 'views/templateview.blade.php';
+        File::put($filePath, $subject);
+        $completeMessage = View::make('templateview', $messageVars);
+        var_dump($completeMessage->render());
+//        File::delete($filePath);
+    }
+
+    public function action_test_viewrender()
+    {
+
     }
 
 

@@ -196,4 +196,5 @@ class School_Controller extends Base_Controller
         $creditsRemaining = $this->smsRepo->getRemainingCredits(Auth::user()->schoolId);
         return Response::json(intval($creditsRemaining));
     }
+
 }

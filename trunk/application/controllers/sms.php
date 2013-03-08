@@ -12,6 +12,7 @@ class SMS_Controller extends Base_Controller
     private $smsRepo;
     private $studentRepo;
     private $teacherRepo;
+    private $messageParser;
 
     public function __construct()
     {
@@ -23,6 +24,7 @@ class SMS_Controller extends Base_Controller
         $this->smsRepo = new SMSRepository();
         $this->studentRepo = new StudentRepository();
         $this->teacherRepo = new TeacherRepository();
+        $this->messageParser = new MessageParser();
     }
 
     public function action_compose()
@@ -127,7 +129,6 @@ class SMS_Controller extends Base_Controller
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
         }
 
-
         $studentsCodes = isset($data->studentCodes) ? $data->studentCodes : array();
         $teachersCodes = isset($data->teacherCodes) ? $data->teacherCodes : array();
         $message = isset($data->message) ? $data->message : '';
@@ -137,8 +138,6 @@ class SMS_Controller extends Base_Controller
 
         if (empty($message))
             return Response::json(array('status' => false, 'message' => __('responsemessages.empty_message')), HTTPConstants::SUCCESS_CODE);
-
-        $message = $data->message;
 
         $userId = Auth::user()->id;
         $sender_id = isset($data->sender_id) ? $data->sender_id : "GAPS";
@@ -178,4 +177,30 @@ class SMS_Controller extends Base_Controller
 
         return Response::eloquent($result);
     }
+
+    public function action_post_create_template()
+    {
+        $data = Input::json();
+        if (empty($data) || count($data) == 0) {
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+        }
+
+        $studentsCodes = isset($data->studentCodes) ? $data->studentCodes : array();
+        $teachersCodes = isset($data->teacherCodes) ? $data->teacherCodes : array();
+        $message = isset($data->message) ? $data->message : '';
+        $messageVars = isset($data->messageVars) ? $data->messageVars : array();
+        if (empty($studentsCodes) && empty($teachersCodes))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        if (empty($message))
+            return Response::json(array('status' => false, 'message' => __('responsemessages.empty_message')), HTTPConstants::SUCCESS_CODE);
+
+        $userId = Auth::user()->id;
+        $students = $this->studentRepo->getStudentsFromCodes($studentsCodes);
+        $teachers = $this->teacherRepo->getTeachersFromCode($teachersCodes);
+        $result = $this->messageParser->parseTemplate($message, $students, $teachers, $messageVars);
+        return Response::json($result);
+
+    }
+
 }
