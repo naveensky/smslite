@@ -126,8 +126,13 @@
     <div class="span6">
         <div class="box">
             <h3><i class="icon-envelope-alt icon-large"></i>Compose Message</h3>
-
-            <textarea class="input-block-level" rows="5" ng-model="message" ng-required="true"
+            <label>Choose Template</label>
+            <select ng-model="templateSelected" ng-change="templateMessage()">
+                <option ng-repeat="template in templates" value="{{template.id}}">{{template.name}}</option>
+                <option value="custom">Custom Message</option>
+            </select>
+            <textarea ng-disabled="checkTemplateSelected()==true" class="input-block-level" rows="5" ng-model="message"
+                      ng-required="true"
                       placeholder="enter your message here..."></textarea>
             <span ng-show="message.length>0" class="help-block">
                 <i>
@@ -140,6 +145,12 @@
                 <i>
                     maximum character limit exceeded {{320-message.length}}
                 </i>
+            </span>
+            <span ng-show="messageVariables.length>0">
+                <span ng-repeat="(key, value) in messageVariables">
+                    <label>{{value}}</label>
+                    <input type="text" ng-model="{{key}}"/>
+                </span>
             </span>
 
         </div>

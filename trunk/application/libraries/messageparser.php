@@ -28,12 +28,10 @@ class MessageParser
         foreach ($matches as $match) {
             //extract key name from template
             $key = preg_replace(array('/<%/', '/%>/'), ' ', $match);
-
-            $value = explode("-", $key);
-
+            $value = explode("_", $key);
             //create variable name from key
             $value = ucfirst($value[1]) . ' ' . ucfirst($value[2]);
-            $messageVar[$key] = $value;
+            $messageVars[trim($key)] = trim($value);
         }
 
         return $messageVars;
@@ -55,10 +53,12 @@ class MessageParser
     public function parseTemplate($template, $students, $teachers, $messageVars)
     {
         $viewsDirectory = path('app') . 'views/'; //directory to make temporary files
-
-        //todo: update this logic to replace text_ from the starting of the variable and not across the template
-        $template = str_replace('text_', '$text_', $template);
-
+        $template = preg_replace_callback('/<%[^%>]*%>/',
+            function ($match) {
+                return str_replace('text_', '$text_', $match[0]);
+            },
+            $template
+        );
         $studentsData = array();
         $teachersData = array();
 
@@ -75,13 +75,12 @@ class MessageParser
         if (!empty($students)) {
 
             foreach ($students as $student) {
-                $data['student_name'] = $student->name; //name
+                $data['name'] = $student->name; //name
                 $data['dob'] = $student->dob; //dob
                 $data['class'] = $student->classStandard;
                 $data['section'] = $student->classSection;
-
-                //todo: pass morning routes and evening routes
-
+                $data['mornigbusroute'] = $student->morningBusRoute;
+                $data['eveningbusroute'] = $student->eveningBusRoute;
                 $completeMessage = View::make($fileName, $data)->render();
                 $studentsData[$student->code] = $completeMessage;
             }
@@ -89,22 +88,21 @@ class MessageParser
 
         if (!empty($teachers)) {
             foreach ($teachers as $teacher) {
-                $data['teacher_name'] = $teacher->name;
+                $data['name'] = $teacher->name;
                 $data['dob'] = $teacher->dob;
                 $data['department'] = $teacher->department;
-
-                //todo: add morning bus route and evening routes
-
+                $data['mornigbusroute'] = $teacher->morningBusRoute;
+                $data['eveningbusroute'] = $teacher->eveningBusRoute;
                 $completeMessage = View::make($fileName, $data)->render();
                 $teachersData[$teacher->code] = $completeMessage;
             }
 
         }
-
         //delete the temporary view file
         File::delete($viewsDirectory . $fileName . '.blade.php');
-
-        $result = array('students' => $studentsData, 'teachers' => $teachersData);
+        if (count($studentsData) == 0 && count($teachersData) == 0)
+            return array();
+        $result = array('studentsCode' => $studentsData, 'teachersCode' => $teachersData);
         return $result;
     }
 }

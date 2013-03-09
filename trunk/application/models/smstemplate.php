@@ -14,7 +14,7 @@ class SMSTemplate extends Eloquent
 
     public static $factory = array(
         'body' => 'string',
-        'useCount' => '0',
+        'name' => 'string',
         'schoolId' => 'factory|School'
     );
 }

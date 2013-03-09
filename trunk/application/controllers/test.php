@@ -271,7 +271,7 @@ class Test_Controller extends Base_Controller
 
     public function action_test_template()
     {
-        $subject = 'Dear Parents, <% text_teacher_name %> is asking for a meet on <% text_PTM_date %>';
+        $subject = 'Dear Parents, <% text_teacher_name %> is asking text_ for a meet on <% text_PTM_date %>';
         $pattern = '/<%[^%>]*%>/';
         preg_match_all($pattern, $subject, $matches);
         $matches = $matches[0];
@@ -283,6 +283,14 @@ class Test_Controller extends Base_Controller
             $messageVars[trim($key)] = trim($value);
         }
         var_dump($messageVars);
+        $output = preg_replace_callback(
+            '/<%[^%>]*%>/',
+            function($match)  {
+                return str_replace('text_', '$text_', $match[0]);
+            },
+            $subject
+        );
+        var_dump($output);
         $subject = str_replace('text_', '$text_', $subject);
         $filePath = path('app') . 'views/templateview.blade.php';
         File::put($filePath, $subject);

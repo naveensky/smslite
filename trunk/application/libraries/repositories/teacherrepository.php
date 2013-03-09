@@ -63,7 +63,7 @@ class TeacherRepository
     }
 
 
-    public function getTeachersFromCode($teachers_codes)
+    public function getTeachersFromCodes($teachers_codes)
     {
         if (empty($teachers_codes))
             return array();

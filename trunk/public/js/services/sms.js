@@ -42,6 +42,29 @@ module.factory('SmsService', ["$http", "$q", function ($http, $q) {
             );
 
             return deferred.promise;
+        },
+        getAvailableTemplates: function () {
+            var deferred = $q.defer();          //defer for data
+
+            $http.get(
+                    '/school/get_available_templates'
+                ).success(function (data) {
+                    //if data is proper array, return data else empty array
+                    if (Array.isArray(data)) {
+                        console.log(data);
+                        deferred.resolve(data);
+                    }
+                    else
+                        deferred.resolve([]);
+                }
+            ).error(function ($e) {
+                    //if there is an error processing data, reject it and log error
+                    log('error', $e);
+                    deferred.reject($e);
+                }
+            );
+
+            return deferred.promise;
         }
     }
 }]);

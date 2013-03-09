@@ -122,6 +122,10 @@ class SMS_Controller extends Base_Controller
         return Response::json($result);
     }
 
+    /**
+     * Add SMS to queue when received from UI
+     * @return Laravel\Response
+     */
     public function action_post_create()
     {
         $data = Input::json();
@@ -132,28 +136,63 @@ class SMS_Controller extends Base_Controller
         $studentsCodes = isset($data->studentCodes) ? $data->studentCodes : array();
         $teachersCodes = isset($data->teacherCodes) ? $data->teacherCodes : array();
         $message = isset($data->message) ? $data->message : '';
+        $templateId = isset($data->templateId) ? $data->templateId : NULL;
+        $messageVars = isset($data->messageVars) ? $data->messageVars : array();
 
         if (empty($studentsCodes) && empty($teachersCodes))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
-        if (empty($message))
+        if (empty($message) && empty($templateId))
             return Response::json(array('status' => false, 'message' => __('responsemessages.empty_message')), HTTPConstants::SUCCESS_CODE);
 
         $userId = Auth::user()->id;
-        $sender_id = isset($data->sender_id) ? $data->sender_id : "GAPS";
+        $sender_id = isset($data->sender_id) ? $data->sender_id : Config::get('sms.senderid'); //getting senderId from config file;
 
-        //calling function for creating key value pair for studentCode => message
-        $studentCodes = $this->smsRepo->getFormattedMessage($studentsCodes, $message);
-        //getting key value pair for the teacherCode => message
-        $teacherCodes = $this->smsRepo->getFormattedMessageDepartment($teachersCodes, $message);
+        if (!empty($message) && empty($templateId)) {
+            //calling function for creating key value pair for studentCode => message
+            $studentMessages = array();
+            $teacherMessages = array();
+
+            foreach ($studentsCodes as $code) {
+                $studentMessages[$code->code] = $message;
+            }
+
+            foreach ($teachersCodes as $code) {
+                $teacherMessages[$code->code] = $message;
+            }
+        }
+
+        if (empty($message) && !empty($templateId)) {
+            $codesForStudents = array();
+            $codesForTeachers = array();
+            //only getting codes from studentCodes
+            foreach ($studentsCodes as $studentCode) {
+                $codesForStudents[] = $studentCode->code;
+            }
+
+            foreach ($teachersCodes as $teacherCode) {
+                $codesForTeachers[] = $teacherCode;
+            }
+
+            $students = $this->studentRepo->getStudentsFromCodes($codesForStudents);
+            $teachers = $this->teacherRepo->getTeachersFromCodes($codesForTeachers);
+
+            $messages = $this->messageParser->parseTemplate($message, $students, $teachers, $messageVars);
+            $studentMessages = $messages['studentCodes'];
+            $teacherMessages = $messages['teacherCodes'];
+        }
+
+        //queue SMS
         try {
-            $result = $this->smsRepo->createSMS($studentCodes, $teacherCodes, $sender_id, $userId);
+            $result = $this->smsRepo->createSMS($studentMessages, $teacherMessages, $sender_id, $userId);
         } catch (PDOException $e) {
             Log::exception($e);
             return Response::json(array('status' => false, 'message' => __('responsemessages.pdo_error_sms')), HTTPConstants::SUCCESS_CODE);
         }
+
         if ($result == false && !is_array($result))
             return Response::json(array('status' => false, 'message' => __('responsemessages.pdo_error_sms')), HTTPConstants::SUCCESS_CODE);
+
 
         return Response::json(array('status' => true, 'result' => $result));
     }
@@ -178,7 +217,7 @@ class SMS_Controller extends Base_Controller
         return Response::eloquent($result);
     }
 
-    public function action_post_create_template()
+    public function action_post_create_sms_from_template()
     {
         $data = Input::json();
         if (empty($data) || count($data) == 0) {
@@ -189,6 +228,7 @@ class SMS_Controller extends Base_Controller
         $teachersCodes = isset($data->teacherCodes) ? $data->teacherCodes : array();
         $message = isset($data->message) ? $data->message : '';
         $messageVars = isset($data->messageVars) ? $data->messageVars : array();
+        $sender_id = isset($data->sender_id) ? $data->sender_id : Config::get('sms.senderid'); //getting senderId from config file;
         if (empty($studentsCodes) && empty($teachersCodes))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
@@ -197,9 +237,39 @@ class SMS_Controller extends Base_Controller
 
         $userId = Auth::user()->id;
         $students = $this->studentRepo->getStudentsFromCodes($studentsCodes);
-        $teachers = $this->teacherRepo->getTeachersFromCode($teachersCodes);
-        $result = $this->messageParser->parseTemplate($message, $students, $teachers, $messageVars);
-        return Response::json($result);
+        $teachers = $this->teacherRepo->getTeachersFromCodes($teachersCodes);
+
+        $codes = $this->messageParser->parseTemplate($message, $students, $teachers, $messageVars);
+        if (empty($codes))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        $senderId = Config::get('sms.senderid'); //getting senderId from config file
+        try {
+            $result = $this->smsRepo->createSMS($codes['studentsCode'], $codes['teachersCode'], $sender_id, $userId);
+        } catch (PDOException $e) {
+            Log::exception($e);
+            return Response::json(array('status' => false, 'message' => __('responsemessages.pdo_error_sms')), HTTPConstants::SUCCESS_CODE);
+        }
+        if ($result == false && !is_array($result))
+            return Response::json(array('status' => false, 'message' => __('responsemessages.pdo_error_sms')), HTTPConstants::SUCCESS_CODE);
+
+        return Response::json(array('status' => true, 'result' => $result));
+
+    }
+
+    public function action_post_get_template_message_vars()
+    {
+        $data = Input::json();
+        if (empty($data))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+        $templateId = isset($data->templateId) ? $data->templateId : "";
+        if ($templateId == "")
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+        $template = $this->smsRepo->getTemplate($templateId);
+        if (empty($template))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+        $messageVars = $this->messageParser->getVariables($template->body);
+        return Response::json($messageVars);
 
     }
 

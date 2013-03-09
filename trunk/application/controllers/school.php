@@ -197,4 +197,9 @@ class School_Controller extends Base_Controller
         return Response::json(intval($creditsRemaining));
     }
 
+    public function action_get_available_templates()
+    {
+        return Response::json($this->schoolRepo->getSMSTemplates(Auth::user()->schoolId));
+    }
+
 }

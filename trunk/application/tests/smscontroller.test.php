@@ -163,7 +163,6 @@ class TestSmsController extends ControllerTestCase
         $smsTemplate = FactoryMuff::create('smsTemplate');
         $smsTemplate->schoolId = $school->id;
         $smsTemplate->body = 'Dear Parents, <% text_teacher_name %> is asking for a meet on <% text_PTM_date %>';
-        $smsTemplate->useCount = 0;
         $smsTemplate->save();
 
         $student = FactoryMuff::create('Student');
@@ -206,7 +205,7 @@ class TestSmsController extends ControllerTestCase
         );
 
         Input::$json = $parameters;
-        $response = $this->post('SMS@post_create_template', array());
+        $response = $this->post('SMS@post_create_sms_from_template', array());
         $this->assertEquals(200, $response->status());
 
     }

@@ -13,10 +13,10 @@ class Create_Smstemplate_Table
         //create smsTemplate table
         Schema::create('smsTemplate', function ($table) {
             $table->increments('id')->unsigned();
-            $table->string('body',1000);
+            $table->string('body', 1000);
+            $table->string('name', 100);
             $table->integer('schoolId')->unsigned();
             $table->foreign('schoolId')->references('id')->on('schools');
-            $table->integer('useCount');
             $table->timestamps();
         });
     }

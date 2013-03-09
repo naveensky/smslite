@@ -187,4 +187,21 @@ class SchoolRepository
         }
         return $eveningRoutes;
     }
+
+    public function getSMSTemplates($schoolId)
+    {
+        $messageTemplates = SMSTemplate::where('schoolId', '=', $schoolId)->get();
+        if (empty($messageTemplates) || count($messageTemplates) == 0)
+            return array();
+
+        $templates = array();
+        foreach ($messageTemplates as $messageTemplate) {
+            $data = array();
+            $data['id'] = $messageTemplate->id;
+            $data['name'] = $messageTemplate->name;
+            $data['body'] = $messageTemplate->body;
+            array_push($templates, $data);
+        }
+        return $templates;
+    }
 }

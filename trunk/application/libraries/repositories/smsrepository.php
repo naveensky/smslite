@@ -81,7 +81,7 @@ class SMSRepository
             if (count($mobiles) == 0)
                 continue;
 
-            $sms_data['message'] = $studentCodes[$student->code];
+            $sms_data['message'] = $this->formatMessage($studentCodes[$student->code]);
             $creditsForMessage = $this->countCredits($sms_data['message']);
             $sms_data['credits'] = $creditsForMessage;
             $sms_data['teacherId'] = NULL;
@@ -102,7 +102,7 @@ class SMSRepository
 
         $teacher_codes = array_keys($teachersCodes);
 
-        $teachers = $this->teacherRepo->getTeachersFromCode($teacher_codes);
+        $teachers = $this->teacherRepo->getTeachersFromCodes($teacher_codes);
         $teacherCreditsUsed = 0;
         foreach ($teachers as $teacher) {
 
@@ -112,7 +112,7 @@ class SMSRepository
             if (count($mobiles) == 0)
                 continue;
 
-            $sms_data['message'] = $teachersCodes[$teacher->code];
+            $sms_data['message'] = $this->formatMessage($teachersCodes[$teacher->code]);
             $sms_data['credits'] = $this->countCredits($sms_data['message']);
             $sms_data['studentId'] = NULL;
             $sms_data['userId'] = $userId;
@@ -257,8 +257,8 @@ class SMSRepository
     {
         $messages = array();
         foreach ($studentCodes as $studentCode) {
-            $code=$studentCode->code;
-            $messages["$code"] = $this->formatMessage($messageTemplate);
+            $code = $studentCode->code;
+            $messages[$code] = $this->formatMessage($messageTemplate);
         }
         return $messages;
     }
@@ -267,7 +267,7 @@ class SMSRepository
     {
         $messages = array();
         foreach ($teacherCodes as $teacherCode) {
-            $code=$teacherCode->code;
+            $code = $teacherCode->code;
             $messages["$teacherCode"] = $this->formatMessage($messageTemplate);
         }
         return $messages;
@@ -277,10 +277,15 @@ class SMSRepository
     {
         $messages = array();
         foreach ($teacherCodes as $teacherCode) {
-            $code=$teacherCode->code;
+            $code = $teacherCode->code;
             $messages["$code"] = $this->formatMessage($messageTemplate);
         }
         return $messages;
+    }
+
+    public function getTemplate($template_id)
+    {
+        return SMSTemplate::find($template_id);
     }
 
 }

@@ -5,6 +5,8 @@ angular.module('app')
     .controller('Sms_Compose', ['$scope', '$http', 'SmsService', 'SchoolService', 'StudentService', 'TeacherService', function ($scope, $http, smsService, schoolService, studentService, teacherService) {
         $scope.filterType = 'classFilter';
         $scope.message;
+        $scope.messageVars = {};
+        $scope.messageVariables = [];
         $scope.selectedStudents = [];
         $scope.selectedTeachers = [];
         $scope.searchResults = [];
@@ -16,6 +18,9 @@ angular.module('app')
         $scope.pagedItems = [];
         $scope.itemsPerPage = 10;
         $scope.currentPage = 0;
+        $scope.templates = [];
+        $scope.templateSelected = 'custom';
+
 
         //monitors the previous value of the filter
         $scope.monitorFunction = function () {
@@ -23,6 +28,38 @@ angular.module('app')
         }
 
         $scope.monitorFunction();
+        $scope.checkTemplateSelected = function () {
+            if ($scope.templateSelected == 'custom')
+                return false;
+            return true;
+        }
+
+        $scope.getTemplateVars = function () {
+            if ($scope.templateSelected == "custom")
+                return;
+        }
+
+        $scope.templateMessage = function () {
+            angular.forEach($scope.templates, function (template) {
+                if (template.id == $scope.templateSelected) {
+                    $scope.message = template.body;
+                    //make post call for students
+                    $http.post(
+                        '/sms/post_get_template_message_vars',
+                        {"templateId": $scope.templateSelected}
+                    ).success(function (data) {
+                            $scope.messageVars = data;
+                            console.log($scope.messageVars);
+                            //todo: log this as this is not an array
+                        }).error(function (e) {
+                            log('error', e)
+                        });
+                }
+                else
+                    $scope.message = null;
+            })
+        }
+
 
         $scope.calculatePageItems = function () {
             for (var i = 0; i < $scope.searchResults.length; i++) {
@@ -53,10 +90,13 @@ angular.module('app')
             }
         };
 
-        smsService.getAvailableCredits().then(function(result) {
-            $scope.creditsAvailable= result;
+        smsService.getAvailableCredits().then(function (result) {
+            $scope.creditsAvailable = result;
         });
-//        $scope.creditsAvailable = smsService.getAvailableCredits();
+
+        smsService.getAvailableTemplates().then(function (result) {
+            $scope.templates = result;
+        });
 
         $scope.searchPeople = function () {
 
