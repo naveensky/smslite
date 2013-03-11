@@ -157,19 +157,42 @@ class TestSchoolController extends ControllerTestCase
         $school = $user->school()->first();
 
         Auth::login($user->id);
-        $parameters=array(
-            'name'=>"Salwan Public School",
-            'address'=>"Karol Bagh",
-            'city'=>"New Delhi",
-            'state'=>"Delhi",
-            'zip'=>"110067",
-            'sender_id'=>'GAPS',
-            'contact_person'=>'Anuj Kumar',
-            'contact_mobile'=>'999999999'
+        $parameters = array(
+            'name' => "Salwan Public School",
+            'address' => "Karol Bagh",
+            'city' => "New Delhi",
+            'state' => "Delhi",
+            'zip' => "110067",
+            'sender_id' => 'GAPS',
+            'contact_person' => 'Anuj Kumar',
+            'contact_mobile' => '999999999'
         );
 
-        Input::$json=(object)$parameters;
-        $response=$this->post('school@post_update',array());
-        $this->assertEquals(200,$response->status());
+        Input::$json = (object)$parameters;
+        $response = $this->post('school@post_update', array());
+        $this->assertEquals(200, $response->status());
+    }
+
+    public function testGetAvailableTemplates()
+    {
+        $user = $this->getSampleUser();
+        $school = $user->school()->first();
+
+        Auth::login($user->id);
+
+        $smsTemplate = FactoryMuff::create('smsTemplate');
+        $smsTemplate->schoolId = $school->id;
+        $smsTemplate->body = 'Dear Parents, <%text_teacher_name%> is asking for a meet on <%text_PTM_date%>';
+        $smsTemplate->save();
+
+        $smsTemplate2 = FactoryMuff::create('smsTemplate');
+        $smsTemplate2->schoolId = $school->id;
+        $smsTemplate2->body = 'Dear Parent, your child <%name%> was absent on <%today%>.Hope everything is fine';
+        $smsTemplate2->save();
+
+        $response = $this->get('school@get_available_templates');
+        $this->assertEquals(200, $response->status());
+        $this->assertEquals(2, count(json_decode($response->content, true)));
+
     }
 }

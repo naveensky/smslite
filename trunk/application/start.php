@@ -78,7 +78,8 @@ Autoloader::directories(array(
     path('app') . 'libraries/repositories',
     path('app') . 'libraries/services',
     path('app') . 'libraries/listeners',
-    path('app') . 'libraries/constants'
+    path('app') . 'libraries/constants',
+    path('app') . 'libraries/exceptions'
 ));
 
 /*

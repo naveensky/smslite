@@ -15,6 +15,6 @@ return array(
     'error_occured_password_reset' => 'Sorry error occured please try again',
     'password_changed_successfully' => 'Password changed successfully',
     'empty_message' => 'Please enter the message you want to send',
-    'pdo_error_sms'=>'please try again some internal error occured'
-
+    'pdo_error_sms' => 'please try again some internal error occured',
+    'insufficient_credits_error_sms' => 'You have insufficient credits to send sms please buy credits now'
 );

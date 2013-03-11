@@ -5,8 +5,6 @@ angular.module('app')
     .controller('Sms_Compose', ['$scope', '$http', 'SmsService', 'SchoolService', 'StudentService', 'TeacherService', function ($scope, $http, smsService, schoolService, studentService, teacherService) {
         $scope.filterType = 'classFilter';
         $scope.message;
-        $scope.messageVars = {};
-        $scope.messageVariables = [];
         $scope.selectedStudents = [];
         $scope.selectedTeachers = [];
         $scope.searchResults = [];
@@ -20,6 +18,8 @@ angular.module('app')
         $scope.currentPage = 0;
         $scope.templates = [];
         $scope.templateSelected = 'custom';
+        $scope.showPlaceholder = false;
+        $scope.model = {};
 
 
         //monitors the previous value of the filter
@@ -28,39 +28,27 @@ angular.module('app')
         }
 
         $scope.monitorFunction();
+
         $scope.checkTemplateSelected = function () {
             if ($scope.templateSelected == 'custom')
                 return false;
             return true;
         }
 
-        $scope.getTemplateVars = function () {
-            if ($scope.templateSelected == "custom")
-                return;
-        }
-
         $scope.templateMessage = function () {
+            $scope.message = null;
+            $scope.link = null;
             angular.forEach($scope.templates, function (template) {
                 if (template.id == $scope.templateSelected) {
+                    console.log(template.body);
                     $scope.message = template.body;
-                    //make post call for students
-                    $http.post(
-                        '/sms/post_get_template_message_vars',
-                        {"templateId": $scope.templateSelected}
-                    ).success(function (data) {
-                            $scope.messageVars = data;
-                            console.log($scope.messageVars);
-                            //todo: log this as this is not an array
-                        }).error(function (e) {
-                            log('error', e)
-                        });
+                    $scope.link = '/sms/get_template_message_vars/' + $scope.templateSelected;
                 }
-                else
-                    $scope.message = null;
+//                else {
+//                    $scope.message = null;
+//                }
             })
         }
-
-
         $scope.calculatePageItems = function () {
             for (var i = 0; i < $scope.searchResults.length; i++) {
                 if (i % $scope.itemsPerPage === 0) {
@@ -435,21 +423,8 @@ angular.module('app')
                 checkValue(result, selection);
             });
         }
-        $scope.selectedPeople = [
-            {"name": "Naveen Gupta", "mobiles": ["9891410701", "9810140705"]},
-            {"name": "Hitanshu Malhotra", "mobiles": ["9891410701", "9810140705"]},
-            {"name": "Akhil Gupta", "mobiles": ["9891410701", "9810140705"]},
-            {"name": "Keshav Ashta", "mobiles": ["9891410701", "9810140705"]},
-            {"name": "Raman Mittal", "mobiles": ["9891410701", "9810140705"]}
-        ];
-
-//        $scope.updatePreviewList = function (studentCodes, teacherCodes) {
-//
-//
-//        }
 
         function checkValue(isChanged, selection) {
-
             if (isChanged) {
                 $scope.$apply(function () {
                     $scope.filterType = selection;
@@ -477,12 +452,18 @@ angular.module('app')
 
         $scope.queueSMS = function () {
 
+            var templateId = $scope.templateSelected;
+            if ($scope.templateSelected == 'custom')
+                templateId = 0;
+            templateId = $scope.templateSelected;
             //make post call for queue the message
             $http.post(
                 '/sms/post_create',
                 {"studentCodes": $scope.selectedStudents,
                     "teacherCodes": $scope.selectedTeachers,
-                    "message": $scope.message
+                    "message": $scope.message,
+                    "templateId": templateId,
+                    "messageVars": $scope.model
                 }
             ).success(function (data) {
                     if (data.status == true) {
@@ -495,7 +476,7 @@ angular.module('app')
                     }
                     else {
                         $scope.errorSMS = true;
-                        $scope.errorMessage = "Some internal error occured please try again";
+                        $scope.errorMessage = data.message;
                     }
                     console.log(data);
 //                    console.log(Array.isArray(data));

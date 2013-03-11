@@ -139,53 +139,22 @@
                     {{message.length}} character, {{getSingleMessageCredit()}} credit(s) required per person to
                     send this text.
                 </i>
-
             </span>
             <span ng-show="message.length>320" class="text-error">
                 <i>
                     maximum character limit exceeded {{320-message.length}}
                 </i>
             </span>
-            <span ng-show="messageVariables.length>0">
-                <span ng-repeat="(key, value) in messageVariables">
-                    <label>{{value}}</label>
-                    <input type="text" ng-model="{{key}}"/>
-                </span>
-            </span>
 
         </div>
         <div class="box">
-            <h3>People in List</h3>
-            <table class="table table-condensed table-hover">
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Mobile</th>
-                    <th>&nbsp;</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="person in selectedPeople">
-                    <td>{{person.name}}</td>
-                    <td><span title="{{person.mobiles.join('\n')}}"> {{person.mobiles[0]}}</span></td>
-                    <td><a class="pull-right" ng-click="removePerson(person)"><i class="icon-remove"></i> Remove</a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            <div class="pagination">
-                <ul>
-                    <li><a href="#">&laquo;</a></li>
-                    <li><a href="#">&raquo;</a></li>
-                </ul>
-            </div>
-
+            <h3>Placeholders</h3>
+            <div ng-include="link"></div>
         </div>
     </div>
     <div class="span3">
         <div class="box">
             <h3><i class="icon-cog icon-large"></i>Verify &amp; Send</h3>
-
             <div class="control-group">
                 <label>Total Individual</label>
                 <input class="input-block-level" type="text" readonly="readonly" value="{{getPeopleCount()}}">

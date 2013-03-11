@@ -52,9 +52,8 @@ class SMSRepository
         return $schoolCredits->credits;
     }
 
-    public function updateCredits($totalCreditsUsed)
+    public function updateCredits($totalCreditsUsed, $schoolId)
     {
-        $schoolId = Auth::user()->schoolId;
         $SMSCredit = SMSCredit::where('schoolId', '=', $schoolId)->first();
         $creditsLeft = $SMSCredit->credits - $totalCreditsUsed;
         $attributes = array('credits' => $creditsLeft);
@@ -62,7 +61,7 @@ class SMSRepository
         return $status;
     }
 
-    public function createSMS(array $studentCodes, array $teachersCodes, $senderId, $userId)
+    public function createSMS(array $studentCodes, array $teachersCodes, $senderId, $userId, $schoolId)
     {
         //get all student codes
         $codes = array_keys($studentCodes);
@@ -101,7 +100,6 @@ class SMSRepository
         }
 
         $teacher_codes = array_keys($teachersCodes);
-
         $teachers = $this->teacherRepo->getTeachersFromCodes($teacher_codes);
         $teacherCreditsUsed = 0;
         foreach ($teachers as $teacher) {
@@ -128,6 +126,8 @@ class SMSRepository
             }
         }
 
+        if (!$this->checkCreditsBalance(($totalStudentCredits + $teacherCreditsUsed), $schoolId))
+            throw new InsufficientCreditsException("Insufficient credits in account of school $schoolId");
 
         //we are splitting insert for student and teacher to segregate their status
         try {
@@ -135,13 +135,15 @@ class SMSRepository
             DB::connection()->pdo->beginTransaction();
             if (!empty($this->sms_transaction) && count($this->sms_transaction) > 0) {
                 $statusStudents = SMSTransaction::insert($this->sms_transaction);
-                $this->updateCredits($totalStudentCredits);
+                $this->updateCredits($totalStudentCredits, $schoolId);
             }
+
             if (!empty($this->smsTeachersTransaction) && count($this->smsTeachersTransaction) > 0) {
                 $statusTeachers = SMSTransaction::insert($this->smsTeachersTransaction);
-                $this->updateCredits($teacherCreditsUsed);
+                $this->updateCredits($teacherCreditsUsed, $schoolId);
             }
             DB::connection()->pdo->commit();
+
             if (!empty($this->sms_transaction) && count($this->sms_transaction) > 0) {
                 $insertedTransactions['studentsStatus'] = $statusStudents;
                 $insertedTransactions['numberofstudentinserted'] = count($this->sms_transaction);
@@ -170,9 +172,7 @@ class SMSRepository
 
         if (empty($insertedTransactions))
             return false;
-
         return $insertedTransactions;
-
     }
 
     /**
@@ -286,6 +286,14 @@ class SMSRepository
     public function getTemplate($template_id)
     {
         return SMSTemplate::find($template_id);
+    }
+
+    protected function checkCreditsBalance($requiredCredits, $schoolId)
+    {
+        $availableCredits = $this->getRemainingCredits($schoolId);
+        if ($availableCredits > $requiredCredits)
+            return true;
+        return false;
     }
 
 }

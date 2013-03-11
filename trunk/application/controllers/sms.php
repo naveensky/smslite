@@ -58,10 +58,11 @@ class SMS_Controller extends Base_Controller
         //get current logined user id
 
         $userId = Auth::user()->id;
+        $schoolId = Auth::user()->schoolId;
         $senderId = Config::get('sms.senderid'); //getting senderId from config file
         //calling function for creating key value pair for studentCode => message
         $studentCodes = $this->smsRepo->getFormattedMessage($studentCodes, $message);
-        $result = $this->smsRepo->createSMS($studentCodes, array(), $senderId, $userId);
+        $result = $this->smsRepo->createSMS($studentCodes, array(), $senderId, $userId, $schoolId);
         if ($result == false && !is_array($result))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
@@ -90,8 +91,9 @@ class SMS_Controller extends Base_Controller
         $studentCodes = $this->smsRepo->getFormattedMessage($studentCodes, $message);
         //get current logined user id
         $userId = Auth::user()->id;
+        $schoolId = Auth::user()->schoolId;
         $senderId = Config::get('sms.senderid'); //getting senderId from config file
-        $result = $this->smsRepo->createSMS($studentCodes, $teachersCodes, $senderId, $userId);
+        $result = $this->smsRepo->createSMS($studentCodes, $teachersCodes, $senderId, $userId, $schoolId);
         if ($result == false && !is_array($result))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
@@ -115,8 +117,9 @@ class SMS_Controller extends Base_Controller
         //getting key value pair for the teacherCode => message
         $teacherCodes = $this->smsRepo->getFormattedMessageDepartment($teacherCodes, $message);
         $userId = Auth::user()->id;
+        $schoolId = Auth::user()->schoolId;
         $senderId = Config::get('sms.senderid'); //getting senderId from config file
-        $result = $this->smsRepo->createSMS(array(), $teacherCodes, $senderId, $userId);
+        $result = $this->smsRepo->createSMS(array(), $teacherCodes, $senderId, $userId, $schoolId);
         if ($result == false && !is_array($result))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
         return Response::json($result);
@@ -139,30 +142,30 @@ class SMS_Controller extends Base_Controller
         $templateId = isset($data->templateId) ? $data->templateId : NULL;
         $messageVars = isset($data->messageVars) ? $data->messageVars : array();
 
+
         if (empty($studentsCodes) && empty($teachersCodes))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
-        if (empty($message) && empty($templateId))
-            return Response::json(array('status' => false, 'message' => __('responsemessages.empty_message')), HTTPConstants::SUCCESS_CODE);
+        if (empty($message) && $templateId == 0)
+            return Response::json(array('status' => false, 'message' => Lang::line('responsemessages.empty_message')->get()), HTTPConstants::SUCCESS_CODE);
 
         $userId = Auth::user()->id;
+        $schoolId = Auth::user()->schoolId;
         $sender_id = isset($data->sender_id) ? $data->sender_id : Config::get('sms.senderid'); //getting senderId from config file;
 
-        if (!empty($message) && empty($templateId)) {
+        if ($templateId == 0) {
             //calling function for creating key value pair for studentCode => message
             $studentMessages = array();
             $teacherMessages = array();
-
             foreach ($studentsCodes as $code) {
                 $studentMessages[$code->code] = $message;
             }
-
             foreach ($teachersCodes as $code) {
                 $teacherMessages[$code->code] = $message;
             }
         }
-
-        if (empty($message) && !empty($templateId)) {
+        if ($templateId != 0) {
+            $template = $this->smsRepo->getTemplate($templateId);
             $codesForStudents = array();
             $codesForTeachers = array();
             //only getting codes from studentCodes
@@ -171,27 +174,29 @@ class SMS_Controller extends Base_Controller
             }
 
             foreach ($teachersCodes as $teacherCode) {
-                $codesForTeachers[] = $teacherCode;
+                $codesForTeachers[] = $teacherCode->code;
             }
 
             $students = $this->studentRepo->getStudentsFromCodes($codesForStudents);
             $teachers = $this->teacherRepo->getTeachersFromCodes($codesForTeachers);
 
-            $messages = $this->messageParser->parseTemplate($message, $students, $teachers, $messageVars);
-            $studentMessages = $messages['studentCodes'];
-            $teacherMessages = $messages['teacherCodes'];
+            $messages = $this->messageParser->parseTemplate($template->body, $students, $teachers, $messageVars);
+            $studentMessages = $messages['studentsCode'];
+            $teacherMessages = $messages['teachersCode'];
         }
-
         //queue SMS
         try {
-            $result = $this->smsRepo->createSMS($studentMessages, $teacherMessages, $sender_id, $userId);
+            $result = $this->smsRepo->createSMS($studentMessages, $teacherMessages, $sender_id, $userId, $schoolId);
         } catch (PDOException $e) {
             Log::exception($e);
-            return Response::json(array('status' => false, 'message' => __('responsemessages.pdo_error_sms')), HTTPConstants::SUCCESS_CODE);
+            return Response::json(array('status' => false, 'message' => Lang::line('responsemessages.pdo_error_sms')->get()), HTTPConstants::SUCCESS_CODE);
+        } catch (InsufficientCreditsException $e) {
+            Log::exception($e);
+            return Response::json(array('status' => false, 'message' => Lang::line('responsemessages.insufficient_credits_error_sms')->get()), HTTPConstants::SUCCESS_CODE);
         }
 
         if ($result == false && !is_array($result))
-            return Response::json(array('status' => false, 'message' => __('responsemessages.pdo_error_sms')), HTTPConstants::SUCCESS_CODE);
+            return Response::json(array('status' => false, 'message' => Lang::line('responsemessages.pdo_error_sms')->get()), HTTPConstants::SUCCESS_CODE);
 
 
         return Response::json(array('status' => true, 'result' => $result));
@@ -217,60 +222,40 @@ class SMS_Controller extends Base_Controller
         return Response::eloquent($result);
     }
 
-    public function action_post_create_sms_from_template()
+    public function action_get_template_message_vars($templateId = null)
     {
-        $data = Input::json();
-        if (empty($data) || count($data) == 0) {
-            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
-        }
-
-        $studentsCodes = isset($data->studentCodes) ? $data->studentCodes : array();
-        $teachersCodes = isset($data->teacherCodes) ? $data->teacherCodes : array();
-        $message = isset($data->message) ? $data->message : '';
-        $messageVars = isset($data->messageVars) ? $data->messageVars : array();
-        $sender_id = isset($data->sender_id) ? $data->sender_id : Config::get('sms.senderid'); //getting senderId from config file;
-        if (empty($studentsCodes) && empty($teachersCodes))
-            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
-
-        if (empty($message))
-            return Response::json(array('status' => false, 'message' => __('responsemessages.empty_message')), HTTPConstants::SUCCESS_CODE);
-
-        $userId = Auth::user()->id;
-        $students = $this->studentRepo->getStudentsFromCodes($studentsCodes);
-        $teachers = $this->teacherRepo->getTeachersFromCodes($teachersCodes);
-
-        $codes = $this->messageParser->parseTemplate($message, $students, $teachers, $messageVars);
-        if (empty($codes))
-            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
-
-        $senderId = Config::get('sms.senderid'); //getting senderId from config file
-        try {
-            $result = $this->smsRepo->createSMS($codes['studentsCode'], $codes['teachersCode'], $sender_id, $userId);
-        } catch (PDOException $e) {
-            Log::exception($e);
-            return Response::json(array('status' => false, 'message' => __('responsemessages.pdo_error_sms')), HTTPConstants::SUCCESS_CODE);
-        }
-        if ($result == false && !is_array($result))
-            return Response::json(array('status' => false, 'message' => __('responsemessages.pdo_error_sms')), HTTPConstants::SUCCESS_CODE);
-
-        return Response::json(array('status' => true, 'result' => $result));
-
-    }
-
-    public function action_post_get_template_message_vars()
-    {
-        $data = Input::json();
-        if (empty($data))
-            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
-        $templateId = isset($data->templateId) ? $data->templateId : "";
-        if ($templateId == "")
+        if ($templateId == NULL)
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
         $template = $this->smsRepo->getTemplate($templateId);
         if (empty($template))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
         $messageVars = $this->messageParser->getVariables($template->body);
-        return Response::json($messageVars);
-
+        $AllKnownVariables = $this->messageParser->knownVariables;
+        $knownVariables = array();
+        if (!empty($messageVars)) {
+            $pattern = '/<%text_[^%>]*%>/';
+            preg_match_all($pattern, $template->body, $matches);
+            $matches = $matches[0];
+            foreach ($matches as $match) {
+                //extract key name from template
+                $key = preg_replace(array('/<%/', '/%>/'), ' ', $match);
+                $value = explode("_", $key);
+                //create variable name from key
+                $value = ucfirst($value[1]) . ' ' . ucfirst($value[2]);
+                $knownVariables[trim($key)] = trim($value);
+            }
+        }
+        if (empty($messageVars)) {
+            $pattern = '/<%[^%>]*%>/';
+            preg_match_all($pattern, $template->body, $matches);
+            $matches = $matches[0];
+            foreach ($matches as $match) {
+                //extract key name from template
+                $key = preg_replace(array('/<%/', '/%>/'), ' ', $match);
+                $value = $AllKnownVariables[trim($key)];
+                $knownVariables[trim($key)] = trim($value);
+            }
+        }
+        return View::make('sms.messagevariables')->with('messageVars', $messageVars)->with('knownVariables', $knownVariables);
     }
-
 }
