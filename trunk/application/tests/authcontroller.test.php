@@ -246,7 +246,7 @@ class TestAuthcontroller extends ControllerTestCase
             'newPassword' => 'asdf'
         );
         Input::$json = (object)$data;
-        $response = $this->post('user@update_password', array());
+        $response = $this->post('user@post_update_password', array());
         $this->assertNotNull($response);
         $this->assertEquals(200, $response->status());
     }

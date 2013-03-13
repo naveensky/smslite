@@ -211,21 +211,19 @@ class UserRepository
         return User::find($user->id);
     }
 
-    public function change_password($id, $old_password, $new_password)
+    public function change_password($userId, $old_password, $new_password,$password)
     {
-        if (empty($old_password) || empty($new_password)) {
-            throw new InvalidArgumentException("Empty id or Old Password or New Password");
-        }
-        $user = User::where_id($id)->get();
-        if (empty($user))
+        try {
+            if (Hash::check($old_password, $password)) {
+                $user = User::find($userId);
+                $user->password = Hash::make($new_password);
+                $user->save();
+                return $user;
+            }
             return false;
-        if (Hash::check($old_password, $user[0]->password)) {
-            $user = User::find($id);
-            $user->password = Hash::make($new_password);
-            $user->save();
-            return $user;
+        }catch (Exception $e) {
+            throw new InvalidArgumentException("Database error");
         }
-        return false;
     }
 
     public function restoreAccount($reactivateCode)
@@ -338,6 +336,17 @@ class UserRepository
             return false;
         }
         return $user;
+    }
+
+    public function updateUserProfile($updateData, $userId)
+    {
+        try {
+            User::update($userId, $updateData);
+        } catch (Exception $e) {
+            Log::exception($e);
+            return false;
+        }
+        return true;
     }
 }
 

@@ -202,4 +202,11 @@ class School_Controller extends Base_Controller
         return Response::json($this->schoolRepo->getSMSTemplates(Auth::user()->schoolId));
     }
 
+    public function action_get_transactions_history()
+    {
+        $schoolId = Auth::user()->schoolId;
+        $transactions = Transaction::where_schoolId($schoolId)->get();
+        return Response::eloquent($transactions);
+    }
+
 }

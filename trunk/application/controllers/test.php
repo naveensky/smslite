@@ -285,7 +285,7 @@ class Test_Controller extends Base_Controller
         var_dump($messageVars);
         $output = preg_replace_callback(
             '/<%[^%>]*%>/',
-            function($match)  {
+            function ($match) {
                 return str_replace('text_', '$text_', $match[0]);
             },
             $subject
@@ -299,8 +299,40 @@ class Test_Controller extends Base_Controller
 //        File::delete($filePath);
     }
 
-    public function action_test_viewrender()
+    public function action_test_relatedModels()
     {
+        Bundle::start('factorymuff');
+
+        //create sample school
+        $school = new School();
+        $school->name = "Sample School";
+        $school->code = Str::random(64, 'alnum');
+        $school->address = "Random Address";
+        $school->city = "City";
+        $school->zip = "Zip";
+        $school->state = "Zip";
+        $school->senderId = "SCHOOL";
+        $school->contactPerson = "";
+        $school->contactMobile = "";
+        $school->save();
+
+        $transaction1 = FactoryMuff::create('Transaction');
+        $transaction1->schoolId = $school->id;
+        $transaction1->orderId = Str::random(64, 'alnum');
+        $transaction1->save();
+
+        $transaction2 = FactoryMuff::create('Transaction');
+        $transaction2->schoolId = $school->id;
+        $transaction2->orderId = Str::random(64, 'alnum');
+        $transaction2->save();
+
+    }
+
+    public function action_transaction()
+    {
+        $schoolId = Auth::user()->schoolId;
+        $transactions = Transaction::where_schoolId(1)->get();
+        return Response::eloquent($transactions);
 
     }
 

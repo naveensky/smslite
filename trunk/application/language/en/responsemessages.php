@@ -16,5 +16,7 @@ return array(
     'password_changed_successfully' => 'Password changed successfully',
     'empty_message' => 'Please enter the message you want to send',
     'pdo_error_sms' => 'please try again some internal error occured',
-    'insufficient_credits_error_sms' => 'You have insufficient credits to send sms please buy credits now'
+    'insufficient_credits_error_sms' => 'You have insufficient credits to send sms please buy credits now',
+    'password_update_success'=>'Your password has been updated successfully',
+    'password_update_error'=>'Sorry your password is not updated please try again'
 );

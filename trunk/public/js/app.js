@@ -12,7 +12,10 @@ angular.module('app', ['LoaderServices']).
             .when('/user/register/4', {templateUrl: '/user/register/4', controller: 'User_Register'})
             .when('/user/forgot-password', {templateUrl: '/user/forgot_password', controller: 'User_Forgot_Password'})
             .when('/user/password_reset_success', {templateUrl: '/user/password_reset_success', controller: 'User_Change_Password'})
-            .when('/user/invalid_code', {templateUrl: '/user/invalid_code' });
+            .when('/user/invalid_code', {templateUrl: '/user/invalid_code' })
+            .when('/user/profile', {templateUrl: '/user/profile', controller: 'User_Account'})
+            .when('/user/update_password', {templateUrl: '/user/update_password', controller: 'User_Account'})
+            .when('/user/transaction_history', {templateUrl: '/user/transaction_history', controller: 'User_Account'});
 
         //student routes
         $routeProvider
@@ -120,7 +123,7 @@ function initDatePicker() {
         todayBtn: true,
         todayHighlight: true
     });
-    $(".datetime-input,.date-input").datepicker('setEndDate',moment().format('LLLL'));
+    $(".datetime-input,.date-input").datepicker('setEndDate', moment().format('LLLL'));
 
 
 }

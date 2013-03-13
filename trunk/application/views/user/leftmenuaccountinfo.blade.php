@@ -1,8 +1,13 @@
-<?php
-/**
- * Created by JetBrains PhpStorm.
- * User: hitanshu
- * Date: 12/3/13
- * Time: 5:47 PM
- * To change this template use File | Settings | File Templates.
- */
+<!--All links for left hand side menus-->
+<?php $leftMenu = array(
+    '/user/profile' => 'Edit Profile',
+    '/user/update_password' => 'Update Password',
+    '/user/transaction_history' => 'Transaction History');
+?>
+
+<ul class="nav nav-list">
+    <li class="nav-header">Account</li>
+    @foreach($leftMenu as $key => $value)
+    <li class="<% (strpos(URL::current(), $key)) ? "active" : "" %>"><a href='<% "#$key" %>'><% $value %></a></li>
+    @endforeach
+</ul>

@@ -159,7 +159,7 @@ class Init {
             $table->string('orderId', 64);
             $table->integer('smsCredits');
             $table->decimal('amount', 10, 2);
-            $table->decimal('discount', 3, 2);
+            $table->decimal('discount', 10, 2);
             $table->decimal('grossAmount', 10, 2);
             $table->integer('schoolId')->unsigned();
             $table->foreign('schoolId')->references('id')->on('schools');

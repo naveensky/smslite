@@ -13,5 +13,4 @@ class Home_Controller extends Base_Controller
         return "Pending Dashboard Page";
     }
 
-
 }

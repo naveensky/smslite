@@ -28,8 +28,7 @@ class User_Controller extends Base_Controller
 
     public function action_login()
     {
-        if (Auth::check())
-        {
+        if (Auth::check()) {
             return "You are already Login";
         }
         return View::make('user/login');
@@ -375,6 +374,11 @@ class User_Controller extends Base_Controller
 
     public function action_update_password()
     {
+        return View::make('user/accountupdatepassword');
+    }
+
+    public function action_post_update_password()
+    {
         $data = Input::json();
         if (empty($data))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
@@ -382,10 +386,13 @@ class User_Controller extends Base_Controller
         $oldPassword = isset($data->oldPassword) ? $data->oldPassword : "";
         $newPassword = isset($data->newPassword) ? $data->newPassword : "";
 
-        $userId = Auth::user()->id;
+        if (empty($oldPassword) || empty($newPassword))
+            return Response::json(array('status' => false, 'message' => Lang::line('responsemessages.password_update_error')->get()), HTTPConstants::SUCCESS_CODE);
 
+        $userId = Auth::user()->id;
+        $password = Auth::user()->password;
         try {
-            $user = $this->userRepo->change_password($userId, $oldPassword, $newPassword);
+            $user = $this->userRepo->change_password($userId, $oldPassword, $newPassword, $password);
         } catch (InvalidArgumentException $ie) {
             Log::exception($ie);
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
@@ -394,9 +401,9 @@ class User_Controller extends Base_Controller
             Event::first(ListenerConstants::APP_USER_PASSWORD_UPDATE, array($user));
             $passwordUpdateMessage = __('smstemplate.password_update_message');
             $this->appSmsRepo->createAppSms($user->mobile, $passwordUpdateMessage, Config::get('sms.senderid'), $user->id);
-            return Response::make(__('responseerror.activate_success'), HTTPConstants::SUCCESS_CODE);
+            return Response::json(array('status' => true, 'message' => Lang::line('responsemessages.password_update_success')->get()), HTTPConstants::SUCCESS_CODE);
         }
-        return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+        return Response::json(array('status' => false, 'message' => Lang::line('responsemessages.password_update_error')->get()), HTTPConstants::SUCCESS_CODE);
     }
 
     public function action_update_mobile()
@@ -457,5 +464,49 @@ class User_Controller extends Base_Controller
             return Response::json(array('status' => true), HTTPConstants::SUCCESS_CODE);
         }
         return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
+    }
+
+    public function action_profile()
+    {
+        return View::make('user/accountinfo');
+    }
+
+    public function action_get_user_profile()
+    {
+        $schoolId = Auth::user()->schoolId;
+        $school = School::find($schoolId);
+        return Response::eloquent($school);
+    }
+
+    public function action_post_update_user()
+    {
+        $data = Input::json();
+        if (empty($data))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        $userId = Auth::user()->id;
+        $userProfileInfo = isset($data->userProfileInfo) ? $data->userProfileInfo : NULL;
+        if ($userProfileInfo == NULL)
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        $updateData = array();
+        if (isset($userProfileInfo->mobile) && $userProfileInfo->mobile != '') {
+            $updateData['mobile'] = $userProfileInfo->mobile;
+            $updateData['mobileVerificationCode'] = mt_rand(100000, 999999);
+            $updateData['isVerified'] = 0;
+        }
+        if (isset($userProfileInfo->email) && $userProfileInfo->email != '')
+            $updateData['email'] = $userProfileInfo->email;
+        if (empty($updateData))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+        $status = $this->userRepo->updateUserProfile($updateData, $userId);
+        if (!$status)
+            return Response::json(array('status' => false), HTTPConstants::SUCCESS_CODE);
+        return Response::json(array('status' => true), HTTPConstants::SUCCESS_CODE);
+    }
+
+    public function action_transaction_history()
+    {
+        return View::make('user/transaction/transactionhistory');
     }
 }

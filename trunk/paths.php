@@ -24,7 +24,7 @@
 $environments = array(
     'local' => array('http://localhost*', '*.dev', 'http://smslite.localhost.com'),
     'prod' => array('http://smslite.com'),
-    'testing' => array('naveen-lappy','hitanshu-PC','')
+    'testing' => array('naveen-lappy','hitanshu-desktop','')
 );
 
 // --------------------------------------------------------------

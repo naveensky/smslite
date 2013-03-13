@@ -8,6 +8,8 @@
  */
 class User extends Eloquent
 {
+    public static $hidden = array('id', 'password', 'emailVerificationCode', 'mobileVerificationCode', 'forgottenPasswordCode', 'isDeleted', 'isDeactivated', 'reactivateCode', 'schoolId', 'isVerified'); //to exclude id from json array
+
     public static $factory = array(
         'email' => 'email',
         'password' => 'string',
