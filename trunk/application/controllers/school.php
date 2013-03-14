@@ -141,6 +141,9 @@ class School_Controller extends Base_Controller
         if (empty($result))
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
 
+        //command to create templates for the school
+        Command::run(array('smstemplate', $schoolId));
+
         return Response::json(array('status' => true), HTTPConstants::SUCCESS_CODE);
     }
 

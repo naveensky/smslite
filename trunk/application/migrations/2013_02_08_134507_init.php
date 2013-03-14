@@ -1,13 +1,14 @@
 <?php
 
-class Init {
+class Init
+{
 
-	/**
-	 * Make changes to the database.
-	 *
-	 * @return void
-	 */
-	public function up()
+    /**
+     * Make changes to the database.
+     *
+     * @return void
+     */
+    public function up()
     {
         //create school table
         Schema::create('schools', function ($table) {
@@ -39,7 +40,7 @@ class Init {
             $table->integer('isVerified')->default(false);
             $table->integer('isDeactivated')->default(false);
             $table->integer('isDeleted')->default(false);
-            $table->string('reactivateCode',64)->nullable()->default(NULL);
+            $table->string('reactivateCode', 64)->nullable()->default(NULL);
             $table->timestamps();
         });
 
@@ -64,6 +65,7 @@ class Init {
         //create students table
         Schema::create('students', function ($table) {
             $table->increments('id')->unsigned();
+            $table->string('uniqueIdentifier', 100);
             $table->string('name', 500);
             $table->string('email', 1000);
             $table->string('motherName', 300);

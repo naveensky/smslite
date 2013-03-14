@@ -99,30 +99,30 @@ class TestStudentController extends ControllerTestCase
         Auth::login($user->id);
 
         $studentsData = array(
-            array('name' => 'student1', 'classStandard' => '6', 'classSection' => 'A',
+            array('uniqueIdentifier' => '012345678', 'name' => 'student1', 'classStandard' => '6', 'classSection' => 'A',
                 'sex' => 'Male', 'fatherName' => 'XYZ', 'motherName' => 'EFG',
                 'email' => '123@gmail.com', 'mobile1' => '8858353353', 'mobile2' => '',
                 'mobile3' => '', 'mobile4' => '', 'mobile5' => '', 'dob' => '02-01-91', 'morningBusRoute' => '405', 'eveningBusRoute' => '607'),
-            array('name' => 'student2', 'classStandard' => '6', 'classSection' => 'A',
+            array('uniqueIdentifier' => '012345678', 'name' => 'student2', 'classStandard' => '6', 'classSection' => 'A',
                 'sex' => 'Male', 'fatherName' => 'XYZ', 'motherName' => 'EFG',
                 'email' => '123@gmail.com', 'mobile1' => '8858353353', 'mobile2' => '',
                 'mobile3' => '', 'mobile4' => '', 'mobile5' => '', 'dob' => '02-01-91', 'morningBusRoute' => '405', 'eveningBusRoute' => '607'),
-            array('name' => 'student3', 'classStandard' => '6', 'classSection' => 'A',
+            array('uniqueIdentifier' => '012345678', 'name' => 'student3', 'classStandard' => '6', 'classSection' => 'A',
                 'sex' => 'Male', 'fatherName' => 'XYZ', 'motherName' => 'EFG',
                 'email' => '123@gmail.com', 'mobile1' => '8858353353', 'mobile2' => '',
                 'mobile3' => '', 'mobile4' => '', 'mobile5' => '', 'dob' => '02-01-91', 'morningBusRoute' => '405', 'eveningBusRoute' => '607'),
-            array('name' => 'student4', 'classStandard' => '6', 'classSection' => 'A',
+            array('uniqueIdentifier' => '012345678', 'name' => 'student4', 'classStandard' => '6', 'classSection' => 'A',
                 'sex' => 'Male', 'fatherName' => 'XYZ', 'motherName' => 'EFG',
                 'email' => '123@gmail.com', 'mobile1' => '8858353353', 'mobile2' => '',
                 'mobile3' => '', 'mobile4' => '', 'mobile5' => '', 'dob' => '02-01-91', 'morningBusRoute' => '405', 'eveningBusRoute' => '607'),
-            array('name' => 'student5', 'classStandard' => '6', 'classSection' => 'A',
+            array('uniqueIdentifier' => '012345678', 'name' => 'student5', 'classStandard' => '6', 'classSection' => 'A',
                 'sex' => 'Male', 'fatherName' => 'XYZ', 'motherName' => 'EFG',
                 'email' => '123@gmail.com', 'mobile1' => '8858353353', 'mobile2' => '',
                 'mobile3' => '', 'mobile4' => '', 'mobile5' => '', 'dob' => '02-01-91', 'morningBusRoute' => '405', 'eveningBusRoute' => '607'),
         );
 
         $csvData = "";
-        $headerRow = "Full Name,Class Standard,Class Section,Gender,Father Name,Mother Name,Email,Mobile1,Mobile2,Mobile3,Mobile4,Mobile5,DOB,Morning Bus Route,Evening Bus Route \n";
+        $headerRow = "Admission Number,Full Name,Class Standard,Class Section,Gender,Father Name,Mother Name,Email,Mobile1,Mobile2,Mobile3,Mobile4,Mobile5,DOB,Morning Bus Route,Evening Bus Route \n";
         $csvData .= $headerRow;
         foreach ($studentsData as $data) {
             $dataRow = "";
@@ -140,7 +140,7 @@ class TestStudentController extends ControllerTestCase
         Input::$json = (object)$parameters;
         $response = $this->post('student@post_upload', array());
         $this->assertEquals(200, $response->status());
-        File::delete($directory.'student_test_list.csv');
+        File::delete($directory . 'student_test_list.csv');
     }
 
     public function testGetStudents()
@@ -217,7 +217,7 @@ class TestStudentController extends ControllerTestCase
         $firstStudent->save();
 
         $parameters = array(
-            'codes'=>array('code1')
+            'codes' => array('code1')
         );
 
         Input::$json = (object)$parameters;

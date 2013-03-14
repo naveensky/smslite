@@ -26,7 +26,7 @@
 
             <hr>
             <div id="filter-individual" ng-show="filterType=='individualFilter'">
-                <label>Enter a Name or a Mobile No.</label>
+                <label>Enter a Name or a Mobile No. or Admission No.</label>
 
                 <div class="input-append">
                     <input type="text" ng-model="searchValue" class="span2">
@@ -39,6 +39,7 @@
                         <th>&nbsp;</th>
                         <th>Name</th>
                         <th>Phone</th>
+                        <th>Admission No.</th>
                     </tr>
                     </thead>
                     <tfoot>
@@ -60,6 +61,7 @@
                         <td><input ng-model="people.searchPeople.selected" type="checkbox"></td>
                         <td>{{people.searchPeople.name}}</td>
                         <td>{{people.searchPeople.mobile1}}, +</td>
+                        <td>{{people.searchPeople.admissionNumber}}</td>
                     </tr>
                     </tbody>
                 </table>
@@ -149,12 +151,14 @@
         </div>
         <div class="box">
             <h3>Placeholders</h3>
+
             <div ng-include="link"></div>
         </div>
     </div>
     <div class="span3">
         <div class="box">
             <h3><i class="icon-cog icon-large"></i>Verify &amp; Send</h3>
+
             <div class="control-group">
                 <label>Total Individual</label>
                 <input class="input-block-level" type="text" readonly="readonly" value="{{getPeopleCount()}}">
@@ -173,9 +177,13 @@
                 </a>
                 <input class="input-block-level" type="text" readonly="readonly" ng-model="creditsAvailable">
             </div>
-            <button ng-disabled="checkBeforeSend()" ng-click="queueSMS()" class="btn btn-block btn-success"><i
-                    class="icon-add"></i> Add to SMS Queue
-            </button>
+            <div class="control-group">
+                <label class="checkbox">
+                    <input type="checkbox" ng-model="sendCopy">Send Copy to Admin
+                </label>
+                <button ng-disabled="checkBeforeSend()" ng-click="queueSMS()" class="btn btn-block btn-success"><i
+                        class="icon-add"></i> Add to SMS Queue
+                </button>
+            </div>
         </div>
     </div>
-</div>

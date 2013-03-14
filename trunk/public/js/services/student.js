@@ -42,7 +42,7 @@ module.factory('StudentService', ["$http", "$q", function ($http, $q) {
             //make post request with params
             //make post call for queue the message
             $http.post(
-                '/student/findStudentByNameOrMobile',
+                '/student/findStudentByNameOrMobileOrAdmissionNumber',
                 {"searchValue": searchValue
                 }
             ).success(function (data) {

@@ -134,6 +134,8 @@ class Student_Controller extends Base_Controller
             $updateData['mobile5'] = $update_data->Mobile5;
         if (isset($update_data->DOB))
             $updateData['dob'] = $update_data->DOB;
+        if (isset($update_data->admissionNumber))
+            $updateData['uniqueIdentifier'] = $update_data->admissionNumber;
         if (isset($update_data->ClassStandard))
             $updateData['classStandard'] = $update_data->ClassStandard;
         if (isset($update_data->ClassSection))
@@ -271,7 +273,7 @@ class Student_Controller extends Base_Controller
 
     }
 
-    public function action_findStudentByNameOrMobile()
+    public function action_findStudentByNameOrMobileOrAdmissionNumber()
     {
         $data = Input::json();
         if (empty($data))
@@ -282,7 +284,7 @@ class Student_Controller extends Base_Controller
 
         Auth::login(1);
         $schoolId = Auth::user()->schoolId;
-        $students = $this->studentRepo->getStudentByNameOrMobile($schoolId, $searchValue);
+        $students = $this->studentRepo->getStudentByNameOrMobileOrAdmissionNumber($schoolId, $searchValue);
         if ($students == false && !is_array($students))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
@@ -306,6 +308,7 @@ class Student_Controller extends Base_Controller
             $row['mobile3'] = $student->mobile3;
             $row['mobile4'] = $student->mobile4;
             $row['mobile5'] = $student->mobile5;
+            $row['admissionNumber'] = $student->uniqueIdentifier;
             $row['code'] = $student->code;
             $row['mobileCount'] = $mobileCount;
             $studentData[] = $row;

@@ -20,6 +20,7 @@ angular.module('app')
         $scope.templateSelected = 'custom';
         $scope.showPlaceholder = false;
         $scope.model = {};
+        $scope.sendCopy = true;
 
 
         //monitors the previous value of the filter
@@ -254,9 +255,7 @@ angular.module('app')
 
 
         $scope.addBySearchResult = function () {
-
             //get all selected classes
-
             for (var i = 0; i < $scope.pagedItems.length; ++i) {
                 for (var j = 0; j < $scope.pagedItems[i].length; ++j) {
                     if ($scope.pagedItems[i][j].searchPeople.selected) {
@@ -463,6 +462,7 @@ angular.module('app')
                     "teacherCodes": $scope.selectedTeachers,
                     "message": $scope.message,
                     "templateId": templateId,
+                    "sendCopy":$scope.sendCopy,
                     "messageVars": $scope.model
                 }
             ).success(function (data) {

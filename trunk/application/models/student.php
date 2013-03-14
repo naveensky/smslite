@@ -36,9 +36,9 @@ class Student extends Eloquent
 
         foreach ($data as $dataRow) {
             $input = array(
-                'name' => $dataRow[0],
-                'email' => $dataRow[6],
-                'mobile1' => $dataRow[7]
+                'name' => $dataRow[1],
+                'email' => $dataRow[7],
+                'mobile1' => $dataRow[8]
 
             );
 
@@ -55,21 +55,22 @@ class Student extends Eloquent
                 }
 
             }
-            $insertRow['name'] = isset($dataRow[0]) ? $dataRow[0] : ""; //Full Name
-            $insertRow['classStandard'] = isset($dataRow[1]) ? $dataRow[1] : ""; //Class Standard
-            $insertRow['classSection'] = isset($dataRow[2]) ? $dataRow[2] : ""; //Class Section
-            $insertRow['sex'] = isset($dataRow[3]) ? $dataRow[3] : ""; //Gender
-            $insertRow['fatherName'] = isset($dataRow[4]) ? $dataRow[4] : ""; //Father Name
-            $insertRow['motherName'] = isset($dataRow[5]) ? $dataRow[5] : ""; //Mother Name
-            $insertRow['email'] = $dataRow[6];
-            $insertRow['mobile1'] = isset($dataRow[7]) ? $dataRow[7] : ""; //Mobile1
-            $insertRow['mobile2'] = isset($dataRow[8]) ? $dataRow[8] : ""; //Mobile2
-            $insertRow['mobile3'] = isset($dataRow[9]) ? $dataRow[9] : ""; //Mobile3
-            $insertRow['mobile4'] = isset($dataRow[10]) ? $dataRow[10] : ""; //Mobile4
-            $insertRow['mobile5'] = isset($dataRow[11]) ? $dataRow[11] : ""; //Mobile5
-            $insertRow['dob'] = isset($dataRow[12]) ? $dataRow[12] : ""; //DOB
-            $insertRow['morningBusRoute'] = isset($dataRow[13]) ? $dataRow[13] : ""; //Morning Bus Route
-            $insertRow['eveningBusRoute'] = isset($dataRow[14]) ? $dataRow[14] : ""; //Evening Bus Route
+            $insertRow['uniqueIdentifier'] = isset($dataRow[0]) ? $dataRow[0] : "";
+            $insertRow['name'] = isset($dataRow[1]) ? $dataRow[1] : ""; //Full Name
+            $insertRow['classStandard'] = isset($dataRow[2]) ? $dataRow[2] : ""; //Class Standard
+            $insertRow['classSection'] = isset($dataRow[3]) ? $dataRow[3] : ""; //Class Section
+            $insertRow['sex'] = isset($dataRow[4]) ? $dataRow[4] : ""; //Gender
+            $insertRow['fatherName'] = isset($dataRow[5]) ? $dataRow[5] : ""; //Father Name
+            $insertRow['motherName'] = isset($dataRow[6]) ? $dataRow[6] : ""; //Mother Name
+            $insertRow['email'] = $dataRow[7];
+            $insertRow['mobile1'] = isset($dataRow[8]) ? $dataRow[8] : ""; //Mobile1
+            $insertRow['mobile2'] = isset($dataRow[9]) ? $dataRow[9] : ""; //Mobile2
+            $insertRow['mobile3'] = isset($dataRow[10]) ? $dataRow[10] : ""; //Mobile3
+            $insertRow['mobile4'] = isset($dataRow[11]) ? $dataRow[11] : ""; //Mobile4
+            $insertRow['mobile5'] = isset($dataRow[12]) ? $dataRow[12] : ""; //Mobile5
+            $insertRow['dob'] = isset($dataRow[13]) ? $dataRow[13] : ""; //DOB
+            $insertRow['morningBusRoute'] = isset($dataRow[14]) ? $dataRow[14] : ""; //Morning Bus Route
+            $insertRow['eveningBusRoute'] = isset($dataRow[15]) ? $dataRow[15] : ""; //Evening Bus Route
             $insertRow['code'] = Str::random(64, 'alpha'); //student Code
             $insertRow['schoolId'] = $schoolId; //school Id
             $insertRow['created_at'] = 'Now';
@@ -88,6 +89,7 @@ class Student extends Eloquent
 
         foreach ($students as $student) {
             $row = array();
+            $row['uniqueIdentifier'] = $student->uniqueIdentifier;
             $row['name'] = $student->name;
             $row['classStandard'] = $student->classStandard;
             $row['classSection'] = $student->classSection;
@@ -107,7 +109,7 @@ class Student extends Eloquent
         }
 
         $csvData = "";
-        $headerRow = "Full Name,Class Standard,Class Section,Gender,Father Name,Mother Name,Email,Mobile1,Mobile2,Mobile3,Mobile4,Mobile5,DOB,Morning Bus Route,Evening Bus Route \n";
+        $headerRow = "Admission Number,Full Name,Class Standard,Class Section,Gender,Father Name,Mother Name,Email,Mobile1,Mobile2,Mobile3,Mobile4,Mobile5,DOB,Morning Bus Route,Evening Bus Route \n";
         $csvData .= $headerRow;
         foreach ($studentsData as $data) {
             $dataRow = "";
@@ -131,6 +133,7 @@ class Student extends Eloquent
         'mobile4' => 'string',
         'mobile5' => 'string',
         'dob' => '1 jan 2013',
+        'uniqueIdentifier' => 'string',
         'classStandard' => 'string',
         'classSection' => 'string',
         'morningBusRoute' => 'string',
