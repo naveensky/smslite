@@ -241,21 +241,24 @@ class SMS_Controller extends Base_Controller
                 $key = preg_replace(array('/<%/', '/%>/'), ' ', $match);
                 $value = explode("_", $key);
                 //create variable name from key
-                $value = ucfirst($value[1]) . ' ' . ucfirst($value[2]);
-                $knownVariables[trim($key)] = trim($value);
+                $data = '';
+                for ($i = 1; $i < count($value); $i++) {
+                    $data .= ucfirst($value[$i]) . ' ';
+                }
+                $knownVariables[trim($key)] = trim($data);
             }
         }
-        if (empty($messageVars)) {
-            $pattern = '/<%[^%>]*%>/';
-            preg_match_all($pattern, $template->body, $matches);
-            $matches = $matches[0];
-            foreach ($matches as $match) {
-                //extract key name from template
-                $key = preg_replace(array('/<%/', '/%>/'), ' ', $match);
-                $value = $AllKnownVariables[trim($key)];
-                $knownVariables[trim($key)] = trim($value);
-            }
+
+        $pattern = '/<%(?!text_)[^%>]*%>/';
+        preg_match_all($pattern, $template->body, $matches);
+        $matches = $matches[0];
+        foreach ($matches as $match) {
+            //extract key name from template
+            $key = preg_replace(array('/<%/', '/%>/'), ' ', $match);
+            $value = $AllKnownVariables[trim($key)];
+            $knownVariables[trim($key)] = trim($value);
         }
+
         return View::make('sms.messagevariables')->with('messageVars', $messageVars)->with('knownVariables', $knownVariables);
     }
 }

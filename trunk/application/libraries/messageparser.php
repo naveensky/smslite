@@ -37,10 +37,12 @@ class MessageParser
             $key = preg_replace(array('/<%/', '/%>/'), ' ', $match);
             $value = explode("_", $key);
             //create variable name from key
-            $value = ucfirst($value[1]) . ' ' . ucfirst($value[2]);
-            $messageVars[trim($key)] = trim($value);
+            $data = '';
+            for ($i = 1; $i < count($value); $i++) {
+                $data .= ucfirst($value[$i]) . ' ';
+            }
+            $messageVars[trim($key)] = trim($data);
         }
-
         return $messageVars;
     }
 
@@ -93,7 +95,7 @@ class MessageParser
             foreach ($students as $student) {
                 $data['name'] = $student->name; //name
                 $data['dob'] = $student->dob; //dob
-                $data['class'] = $student->classStandard;
+                $data['class'] = $student->classStandard . '-' . ucfirst($student->classSection);
                 $data['section'] = $student->classSection;
                 $data['mornigbusroute'] = $student->morningBusRoute;
                 $data['eveningbusroute'] = $student->eveningBusRoute;
