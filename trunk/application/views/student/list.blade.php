@@ -7,25 +7,25 @@
 
         <div class="box padding-left-12">
 
-                <label><strong>Classes</strong></label>
-                <select ng-model="classSections" multiple="multiple">
-                    @foreach($classes as $class)
-                    <option><%$class%></option>
-                    @endforeach
-                </select>
-                <label><strong>Morning Bus Routes</strong></label>
-                <select ng-model="morningRoutes" multiple="multiple">
-                    @foreach($morningRoutes as $morningRoute)
-                    <option><%$morningRoute%></option>
-                    @endforeach
-                </select>
-                <label><strong>Evening Bus Routes</strong></label>
-                <select ng-model="eveningRoutes" multiple="multiple">
-                    @foreach($eveningRoutes as $eveningRoute)
-                    <option><%$eveningRoute%></option>
-                    @endforeach
-                </select>
-                <button class="btn btn-primary" ng-click="filterStudents()">Filter</button>
+            <label><strong>Classes</strong></label>
+            <select ng-model="classSections" multiple="multiple">
+                @foreach($classes as $class)
+                <option><%$class%></option>
+                @endforeach
+            </select>
+            <label><strong>Morning Bus Routes</strong></label>
+            <select ng-model="morningRoutes" multiple="multiple">
+                @foreach($morningRoutes as $morningRoute)
+                <option><%$morningRoute%></option>
+                @endforeach
+            </select>
+            <label><strong>Evening Bus Routes</strong></label>
+            <select ng-model="eveningRoutes" multiple="multiple">
+                @foreach($eveningRoutes as $eveningRoute)
+                <option><%$eveningRoute%></option>
+                @endforeach
+            </select>
+            <button class="btn btn-primary" ng-click="filterStudents()">Filter</button>
         </div>
 
     </div>
@@ -47,18 +47,25 @@
                     <table class="table table-striped table-hover table-condensed">
                         <thead>
                         <tr>
+                            <th>Admission No.</th>
                             <th>Name</th>
                             <th>Class</th>
-                            <th>Section</th>
+                            <th>Morning Bus Route</th>
+                            <th>Evening Bus Route</th>
+                            <th>Mobile</th>
 
                         </tr>
                         </thead>
                         <tbody ng-show="students.length>0">
 
                         <tr ng-repeat="student in students">
+                            <td>{{ student.uniqueIdentifier }}</td>
                             <td>{{ student.name }}</td>
-                            <td>{{ student.classStandard }}</td>
-                            <td>{{ student.classSection }}</td>
+                            <td>{{ student.classStandard }}-{{ student.classSection }}</td>
+                            <td>{{ student.morningBusRoute }}</td>
+                            <td>{{ student.eveningBusRoute }}</td>
+                            <td><a href
+                                   title="{{getMobileNumbers(student)}}">{{student.mobile1}}</a></td>
 
                         </tr>
 
@@ -88,5 +95,4 @@
             </div>
         </div>
     </div>
-</div>
 </div>

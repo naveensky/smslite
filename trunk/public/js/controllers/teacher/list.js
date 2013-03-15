@@ -11,6 +11,23 @@ angular.module('app')
         $scope.pageCount = 25;
         $scope.previousPage = 0;
         $scope.nextPage = $scope.pageNumber + 1;
+        $scope.mobiles = '';
+
+        $scope.getMobileNumbers = function (student) {
+
+            if (student.mobile1 != '')
+                $scope.mobiles = student.mobile1;
+            if (student.mobile2 != '')
+                $scope.mobiles += '\n' + student.mobile2;
+            if (student.mobile3 != '')
+                $scope.mobiles += '\n' + student.mobile3;
+            if (student.mobile4 != '')
+                $scope.mobiles += '\n' + student.mobile4;
+            if (student.mobile5 != '')
+                $scope.mobiles += '\n' + student.mobile5;
+            return $scope.mobiles;
+
+        }
 
         $scope.getTeachers = function () {
             $scope.teachers = teacherService.getTeachers(

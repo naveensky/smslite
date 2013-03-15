@@ -6,25 +6,25 @@
 
         <div class="box padding-left-12">
 
-                <label>Departments</label>
-                <select ng-model="departments" multiple="multiple">
-                    @foreach($departments as $department)
-                    <option><%$department%></option>
-                    @endforeach
-                </select>
-                <label>MorningBusRoute</label>
-                <select ng-model="morningRoutes" multiple="multiple">
-                    @foreach($morningRoutes as $morningRoute)
-                    <option><%$morningRoute%></option>
-                    @endforeach
-                </select>
-                <label>EveningBusRoute</label>
-                <select ng-model="eveningRoutes" multiple="multiple">
-                    @foreach($eveningRoutes as $eveningRoute)
-                    <option><%$eveningRoute%></option>
-                    @endforeach
-                </select>
-                <button class="btn btn-primary" ng-click="getTeachers()">Filter</button>
+            <label>Departments</label>
+            <select ng-model="departments" multiple="multiple">
+                @foreach($departments as $department)
+                <option><%$department%></option>
+                @endforeach
+            </select>
+            <label>MorningBusRoute</label>
+            <select ng-model="morningRoutes" multiple="multiple">
+                @foreach($morningRoutes as $morningRoute)
+                <option><%$morningRoute%></option>
+                @endforeach
+            </select>
+            <label>EveningBusRoute</label>
+            <select ng-model="eveningRoutes" multiple="multiple">
+                @foreach($eveningRoutes as $eveningRoute)
+                <option><%$eveningRoute%></option>
+                @endforeach
+            </select>
+            <button class="btn btn-primary" ng-click="getTeachers()">Filter</button>
 
         </div>
     </div>
@@ -40,6 +40,7 @@
                 galley
                 of type and scrambled it to make a type specimen book.</p>
 
+
             <div class="row">
 
                 <div class="span8">
@@ -48,7 +49,10 @@
                         <tr>
                             <th>Name</th>
                             <th>Department</th>
-                            <th>Mobile1</th>
+                            <th>Morning Bus Route</th>
+                            <th>Evening Bus Route</th>
+                            <th>Mobile</th>
+
 
                         </tr>
                         </thead>
@@ -57,10 +61,11 @@
                         <tr ng-repeat="teacher in teachers">
                             <td>{{ teacher.name }}</td>
                             <td>{{ teacher.department }}</td>
-                            <td>{{ teacher.mobile1 }}</td>
-
+                            <td>{{ teacher.morningBusRoute }}</td>
+                            <td>{{ teacher.eveningBusRoute }}</td>
+                            <td><a href
+                                   title="{{getMobileNumbers(teacher)}}">{{teacher.mobile1}}</a></td>
                         </tr>
-
                         </tbody>
                         <tbody ng-show="teachers.length==0">
                         <tr>
@@ -88,4 +93,4 @@
         </div>
     </div>
 </div>
-</div>
+

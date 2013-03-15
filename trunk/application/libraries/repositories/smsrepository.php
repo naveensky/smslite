@@ -61,8 +61,14 @@ class SMSRepository
         return $status;
     }
 
-    public function createSMS(array $studentCodes, array $teachersCodes, $senderId, $userId, $schoolId)
+    public function createSMS(array $studentCodes, array $teachersCodes, $senderId, $userId, $schoolId, $adminMobile)
     {
+        $isAdminMessageProcessed = false;
+        if ($adminMobile != NULL) {
+            $isAdminMessageProcessed = true;
+            $messageAlreadyProcessed = false;
+        }
+
         //get all student codes
         $codes = array_keys($studentCodes);
 
@@ -97,6 +103,17 @@ class SMSRepository
                 $this->sms_transaction[] = $sms_data;
                 $totalStudentCredits += $creditsForMessage;
             }
+
+            if ($isAdminMessageProcessed) {
+                if (!$messageAlreadyProcessed) {
+                    $sms_data['mobile'] = $adminMobile;
+                    $sms_data['studentId'] = NULL;
+                    $sms_data['teacherId'] = NULL;
+                    $this->sms_transaction[] = $sms_data;
+                    $totalStudentCredits += $creditsForMessage;
+                    $messageAlreadyProcessed = true;
+                }
+            }
         }
 
         $teacher_codes = array_keys($teachersCodes);
@@ -123,6 +140,16 @@ class SMSRepository
                 $sms_data['mobile'] = $mobileNumber;
                 $this->smsTeachersTransaction[] = $sms_data;
                 $teacherCreditsUsed += $sms_data['credits'];
+            }
+            if ($isAdminMessageProcessed) {
+                if (!$messageAlreadyProcessed) {
+                    $sms_data['mobile'] = $adminMobile;
+                    $sms_data['studentId'] = NULL;
+                    $sms_data['teacherId'] = NULL;
+                    $this->smsTeachersTransaction[] = $sms_data;
+                    $teacherCreditsUsed += $sms_data['credits'];
+                    $messageAlreadyProcessed = true;
+                }
             }
         }
 

@@ -94,7 +94,8 @@ class TestSmsController extends ControllerTestCase
             'teacherCodes' => $teacherCodes,
             'message' => $message,
             'sender_id' => 'GAPS',
-            'templateId' => 0
+            'templateId' => 0,
+            'sendCopy'=>true
         );
 
         Input::$json = $parameters;
@@ -109,7 +110,8 @@ class TestSmsController extends ControllerTestCase
             'teacherCodes' => array(),
             'message' => $message,
             'sender_id' => 'GAPS',
-            'templateId' => 0
+            'templateId' => 0,
+            'sendCopy'=>true
         );
 
         Input::$json = $parameters;
@@ -134,7 +136,8 @@ class TestSmsController extends ControllerTestCase
             'message' => $message,
             'sender_id' => 'GAPS',
             'messageVars' => array('text_teacher_name' => 'Naveen Gupta', 'text_PTM_date' => '8 march 2013'),
-            'templateId' => $templateID
+            'templateId' => $templateID,
+            'sendCopy'=>false
         );
 
         Input::$json = $parameters;

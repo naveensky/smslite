@@ -20,7 +20,7 @@ angular.module('app')
         $scope.templateSelected = 'custom';
         $scope.showPlaceholder = false;
         $scope.model = {};
-        $scope.sendCopy = true;
+        $scope.sendCopy = false;
 
 
         //monitors the previous value of the filter
@@ -168,12 +168,19 @@ angular.module('app')
                 countSMS += selectedTeacher.mobileCount;
             })
 
+            if ($scope.sendCopy)
+                countSMS += 1;
+
             return countSMS;
         }
 
 
         $scope.getPeopleCount = function () {
+
+            if ($scope.sendCopy)
+                return $scope.selectedStudents.length + $scope.selectedTeachers.length + 1;
             return $scope.selectedStudents.length + $scope.selectedTeachers.length;
+
         }
 
         $scope.countSelectedClasses = function () {
@@ -442,6 +449,8 @@ angular.module('app')
         $scope.checkBeforeSend = function () {
             if ($scope.message == null)
                 return true;
+            if ($scope.sendCopy == true && $scope.totalSMS() == 1)
+                return true;
             if ($scope.message.length > 320 || ($scope.getCreditsRequired() >= $scope.creditsAvailable) || $scope.message == null || $scope.totalSMS() <= 0 || $scope.queueMessageSuccess == true)
                 return true;
             console.log($scope.creditsAvailable);
@@ -462,7 +471,7 @@ angular.module('app')
                     "teacherCodes": $scope.selectedTeachers,
                     "message": $scope.message,
                     "templateId": templateId,
-                    "sendCopy":$scope.sendCopy,
+                    "sendCopy": $scope.sendCopy,
                     "messageVars": $scope.model
                 }
             ).success(function (data) {

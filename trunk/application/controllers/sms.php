@@ -46,7 +46,7 @@ class SMS_Controller extends Base_Controller
 
         $classSections = isset($data->classSections) ? $data->classSections : array();
         $message = isset($data->message) ? $data->message : '';
-
+        $sendCopyToAdmin = isset($data->sendCopy) ? $data->sendCopy : false;
         if (count($classSections) == 0 || $message == '')
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
@@ -62,7 +62,7 @@ class SMS_Controller extends Base_Controller
         $senderId = Config::get('sms.senderid'); //getting senderId from config file
         //calling function for creating key value pair for studentCode => message
         $studentCodes = $this->smsRepo->getFormattedMessage($studentCodes, $message);
-        $result = $this->smsRepo->createSMS($studentCodes, array(), $senderId, $userId, $schoolId);
+        $result = $this->smsRepo->createSMS($studentCodes, array(), $senderId, $userId, $schoolId,$sendCopyToAdmin);
         if ($result == false && !is_array($result))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
@@ -78,6 +78,7 @@ class SMS_Controller extends Base_Controller
         $morningBusRoutes = isset($data->morningBusRoutes) ? $data->morningBusRoutes : array();
         $eveningBusRoutes = isset($data->eveningBusRoutes) ? $data->eveningBusRoutes : array();
         $message = isset($data->message) ? $data->message : '';
+        $sendCopyToAdmin = isset($data->sendCopy) ? $data->sendCopy : false;
         if (empty($morningBusRoutes) && empty($eveningBusRoutes))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
@@ -93,7 +94,7 @@ class SMS_Controller extends Base_Controller
         $userId = Auth::user()->id;
         $schoolId = Auth::user()->schoolId;
         $senderId = Config::get('sms.senderid'); //getting senderId from config file
-        $result = $this->smsRepo->createSMS($studentCodes, $teachersCodes, $senderId, $userId, $schoolId);
+        $result = $this->smsRepo->createSMS($studentCodes, $teachersCodes, $senderId, $userId, $schoolId,$sendCopyToAdmin);
         if ($result == false && !is_array($result))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
@@ -109,7 +110,7 @@ class SMS_Controller extends Base_Controller
 
         $department = isset($data->department) ? $data->department : array();
         $message = isset($data->message) ? $data->message : '';
-
+        $sendCopyToAdmin = isset($data->sendCopy) ? $data->sendCopy : false;
         if (empty($department) || empty($message))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
         //getting teacher Codes from the department
@@ -119,7 +120,7 @@ class SMS_Controller extends Base_Controller
         $userId = Auth::user()->id;
         $schoolId = Auth::user()->schoolId;
         $senderId = Config::get('sms.senderid'); //getting senderId from config file
-        $result = $this->smsRepo->createSMS(array(), $teacherCodes, $senderId, $userId, $schoolId);
+        $result = $this->smsRepo->createSMS(array(), $teacherCodes, $senderId, $userId, $schoolId,$sendCopyToAdmin);
         if ($result == false && !is_array($result))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
         return Response::json($result);
@@ -141,6 +142,7 @@ class SMS_Controller extends Base_Controller
         $message = isset($data->message) ? $data->message : '';
         $templateId = isset($data->templateId) ? $data->templateId : NULL;
         $messageVars = isset($data->messageVars) ? $data->messageVars : array();
+        $sendCopyToAdmin = isset($data->sendCopy) ? $data->sendCopy : false;
 
 
         if (empty($studentsCodes) && empty($teachersCodes))
@@ -152,6 +154,10 @@ class SMS_Controller extends Base_Controller
         $userId = Auth::user()->id;
         $schoolId = Auth::user()->schoolId;
         $sender_id = isset($data->sender_id) ? $data->sender_id : Config::get('sms.senderid'); //getting senderId from config file;
+        $adminMobile=NULL;
+        if($sendCopyToAdmin)
+            $adminMobile=Auth::user()->mobile;
+
 
         if ($templateId == 0) {
             //calling function for creating key value pair for studentCode => message
@@ -186,7 +192,7 @@ class SMS_Controller extends Base_Controller
         }
         //queue SMS
         try {
-            $result = $this->smsRepo->createSMS($studentMessages, $teacherMessages, $sender_id, $userId, $schoolId);
+            $result = $this->smsRepo->createSMS($studentMessages, $teacherMessages, $sender_id, $userId, $schoolId,$adminMobile);
         } catch (PDOException $e) {
             Log::exception($e);
             return Response::json(array('status' => false, 'message' => Lang::line('responsemessages.pdo_error_sms')->get()), HTTPConstants::SUCCESS_CODE);
