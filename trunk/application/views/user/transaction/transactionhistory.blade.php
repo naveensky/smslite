@@ -9,7 +9,7 @@
         <div class="box">
 
 
-            <h3><i class="icon-user icon-large"> Transaction History </i></h3>
+            <h3><i class="icon-user icon-large"></i>Transaction History </h3>
 
             <div class="row">
                 <div class="span8">

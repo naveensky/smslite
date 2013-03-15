@@ -190,7 +190,7 @@ class SchoolRepository
 
     public function getSMSTemplates($schoolId)
     {
-        $messageTemplates = SMSTemplate::where('schoolId', '=', $schoolId)->get();
+        $messageTemplates = SMSTemplate::where('schoolId', '=', $schoolId)->order_by('name')->get();
         if (empty($messageTemplates) || count($messageTemplates) == 0)
             return array();
 
@@ -202,6 +202,7 @@ class SchoolRepository
             $data['body'] = $messageTemplate->body;
             array_push($templates, $data);
         }
+
         return $templates;
     }
 }

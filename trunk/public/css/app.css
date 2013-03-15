@@ -173,4 +173,7 @@ ul.nav i {
     margin: 0px 75px 0px 0px;
     line-height: 76px;
 }
+.template-select{
+    width:100% !important;
+}
 

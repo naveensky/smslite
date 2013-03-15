@@ -129,11 +129,11 @@
         <div class="box">
             <h3><i class="icon-envelope-alt icon-large"></i>Compose Message</h3>
             <label>Choose Template</label>
-            <select ng-model="templateSelected" ng-change="templateMessage()">
+            <select class="template-select" ng-model="templateSelected" ng-change="templateMessage()">
                 <option ng-repeat="template in templates" value="{{template.id}}">{{template.name}}</option>
                 <option value="custom">Custom Message</option>
             </select>
-            <textarea ng-disabled="checkTemplateSelected()==true" class="input-block-level" rows="5" ng-model="message"
+            <textarea ng-disabled="checkTemplateSelected()" class="input-block-level" rows="5" ng-model="message"
                       ng-required="true"
                       placeholder="enter your message here..."></textarea>
             <span ng-show="message.length>0" class="help-block">
@@ -149,9 +149,8 @@
             </span>
 
         </div>
-        <div class="box">
+        <div class="box" ng-hide="!checkTemplateSelected()">
             <h3>Placeholders</h3>
-
             <div ng-include="link"></div>
         </div>
     </div>

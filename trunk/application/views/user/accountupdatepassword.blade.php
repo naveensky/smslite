@@ -7,7 +7,7 @@
 
     <div class="span9">
         <div class="box">
-            <h3><i class="icon-user icon-large"> Update Password </i></h3>
+            <h3><i class="icon-user icon-large"></i> Update Password</h3>
 
             <div class="row">
                 <div class="span8">

@@ -7,9 +7,9 @@
 
     <div class="span9">
         <div class="box">
-            <h3><i class="icon-user icon-large"> Edit Profile</i></h3>
+            <h3><i class="icon-user icon-large"></i>Edit Profile</h3>
 
-            <div class="row">
+            <div class="row">   
                 <div class="span8">
                     <form name="form" novalidate>
 
@@ -99,7 +99,7 @@
                             </div>
                             <button type="button" ng-click="updateProfile()" ng-disabled="form.$invalid"
                                     class="btn btn-success">
-                                Edit
+                                Update
                             </button>
                         </div>
                     </form>
