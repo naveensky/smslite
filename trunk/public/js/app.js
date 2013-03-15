@@ -3,7 +3,7 @@
 angular.module('app', ['LoaderServices']).
     config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
         $routeProvider
-            .when('/', {templateUrl: 'home/dashboard' })
+//            .when('/', {templateUrl: 'home/dashboard' })
             .when('/user/login', {templateUrl: 'user/login', controller: 'User_Login'})
             .when('/user/register', {templateUrl: '/user/register', controller: 'User_Register'})
             .when('/user/register/1', {templateUrl: '/user/register', controller: 'User_Register'})
@@ -39,7 +39,7 @@ angular.module('app', ['LoaderServices']).
             .when('/sms/', {redirectTo: '/sms/compose'})
             .when('/sms/compose', {templateUrl: '/sms/compose', controller: 'Sms_Compose'});
 
-        $routeProvider.otherwise({redirectTo: '/'});
+        $routeProvider.otherwise({redirectTo: '/sms/compose'});
     }]);
 
 function initComponents() {

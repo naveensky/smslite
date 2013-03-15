@@ -3,7 +3,7 @@
 <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container">
-            <a class="brand" href="#">SMSLite</a>
+            <a class="brand" href="#">  <%  HTML::image('img/logo.png', "msngr.in logo") %></a>
 
             <div class="nav-collapse collapse">
                 <ul class="nav">
@@ -23,7 +23,7 @@
 <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container">
-            <a class="brand" href="#">SMSLite</a>
+            <a class="brand" href="#">  <%  HTML::image('img/logo.png', "msngr.in logo") %></a>
 
             <div class="nav-collapse collapse">
                 <ul class="nav pull-right">
