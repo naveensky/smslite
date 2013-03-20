@@ -9,21 +9,15 @@
 
             <label><strong>Classes</strong></label>
             <select ng-model="classSections" multiple="multiple">
-                @foreach($classes as $class)
-                <option><%$class%></option>
-                @endforeach
+                <option ng-repeat="class in classes">{{class}}</option>
             </select>
             <label><strong>Morning Bus Routes</strong></label>
             <select ng-model="morningRoutes" multiple="multiple">
-                @foreach($morningRoutes as $morningRoute)
-                <option><%$morningRoute%></option>
-                @endforeach
+                <option ng-repeat="morningroute in morningroutes">{{morningroute}}</option>
             </select>
             <label><strong>Evening Bus Routes</strong></label>
             <select ng-model="eveningRoutes" multiple="multiple">
-                @foreach($eveningRoutes as $eveningRoute)
-                <option><%$eveningRoute%></option>
-                @endforeach
+                <option ng-repeat="eveningroute in eveningroutes">{{eveningroute}}</option>
             </select>
             <button class="btn btn-primary" ng-click="filterStudents()">Filter</button>
         </div>
@@ -82,7 +76,6 @@
                             </td>
                         </tr>
                         </tbody>
-
                     </table>
                     <div>
                         <button class="btn" ng-disabled="previousPage == 0" ng-click="updatePrevious()"><i

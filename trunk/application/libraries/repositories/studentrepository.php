@@ -183,7 +183,7 @@ class StudentRepository
             $query = $query->where_in("eveningBusRoute", $eveningBusRoute);
 
         try {
-            $student = $query->skip($skip)->take($perPage)->get();
+            $student = $query->skip($skip)->take($perPage)->order_by(DB::raw('"classStandard"::integer'))->order_by(DB::raw('"classSection"'))->get();
         } catch (Exception $e) {
             Log::exception($e);
             return false;

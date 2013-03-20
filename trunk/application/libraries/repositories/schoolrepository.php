@@ -121,7 +121,7 @@ class SchoolRepository
     public function getClasses($schoolId)
     {
         //todo: convert this to eloquent expression
-        $classes = DB::query('select "classSection", "classStandard" from students where "schoolId"=' . $schoolId . ' group by "classSection", "classStandard"');
+        $classes = DB::query('select "classSection", "classStandard" from students where "schoolId"=' . $schoolId . ' group by "classSection", "classStandard" order by "classStandard"::integer,"classSection"');
         $data = array();
         foreach ($classes as $class) {
             $data[] = ucfirst($class->classStandard) . '-' . ucfirst($class->classSection);

@@ -2,7 +2,7 @@
 
 //for route user/login
 angular.module('app')
-    .controller('Teacher_List', ['$scope', '$http', 'TeacherService', function ($scope, $http, teacherService) {
+    .controller('Teacher_List', ['$scope', '$http', 'TeacherService','SchoolService', function ($scope, $http, teacherService,schoolService) {
         $scope.departments = [];
         $scope.morningRoutes = [];
         $scope.eveningRoutes = [];
@@ -28,8 +28,29 @@ angular.module('app')
             return $scope.mobiles;
 
         }
+        schoolService.getDepartments().then(function (deparments) {
+            $scope.totaldepartments = deparments;
+        });
+
+        schoolService.getMorningBusRoutes(false, false).then(function (routes) {
+            $scope.morningroutes = routes;
+        });
+
+        schoolService.getEveningBusRoutes(false, false).then(function (routes) {
+            $scope.eveningroutes = routes;
+        });
 
         $scope.getTeachers = function () {
+            $scope.teachers = teacherService.getTeachers(
+                $scope.departments,
+                $scope.morningRoutes,
+                $scope.eveningRoutes,
+                $scope.pageNumber,
+                $scope.pageCount
+            );
+        }
+
+        $scope.findNextTeachers = function () {
             $scope.teachers = teacherService.getTeachers(
                 $scope.departments,
                 $scope.morningRoutes,
@@ -43,14 +64,14 @@ angular.module('app')
             $scope.previousPage = $scope.pageNumber;
             $scope.pageNumber = $scope.nextPage;
             $scope.nextPage = $scope.nextPage + 1;
-            $scope.getTeachers();
+            $scope.findNextTeachers();
         }
 
         $scope.updatePrevious = function () {
             $scope.pageNumber = $scope.previousPage;
             $scope.nextPage = $scope.pageNumber + 1;
             $scope.previousPage = $scope.previousPage - 1;
-            $scope.getTeachers();
+            $scope.findNextTeachers();
 
         }
 

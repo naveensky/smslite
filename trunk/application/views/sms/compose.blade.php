@@ -26,7 +26,7 @@
 
             <hr>
             <div id="filter-individual" ng-show="filterType=='individualFilter'">
-                <label>Enter a Name or a Mobile No. or Admission No.</label>
+                <label>Search by Name, Mobile or Admission No. </label>
 
                 <div class="input-append">
                     <input type="text" ng-model="searchValue" class="span2">
@@ -38,7 +38,6 @@
                     <tr>
                         <th>&nbsp;</th>
                         <th>Name</th>
-                        <th>Phone</th>
                         <th>Admission No.</th>
                     </tr>
                     </thead>
@@ -60,7 +59,6 @@
                     <tr ng-class="getStatusCss(people)" ng-repeat="people in pagedItems[currentPage]">
                         <td><input ng-model="people.searchPeople.selected" type="checkbox"></td>
                         <td>{{people.searchPeople.name}}</td>
-                        <td>{{people.searchPeople.mobile1}}, +</td>
                         <td>{{people.searchPeople.admissionNumber}}</td>
                     </tr>
                     </tbody>
@@ -70,7 +68,7 @@
                 </button>
             </div>
             <div id="filter-class" ng-show="filterType=='classFilter'">
-                <div class="control-group">
+                <div class="control-group scrollfix">
                     <label class="control-label">Choose Classes</label>
 
                     <div ng-repeat="classVar in classes">
@@ -151,6 +149,7 @@
         </div>
         <div class="box" ng-hide="!checkTemplateSelected()">
             <h3>Placeholders</h3>
+
             <div ng-include="link"></div>
         </div>
     </div>

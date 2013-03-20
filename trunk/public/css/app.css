@@ -168,12 +168,18 @@ ul.nav i {
     text-transform: uppercase;
 }
 
-.navbar .brand{
+.navbar .brand {
     padding: 0px;
     margin: 0px 75px 0px 0px;
     line-height: 76px;
 }
-.template-select{
-    width:100% !important;
+
+.template-select {
+    width: 100% !important;
+}
+
+.scrollfix {
+    height: 200px;
+    overflow-y: scroll;
 }
 

@@ -8,21 +8,15 @@
 
             <label>Departments</label>
             <select ng-model="departments" multiple="multiple">
-                @foreach($departments as $department)
-                <option><%$department%></option>
-                @endforeach
+               <option ng-repeat="totaldepartment in totaldepartments">{{totaldepartment}}</option>
             </select>
             <label>MorningBusRoute</label>
             <select ng-model="morningRoutes" multiple="multiple">
-                @foreach($morningRoutes as $morningRoute)
-                <option><%$morningRoute%></option>
-                @endforeach
+                <option ng-repeat="morningroute in morningroutes">{{morningroute}}</option>
             </select>
             <label>EveningBusRoute</label>
             <select ng-model="eveningRoutes" multiple="multiple">
-                @foreach($eveningRoutes as $eveningRoute)
-                <option><%$eveningRoute%></option>
-                @endforeach
+                <option ng-repeat="eveningroute in eveningroutes">{{eveningroute}}</option>
             </select>
             <button class="btn btn-primary" ng-click="getTeachers()">Filter</button>
 

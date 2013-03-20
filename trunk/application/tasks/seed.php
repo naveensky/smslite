@@ -61,13 +61,5 @@ class Seed_Task
         $transaction2->orderId = Str::random(64, 'alnum');
         $transaction2->save();
 
-        $student = FactoryMuff::create('Student');
-        $student->schoolId = $school->id;
-        $student->save();
-
-
-        $teacher = FactoryMuff::create('Teacher');
-        $teacher->schoolId = $school->id;
-        $teacher->save();
     }
 }
