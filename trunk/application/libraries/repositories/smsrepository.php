@@ -256,10 +256,9 @@ class SMSRepository
 
     public function getAllPendingSMS()
     {
-        $pendingSmsData = SMSTransaction::where_status("pending")->get();
+        $pendingSmsData = SMSTransaction::where_status(SMSTransaction::SMS_STATUS_PENDING)->get();
         if (!empty($pendingSmsData))
             return $pendingSmsData;
-
         else
             return false;
     }

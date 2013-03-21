@@ -178,6 +178,10 @@ ul.nav i {
     width: 100% !important;
 }
 
+.school-select {
+    width: 48.4% !important;
+}
+
 .scrollfix {
     height: 200px;
     overflow-y: scroll;

@@ -254,7 +254,7 @@ class StudentRepository
     public function getStudentByNameOrMobileOrAdmissionNumber($schoolId, $searchValue)
     {
         $query = Student::where_schoolId($schoolId)->where(function ($query) use ($searchValue) {
-            $query->where('name', '~*', ".*$searchValue.*")->or_where('uniqueIdentifier', '~*', ".*$searchValue.*");
+            $query->where('name', '~*', ".*$searchValue.*")->or_where('uniqueIdentifier', '=', "$searchValue");
             for ($i = 1; $i <= 5; $i++) {
                 $query->or_where("mobile$i", '~*', ".*$searchValue.*");
             }

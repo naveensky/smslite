@@ -17,6 +17,8 @@ class Student_Controller extends Base_Controller
 
         //add auth filter
         $this->filter('before', 'auth');
+        //add mobile verified check
+        $this->filter('before', 'checkmobile');
 
         $this->studentRepo = new StudentRepository();
         $this->schoolRepo = new SchoolRepository();
@@ -282,7 +284,6 @@ class Student_Controller extends Base_Controller
         if (empty($searchValue))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
-        Auth::login(1);
         $schoolId = Auth::user()->schoolId;
         $students = $this->studentRepo->getStudentByNameOrMobileOrAdmissionNumber($schoolId, $searchValue);
         if ($students == false && !is_array($students))

@@ -158,13 +158,14 @@ class Init
         //create transaction table
         Schema::create('transactions', function ($table) {
             $table->increments('id')->unsigned();
-            $table->string('orderId', 64);
+            $table->integer('orderId')->unsigned()->nullable();
             $table->integer('smsCredits');
             $table->decimal('amount', 10, 2);
             $table->decimal('discount', 10, 2);
             $table->decimal('grossAmount', 10, 2);
             $table->integer('schoolId')->unsigned();
             $table->foreign('schoolId')->references('id')->on('schools');
+            $table->text('remarks')->nullable();
             $table->timestamps();
 
         });

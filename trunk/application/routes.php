@@ -106,3 +106,21 @@ Route::filter('auth', function () {
     }
 });
 
+Route::filter('checkmobile', function () {
+    if (!Auth::user()->isVerified) {
+        if (Request::ajax())
+            return Redirect::to('/user/register/3');
+        else
+            return Redirect::to('/#/user/register/3');
+    }
+});
+
+Route::filter('superadmin', function () {
+    if (!Util::is_in_role("superadmin")) {
+        if (Request::ajax())
+            return Redirect::to('/');
+        else
+            return Redirect::to('/');
+    }
+});
+

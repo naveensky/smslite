@@ -11,6 +11,9 @@
                     <li><a href="#/teacher/list"><i class="icon-user-md"></i> Teachers</a></li>
                     <li><a href="#/sms"><i class="icon-comments"></i> SMS</a></li>
                     <li><a href="#/user/profile"><i class="icon-cog"></i> Account</a></li>
+                    @if(Util::is_in_role("superadmin"))
+                    <li><a href="#/admin/allocate_credits"><i class="icon-lock"></i> Admin</a></li>
+                    @endif;
                 </ul>
                 <ul class="nav pull-right">
                     <li><a href="/user/logout"><i class="icon-signout"></i>Logout</a></li>

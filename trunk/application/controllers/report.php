@@ -18,6 +18,9 @@ class Report_Controller extends Base_Controller
         parent::__construct();
         //add auth filter
         $this->filter('before', 'auth');
+        //add mobile verified check
+        $this->filter('before', 'checkmobile');
+
         $this->reportRepo = new ReportRepository();
         $this->schoolRepo = new SchoolRepository();
 
@@ -43,7 +46,7 @@ class Report_Controller extends Base_Controller
         $pageNumber = isset($data->pageNumber) ? $data->pageNumber : 1;
         $skip = $pageCount * ($pageNumber - 1);
 
-        $filterSMS = $this->reportRepo->getSMS(Auth::user()->schoolId, $classSections, $toDate, $fromDate, $studentName,$teacherName, $pageCount, $skip);
+        $filterSMS = $this->reportRepo->getSMS(Auth::user()->schoolId, $classSections, $toDate, $fromDate, $studentName, $teacherName, $pageCount, $skip);
         if ($filterSMS == false && !is_array($filterSMS))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 

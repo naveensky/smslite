@@ -20,6 +20,8 @@ class Teacher_Controller extends Base_Controller
 
 //        proceed ahead only if authenticated
         $this->filter('before', 'auth');
+        //proceed ahead only if mobile is verified
+        $this->filter('before', 'checkmobile');
     }
 
     public function action_list()
@@ -229,7 +231,7 @@ class Teacher_Controller extends Base_Controller
 
         $codes = array();
         foreach ($FilterTeachers as $teacher) {
-            $code=array();
+            $code = array();
             $mobileCount = 0;
             if ($teacher->mobile1 != "")
                 $mobileCount++;
@@ -243,8 +245,8 @@ class Teacher_Controller extends Base_Controller
                 $mobileCount++;
 
             $code['code'] = $teacher->code;
-            $code['mobileCount']=$mobileCount;
-            $codes[]=$code;
+            $code['mobileCount'] = $mobileCount;
+            $codes[] = $code;
         }
 
         return Response::json($codes);
@@ -260,16 +262,14 @@ class Teacher_Controller extends Base_Controller
         if (empty($searchValue))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
-        Auth::login(1);
         $schoolId = Auth::user()->schoolId;
         $teachers = $this->teacherRepo->getTeacherByNameOrMobile($schoolId, $searchValue);
         if ($teachers == false && !is_array($teachers))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
-        $teacherData=array();
-        foreach($teachers as $teacher)
-        {
-            $row=array();
+        $teacherData = array();
+        foreach ($teachers as $teacher) {
+            $row = array();
             $mobileCount = 0;
             if ($teacher->mobile1 != "")
                 $mobileCount++;
@@ -281,15 +281,15 @@ class Teacher_Controller extends Base_Controller
                 $mobileCount++;
             if ($teacher->mobile5 != "")
                 $mobileCount++;
-            $row['name']=$teacher->name;
-            $row['mobile1']=$teacher->mobile1;
-            $row['mobile2']=$teacher->mobile2;
-            $row['mobile3']=$teacher->mobile3;
-            $row['mobile4']=$teacher->mobile4;
-            $row['mobile5']=$teacher->mobile5;
-            $row['code']=$teacher->code;
-            $row['mobileCount']=$mobileCount;
-            $teacherData[]=$row;
+            $row['name'] = $teacher->name;
+            $row['mobile1'] = $teacher->mobile1;
+            $row['mobile2'] = $teacher->mobile2;
+            $row['mobile3'] = $teacher->mobile3;
+            $row['mobile4'] = $teacher->mobile4;
+            $row['mobile5'] = $teacher->mobile5;
+            $row['code'] = $teacher->code;
+            $row['mobileCount'] = $mobileCount;
+            $teacherData[] = $row;
         }
         return Response::json($teacherData);
 

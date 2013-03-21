@@ -336,5 +336,12 @@ class Test_Controller extends Base_Controller
 
     }
 
+    public function action_checkauth()
+    {
+        var_dump(User::find(Auth::user()->id)->roles);
+        var_dump(in_array("superadmin", User::find(Auth::user()->id)->roles));
+
+    }
+
 
 }

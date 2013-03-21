@@ -32,13 +32,14 @@ class Minify_Task
         $compactor->combine_files($cssFiles)->save_file($cssPath . "application.css");
 
         $compactor
-            ->combine_directory($jsPath, array("application.js","modernizr-jquery.min.js"))
+            ->combine_directory($jsPath, array("application.js", "modernizr-jquery.min.js"))
             ->combine_directory($jsServices)
 //            ->combine_directory($jsControllers)
             ->combine_directory($jsControllers . "student/")
             ->combine_directory($jsControllers . "teacher/")
             ->combine_directory($jsControllers . "user/")
             ->combine_directory($jsControllers . "report/")
+            ->combine_directory($jsControllers . "admin/")
             ->combine_directory($jsControllers . "sms/")
             ->save_file($jsPath . "application.js");
     }

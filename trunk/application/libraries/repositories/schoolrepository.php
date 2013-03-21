@@ -205,4 +205,10 @@ class SchoolRepository
 
         return $templates;
     }
+
+    public function getAllSchools()
+    {
+        $schools = School::all();
+        return $schools;
+    }
 }

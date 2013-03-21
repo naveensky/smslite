@@ -33,6 +33,10 @@ angular.module('app', ['LoaderServices']).
         $routeProvider
             .when('/report/sms', {templateUrl: '/report/sms', controller: 'Report_SMS'});
 
+        //Admin Routes
+        $routeProvider
+            .when('/admin/allocate_credits', {templateUrl: '/admin/allocate_credits', controller: 'Admin_Controller'});
+
 
         ///sms routes
         $routeProvider

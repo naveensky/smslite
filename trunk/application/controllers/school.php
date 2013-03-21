@@ -212,4 +212,10 @@ class School_Controller extends Base_Controller
         return Response::eloquent($transactions);
     }
 
+    public function action_get_all_schools()
+    {
+        $schools=$this->schoolRepo->getAllSchools();
+        return Response::eloquent($schools);
+    }
+
 }

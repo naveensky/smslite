@@ -20,6 +20,8 @@ class User_Controller extends Base_Controller
                     'post_forgot_password', 'send_password_mobile',
                     'password_reset_success', 'reset_password',
                     'invalid_code', 'post_set_password', 'restore_account'));
+        //add mobile verified check
+        $this->filter('before', 'checkmobile')->only(array('transaction_history','update_password','post_update_password','profile','get_user_profile'));
 
         $this->userRepo = new UserRepository();
         $this->schoolRepo = new SchoolRepository();
