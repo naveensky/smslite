@@ -12,7 +12,6 @@
             <div class="row">
                 <div class="span8">
                     <form name="form" novalidate>
-
                         <label for="schoolName">Choose School</label>
                         <select class="school-select" ng-model="schoolSelected" ng-required="true" name="schoolName"
                                 id="schoolName">
@@ -20,96 +19,68 @@
                             <option ng-repeat="school in schools" value="{{school.code}}">{{school.name}}</option>
                         </select>
                                                     <span
-                                                        ng-show="form.schoolName.$error.required && !form.schoolName.$pristine "
+                                                        ng-show="form.schoolName.$error.required"
                                                         class="validation invalid"><i
-                                                            class="icon-remove padding-right-5"></i>School name is required</span>
+                                                            class="icon-remove padding-right-5"></i>Please Select the school</span>
 
 
-                        <label for="inputContactPerson">Contact Person</label>
+                        <label for="inputCreditsAllocate">Credits to Allocate</label>
+                        <input type="text" class="span4" id="inputCreditsAllocate" ng-required="true"
+                               name="allocateCredits"
+                               ng-model="allocateCredits" placeholder="Credits to allocate">
+                            <span ng-show="form.allocateCredits.$error.required && !form.allocateCredits.$pristine "
+                                  class="validation invalid"><i class="icon-remove padding-right-5"></i>Please enter the credits to allocate</span>
+                        <span ng-show="allocateCredits>10000" class="validation invalid">Credits to be allocate should be less than 10,000</span>
+
+                        <label for="inputAmount">Amount</label>
+                        <input type="text" class="span4" id="inputAmount" ng-required="true" name="amount"
+                               ng-model="amount"
+                               placeholder="Amount">
+                            <span ng-show="form.amount.$error.required && !form.amount.$pristine"
+                                  class="validation invalid"><i class="icon-remove padding-right-5"></i>Amount is required</span>
 
 
-                        <input type="text" class="span4" id="inputContactPerson" ng-required="true" name="contactPerson"
-                               ng-model="profile.contactPerson" placeholder="Contact Person">
-                            <span ng-show="form.contactPerson.$error.required && !form.contactPerson.$pristine "
-                                  class="validation invalid"><i class="icon-remove padding-right-5"></i>Contact person name is required</span>
+                        <label for="inputDiscount">Discount</label>
+                        <input type="text" class="span4" id="inputDiscount" name="discount"
+                               ng-model="discount"
+                               placeholder="Discount">
 
 
-                        <label for="inputAddress">Address</label>
+                        <label for="inputGrossAmount">Gross Amount</label>
+                        <input type="text" class="span4" id="inputGrossAmount" ng-required="true" name="discount"
+                               readonly="readonly" value="{{getGrossAmount()}}">
+                        <label for="inputRemarks">Remarks</label>
+                        <textarea rows="5" class="span4" id="inputRemarks" name="remarks"
+                                  ng-model="remarks" placeholder="Enter remarks related to transaction"></textarea>
 
 
-                        <textarea rows="5" class="span4" id="inputAddress" name="address" ng-required="true"
-                                  ng-model="profile.address" placeholder="Address"></textarea>
-                            <span ng-show="form.address.$error.required && !form.address.$pristine "
-                                  class="validation invalid"><i class="icon-remove padding-right-5"></i>Address is required</span>
+                        <div class="control-group">
+                            <label class="checkbox">
+                                <input type="checkbox" ng-model="notifySchool">Notify School
+                            </label>
 
-
-                        <label for="inputSchoolContactNumber">School Contact Number</label>
-
-
-                        <input type="text" class="span4" id="inputSchoolContactNumber" name="schoolContact"
-                               ng-required="true"
-                               ng-model="profile.contactMobile" ng-minLength="8" ng-pattern="/^\+{0,1}\d+$/"
-                               placeholder="School Contact Number">
-                            <span ng-show="form.schoolContact.$error.required && !form.schoolContact.$pristine"
-                                  class="validation invalid"><i class="icon-remove padding-right-5"></i>Contact number is required</span>
-                            <span
-                                ng-show="form.schoolContact.$invalid && !form.schoolContact.$pristine && !form.schoolContact.$error.required"
-                                class="validation invalid"><i
-                                    class="icon-remove padding-right-5"></i>The contact number must be at least 8 digits</span>
-
-
-                        <label for="inputCity">City</label>
-
-
-                        <input type="text" class="span4" id="inputCity" ng-required="true" name="city"
-                               ng-model="profile.city"
-                               placeholder="City">
-                            <span ng-show="form.city.$error.required && !form.city.$pristine"
-                                  class="validation invalid"><i class="icon-remove padding-right-5"></i>City is required</span>
-
-
-                        <label for="inputState">State</label>
-
-
-                        <input type="text" class="span4" id="inputState" ng-required="true" name="state"
-                               ng-model="profile.state"
-                               placeholder="State">
-                            <span ng-show="form.state.$error.required && !form.state.$pristine"
-                                  class="validation invalid"><i class="icon-remove padding-right-5"></i>State is required</span>
-
-
-                        <label for="inputZip">Zip</label>
-
-                        <input type="text" class="span4" id="inputZip" ng-required="true" name="zip"
-                               ng-model="profile.zip"
-                               placeholder="Zip">
-                            <span ng-show="form.zip.$error.required && !form.zip.$pristine"
-                                  class="validation invalid"><i class="icon-remove padding-right-5"></i>Pin Code is required</span>
-
-                        <!--                        <input type="hidden" ng-init="senderId='-->
-                        <?php //echo $senderId;?><!--'">-->
-
-                        <div class="controls margin-top-20">
                             <div class="alert alert-success margin-top-20" style="width:35%"
-                                 ng-show="schoolUpdateSuccess">
+                                 ng-show="showSuccess">
                                 <button type="button" class="close" data-dismiss="alert">×</button>
-                                Profile successfully updated
+                                {{message}}
                             </div>
                             <div class="alert alert-error margin-top-20" style="width:45%"
-                                 ng-show="schoolUpdateError">
+                                 ng-show="showError">
                                 <button type="button" class="close" data-dismiss="alert">×</button>
-                                Sorry your profile is not updated please try again
+                                {{message}}
                             </div>
-                            <button type="button" ng-click="updateProfile()" ng-disabled="form.$invalid"
+                            <button type="button" ng-click="creditsAllocate()"
+                                    ng-disabled="form.$invalid || allocateCredits>100000 || showSuccess"
                                     class="btn btn-success">
-                                Update
+                                Allocate
                             </button>
                         </div>
-                    </form>
                 </div>
-
+                </form>
             </div>
+
         </div>
     </div>
 </div>
+
 

@@ -21,7 +21,7 @@ class User_Controller extends Base_Controller
                     'password_reset_success', 'reset_password',
                     'invalid_code', 'post_set_password', 'restore_account'));
         //add mobile verified check
-        $this->filter('before', 'checkmobile')->only(array('transaction_history','update_password','post_update_password','profile','get_user_profile'));
+        $this->filter('before', 'checkmobile')->only(array('transaction_history', 'update_password', 'post_update_password', 'profile', 'get_user_profile'));
 
         $this->userRepo = new UserRepository();
         $this->schoolRepo = new SchoolRepository();
@@ -339,13 +339,11 @@ class User_Controller extends Base_Controller
 
     public function action_resend_sms()
     {
-        $userId = Auth::user()->id;
-        $user = $this->userRepo->getUser($userId);
-        if ($user->mobileVerificationCode == NULL)
+        if (Auth::user()->mobileVerificationCode == NULL)
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
-        $welcomeMessage = __('smstemplate.welcome_message', array('code' => $user->mobileVerificationCode));
-        $this->appSmsRepo->createAppSms($user->mobile, $welcomeMessage, Config::get('sms.senderId'), $user->id);
+        $welcomeMessage = __('smstemplate.welcome_message', array('code' => Auth::user()->mobileVerificationCode));
+        $this->appSmsRepo->createAppSms(Auth::user()->mobile, $welcomeMessage, Config::get('sms.senderId'), Auth::user()->id);
         return Response::json(array('status' => true), HTTPConstants::SUCCESS_CODE);
 
     }

@@ -8,7 +8,14 @@ class TestStudentController extends ControllerTestCase
     public function setUp()
     {
         $this->setupBeforeTests();
+//        $this->markTestSkipped(
+//            'Test Skipped'
+//        );
+    }
 
+    public function tearDown()
+    {
+        $this->tearDownAfterTests();
     }
 
     public function testGetStudent()
@@ -68,6 +75,7 @@ class TestStudentController extends ControllerTestCase
 
         $user = FactoryMuff::create('User');
         $user->schoolId = $school->id;
+        $user->isVerified = 1;
         $user->save();
 
         Auth::login($user->id);
@@ -94,6 +102,7 @@ class TestStudentController extends ControllerTestCase
 
         $user = FactoryMuff::create('User');
         $user->schoolId = $school->id;
+        $user->isVerified = 1;
         $user->save();
 
         Auth::login($user->id);

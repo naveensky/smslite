@@ -61,6 +61,15 @@ class SMSRepository
         return $status;
     }
 
+    public function addCredits($creditsToAdd, $schoolId)
+    {
+        $SMSCredit = SMSCredit::where('schoolId', '=', $schoolId)->first();
+        $updatedCredits = $SMSCredit->credits + $creditsToAdd;
+        $attributes = array('credits' => $updatedCredits);
+        $status = SMSCredit::update($SMSCredit->id, $attributes);
+        return $status;
+    }
+
     public function createSMS(array $studentCodes, array $teachersCodes, $senderId, $userId, $schoolId, $adminMobile)
     {
         $isAdminMessageProcessed = false;

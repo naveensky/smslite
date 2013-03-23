@@ -68,6 +68,44 @@ class MailServices
         }
     }
 
+    public function sendEmailOnCreditsAllocation($emailData)
+    {
+        try {
+            Message::send(function ($message) use ($emailData) {
+                $message->to($emailData['schoolEmail']);
+                $message->from(Config::get('email.from_email'), Config::get('email.adminName'));
+                $message->subject(__('emailsubjects.credits_allocated'));
+                $message->body("view: user.email.creditsallocation");
+                // You can add View data by simply setting the value
+                // to the message.
+                $message->body->result = $emailData;
+                $message->html(true);
+            });
+        } catch (Exception $e) {
+            Log::exception($e);
+        }
+    }
+
+    public function sendEmailToSystemAdminOnCredit($emailData)
+    {
+        $emails = Config::get('app.system_alert_emails');
+        try {
+            Message::send(function ($message) use ($emailData, $emails) {
+                $message->to($emails[1]);
+                $message->from(Config::get('email.from_email'), Config::get('email.adminName'));
+                $message->subject(__('emailsubjects.credits_allocated_admin'));
+                $message->body("view: user.email.admin.creditsallocation");
+                // You can add View data by simply setting the value
+                // to the message.
+                $message->body->result = $emailData;
+                $message->html(true);
+            });
+        } catch (Exception $e) {
+            Log::exception($e);
+        }
+    }
+
+
     public function sendDeactivateAccountEmail($user)
     {
         $user = $user->to_array();

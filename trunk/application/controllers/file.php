@@ -34,7 +34,7 @@ class File_Controller extends Base_Controller
                     array('filename' => $doc['name'],
                         'path' => '',
                         'status' => 'fail',
-                        'message' => "Filetype you are trying to upload is not allowed.",
+                        'message' => "Filetype you are trying to upload is not allowed. Please upload valid file",
                     )
                 );
             }

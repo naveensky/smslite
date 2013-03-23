@@ -8,7 +8,15 @@ class TestSchoolController extends ControllerTestCase
     public function setUp()
     {
         $this->setupBeforeTests();
+//        $this->markTestSkipped(
+//            'Test Skipped'
+//        );
     }
+
+    public function tearDown(){
+        $this->tearDownAfterTests();
+    }
+
 
     public function testSample()
     {

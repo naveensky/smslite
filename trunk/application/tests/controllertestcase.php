@@ -10,6 +10,12 @@ abstract class ControllerTestCase extends PHPUnit_Framework_TestCase
         $this->loadSession();
     }
 
+    protected function tearDownAfterTests()
+    {
+        shell_exec("php artisan migrate:reset --env=testing");
+        DB::query('DROP TABLE laravel_migrations');
+    }
+
 
     protected function loadSession()
     {

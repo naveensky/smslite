@@ -15,6 +15,7 @@ return array(
     'restore_message'=>'Your account is restored successfully',
     'password_update_message'=>'Password Updated Successfully',
     'deletion_message'=>'Your account has been Deleted',
-    'mobile_updated_message'=>'Your mobile number is updated successfully'
+    'mobile_updated_message'=>'Your mobile number is updated successfully',
+    'credits_alloted_message'=>'Your Account is credited with :credits credits'
 
 );

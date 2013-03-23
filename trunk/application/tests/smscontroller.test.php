@@ -16,6 +16,10 @@ class TestSmsController extends ControllerTestCase
         $this->setupBeforeTests();
     }
 
+    public function tearDown(){
+        $this->tearDownAfterTests();
+    }
+
     public function testDB()
     {
         $user = FactoryMuff::create('User');
@@ -38,6 +42,7 @@ class TestSmsController extends ControllerTestCase
 
         $user = FactoryMuff::create('User');
         $user->schoolId = $school->id;
+        $user->isVerified = 1;
         $user->save();
 
         Auth::login($user->id);
@@ -95,7 +100,7 @@ class TestSmsController extends ControllerTestCase
             'message' => $message,
             'sender_id' => 'GAPS',
             'templateId' => 0,
-            'sendCopy'=>true
+            'sendCopy' => true
         );
 
         Input::$json = $parameters;
@@ -111,7 +116,7 @@ class TestSmsController extends ControllerTestCase
             'message' => $message,
             'sender_id' => 'GAPS',
             'templateId' => 0,
-            'sendCopy'=>true
+            'sendCopy' => true
         );
 
         Input::$json = $parameters;
@@ -137,7 +142,7 @@ class TestSmsController extends ControllerTestCase
             'sender_id' => 'GAPS',
             'messageVars' => array('text_teacher_name' => 'Naveen Gupta', 'text_PTM_date' => '8 march 2013'),
             'templateId' => $templateID,
-            'sendCopy'=>false
+            'sendCopy' => false
         );
 
         Input::$json = $parameters;

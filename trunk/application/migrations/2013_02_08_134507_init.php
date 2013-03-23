@@ -140,7 +140,6 @@ class Init
             $table->integer('userId')->unsigned();
             $table->foreign('userId')->references('id')->on('users');
             $table->timestamps();
-
         });
 
 
@@ -165,6 +164,9 @@ class Init
             $table->decimal('grossAmount', 10, 2);
             $table->integer('schoolId')->unsigned();
             $table->foreign('schoolId')->references('id')->on('schools');
+            $table->integer('userId')->unsigned();
+            $table->foreign('userId')->references('id')->on('users');
+            $table->string('ip', 45)->nullable();
             $table->text('remarks')->nullable();
             $table->timestamps();
 
@@ -179,13 +181,13 @@ class Init
      */
     public function down()
     {
-        Schema::table('users', function ($table) {
-            $table->drop_foreign('users_schoolId_foreign');
-        });
-
         Schema::table('role_user', function ($table) {
             $table->drop_foreign('role_user_user_id_foreign');
             $table->drop_foreign('role_user_role_id_foreign');
+        });
+
+        Schema::table('users', function ($table) {
+            $table->drop_foreign('users_schoolId_foreign');
         });
 
         Schema::table('students', function ($table) {
@@ -210,22 +212,21 @@ class Init
 
         Schema::table('transactions', function ($table) {
             $table->drop_foreign('transactions_schoolId_foreign');
+            $table->drop_foreign('transactions_userId_foreign');
         });
 
         //drop tables
 
         Schema::drop('schools');
-        Schema::drop('users');
-        Schema::drop('roles');
         Schema::drop('role_user');
+        Schema::drop('roles');
         Schema::drop('students');
         Schema::drop('teachers');
         Schema::drop('smsTransactions');
         Schema::drop('appSmsTransactions');
         Schema::drop('smsCredits');
         Schema::drop('transactions');
-
+        Schema::drop('users');
     }
-
 }
 

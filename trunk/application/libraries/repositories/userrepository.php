@@ -211,7 +211,7 @@ class UserRepository
         return User::find($user->id);
     }
 
-    public function change_password($userId, $old_password, $new_password,$password)
+    public function change_password($userId, $old_password, $new_password, $password)
     {
         try {
             if (Hash::check($old_password, $password)) {
@@ -221,7 +221,7 @@ class UserRepository
                 return $user;
             }
             return false;
-        }catch (Exception $e) {
+        } catch (Exception $e) {
             throw new InvalidArgumentException("Database error");
         }
     }
@@ -311,7 +311,7 @@ class UserRepository
         $user = User::find($id);
         $user->mobile = $mobile;
         $user->mobileVerificationCode = mt_rand(100000, 999999);
-        $user->isVerified = false;
+        $user->isVerified = 0;
         try {
             $user->save();
 

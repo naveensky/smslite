@@ -340,6 +340,11 @@ class Test_Controller extends Base_Controller
     {
         var_dump(User::find(Auth::user()->id)->roles);
         var_dump(in_array("superadmin", User::find(Auth::user()->id)->roles));
+        $emails = Config::get('app.system_alert_emails');
+        var_dump($emails);
+        var_dump(Request::ip());
+        $users = School::find(1)->users;
+        var_dump($users[0]->email);
 
     }
 

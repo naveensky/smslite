@@ -8,7 +8,10 @@ class TestReportcontroller extends ControllerTestCase
     public function setUp()
     {
         $this->setupBeforeTests();
+    }
 
+    public function tearDown(){
+        $this->tearDownAfterTests();
     }
 
     public function testGetSms()
@@ -18,6 +21,7 @@ class TestReportcontroller extends ControllerTestCase
 
         $user = FactoryMuff::create('User');
         $user->schoolId = $school->id;
+        $user->isVerified = 1;
         $user->save();
 
         $student = FactoryMuff::create('Student');
@@ -81,7 +85,6 @@ class TestReportcontroller extends ControllerTestCase
         $response = $this->post('report@post_getSMS', array());
         $this->assertEquals(200, $response->status());
         $this->assertEquals(2, count(json_decode($response->content, true)));
-
 
     }
 }

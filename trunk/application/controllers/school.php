@@ -214,8 +214,19 @@ class School_Controller extends Base_Controller
 
     public function action_get_all_schools()
     {
-        $schools=$this->schoolRepo->getAllSchools();
-        return Response::eloquent($schools);
+        $schools = $this->schoolRepo->getAllSchools();
+        $totalSchools = array();
+        foreach ($schools as $school) {
+            $users = School::find($school->id)->users;
+            $email = 'No Email';
+            if (!empty($users))
+                $email = $users[0]->email;
+            $row = array();
+            $row['name'] = "$school->name-[$email]";
+            $row['code'] = $school->code;
+            $totalSchools[] = $row;
+        }
+        return Response::json($totalSchools);
     }
 
 }

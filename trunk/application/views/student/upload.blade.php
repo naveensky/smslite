@@ -25,11 +25,19 @@
                                 <i class="icon-upload"></i> Upload File</a>
                         </div>
                         <div ng-show="files.length >0">
-                        <h5>File Uploaded</h5>
-                        <p ng-repeat="file in files"><i class="icon-ok"></i> {{ file.filename }}</p>
+                            <h5>File Uploaded</h5>
+
+                            <p ng-repeat="file in files"><i class="icon-ok"></i> {{ file.filename }}</p>
                         </div>
-                        <div ng-show="showError">
-                        <p> {{ errorMessage }}</p>
+                        <div class="alert alert-error margin-top-20" style="width:71%"
+                             ng-show="showError">
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                            {{ errorMessage }}
+                        </div>
+                        <div class="control-group" ng-show="showSuccess">
+                            <a href="#" data-url="file/post_add" data-done="fileUploaded" data-mimes="csv"
+                               id="student-file" class="file-uploader">
+                                <i class="icon-upload"></i> Upload Another File</a>
                         </div>
                         <div class="control-group" ng-hide="showError || importStatus">
                             <button type="submit" class="btn" ng-click="importStudents()">
@@ -38,7 +46,10 @@
                         </div>
                         <div class="control-group" ng-show="importStatus">
                             <p>Number of students Imported: {{numberOfStudents}}</p>
+
                             <p ng-show="rowErrors!=0">Row Numbers having Errors: {{rowErrors}} </p>
+
+                            <p>Want to upload another file <a href="#/student/upload">Click Here</a></p>
                         </div>
                     </form>
                 </div>

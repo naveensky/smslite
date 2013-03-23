@@ -42,6 +42,14 @@ class MailListener
             $mailService = new MailServices();
             $mailService->sendForgottenPasswordCompleteEmail($user);
         });
+        Event::listen(ListenerConstants::APP_ADMIN_CREDITS_ALLOTED, function ($allocateData) {
+            $mailService = new MailServices();
+            $mailService->sendEmailToSystemAdminOnCredit($allocateData);
+        });
+        Event::listen(ListenerConstants::APP_CREDITS_ALLOTED, function ($allocateData) {
+            $mailService = new MailServices();
+            $mailService->sendEmailOnCreditsAllocation($allocateData);
+        });
 
     }
 }

@@ -35,7 +35,7 @@ class School extends Eloquent
 
     public function users()
     {
-        return $this->has_many('User', 'schoolId');
+        return $this->has_many('User', 'schoolId')->order_by('created_at', 'desc');
     }
 
 }

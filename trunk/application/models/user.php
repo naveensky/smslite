@@ -14,6 +14,7 @@ class User extends Eloquent
         'email' => 'email',
         'password' => 'string',
         'mobile' => 'string',
+        'isVerified' => 1,
         'schoolId' => 'factory|School'
     );
 
