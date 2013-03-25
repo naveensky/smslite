@@ -81,7 +81,7 @@ class Init
             $table->string('morningBusRoute', 45);
             $table->string('eveningBusRoute', 45);
             $table->string('code', 100);
-            $table->string('sex', 45);
+            $table->string('gender', 45);
             $table->integer('schoolId')->unsigned();
             $table->foreign('schoolId')->references('id')->on('schools');
             $table->timestamps();
@@ -104,7 +104,7 @@ class Init
             $table->string('morningBusRoute', 45);
             $table->string('eveningBusRoute', 45);
             $table->string('code', 100);
-            $table->string('sex', 45);
+            $table->string('gender', 45);
             $table->integer('schoolId')->unsigned();
             $table->foreign('schoolId')->references('id')->on('schools');
             $table->timestamps();

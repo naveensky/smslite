@@ -59,7 +59,7 @@ class Student extends Eloquent
             $insertRow['name'] = isset($dataRow[1]) ? $dataRow[1] : ""; //Full Name
             $insertRow['classStandard'] = isset($dataRow[2]) ? $dataRow[2] : ""; //Class Standard
             $insertRow['classSection'] = isset($dataRow[3]) ? $dataRow[3] : ""; //Class Section
-            $insertRow['sex'] = isset($dataRow[4]) ? $dataRow[4] : ""; //Gender
+            $insertRow['gender'] = isset($dataRow[4]) ? $dataRow[4] : ""; //Gender
             $insertRow['fatherName'] = isset($dataRow[5]) ? $dataRow[5] : ""; //Father Name
             $insertRow['motherName'] = isset($dataRow[6]) ? $dataRow[6] : ""; //Mother Name
             $insertRow['email'] = $dataRow[7];
@@ -93,7 +93,7 @@ class Student extends Eloquent
             $row['name'] = $student->name;
             $row['classStandard'] = $student->classStandard;
             $row['classSection'] = $student->classSection;
-            $row['sex'] = $student->sex;
+            $row['gender'] = $student->gender;
             $row['fatherName'] = $student->fatherName;
             $row['motherName'] = $student->motherName;
             $row['email'] = $student->email;
@@ -139,7 +139,7 @@ class Student extends Eloquent
         'morningBusRoute' => 'string',
         'eveningBusRoute' => 'string',
         'code' => 'string',
-        'sex' => 'string',
+        'gender' => 'string',
         'schoolId' => 'factory|School',
     );
 }

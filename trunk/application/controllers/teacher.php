@@ -137,8 +137,8 @@ class Teacher_Controller extends Base_Controller
             $updateData['morningBusRoute'] = $update_data->MorningBusRoute;
         if (isset($update_data->EveningBusRoute))
             $updateData['eveningBusroute'] = $update_data->EveningBusRoute;
-        if (isset($update_data->Sex))
-            $updateData['sex'] = $update_data->Sex;
+        if (isset($update_data->Gender))
+            $updateData['gender'] = $update_data->Gender;
         if (isset($update_data->Code))
             $teacherCode = $update_data->Code;
 

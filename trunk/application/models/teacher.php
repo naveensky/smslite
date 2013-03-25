@@ -57,7 +57,7 @@ class Teacher extends Eloquent
             }
             $insertRow['name'] = isset($dataRow[0]) ? $dataRow[0] : ""; //Full Name
             $insertRow['department'] = isset($dataRow[1]) ? $dataRow[1] : ""; //Department
-            $insertRow['sex'] = isset($dataRow[2]) ? $dataRow[2] : ""; //Gender
+            $insertRow['gender'] = isset($dataRow[2]) ? $dataRow[2] : ""; //Gender
             $insertRow['email'] = $dataRow[3];
             $insertRow['mobile1'] = isset($dataRow[4]) ? $dataRow[4] : ""; //Mobile1
             $insertRow['mobile2'] = isset($dataRow[5]) ? $dataRow[5] : ""; //Mobile2
@@ -87,7 +87,7 @@ class Teacher extends Eloquent
             $row = array();
             $row['name'] = $teacher->name;
             $row['department'] = $teacher->department;
-            $row['sex'] = $teacher->sex;
+            $row['gender'] = $teacher->gender;
             $row['email'] = $teacher->email;
             $row['mobile1'] = $teacher->mobile1;
             $row['mobile2'] = $teacher->mobile2;
@@ -127,7 +127,7 @@ class Teacher extends Eloquent
         'morningBusRoute' => 'string',
         'eveningBusRoute' => 'string',
         'code' => 'string',
-        'sex' => 'string',
+        'gender' => 'string',
         'schoolId' => 'factory|School',
     );
 }
