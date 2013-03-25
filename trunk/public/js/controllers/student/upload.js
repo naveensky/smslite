@@ -4,7 +4,7 @@
 angular.module('app')
     .controller('Student_Upload', ['$scope', '$http', function ($scope, $http) {
         $scope.files = [];
-        $scope.path;
+        $scope.path = '';
         $scope.fileName;
         $scope.numberOfStudents = 0;
         $scope.rowErrors = 0;
@@ -48,5 +48,17 @@ angular.module('app')
                     //todo: log error
                 }
             );
+        }
+
+        $scope.resetModel = function () {
+            $scope.files = [];
+            $scope.numberOfStudents = 0;
+            $scope.rowErrors = 0;
+            $scope.errorMessage = '';
+            $scope.showError = false;
+            $scope.showSuccess = false;
+            $scope.importStatus = false;
+            $scope.path = '';
+            $scope.fileName = '';
         }
     }]);

@@ -280,7 +280,7 @@ class UserRepository
             throw new InvalidArgumentException("Empty Mobile Verification Code");
         }
 
-        $user = User::where_id($id)->where_mobileVerificationCode($mobileVerificationCode)->first();
+        $user = User::where_id_and_mobileVerificationCode($id, $mobileVerificationCode)->first();
 
         if ($user == NULL)
             throw new InvalidArgumentException("User Not Found");

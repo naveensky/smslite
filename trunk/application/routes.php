@@ -120,7 +120,7 @@ Route::filter('superadmin', function () {
         if (Request::ajax())
             return Redirect::to('/');
         else
-            return Redirect::to('/');
+            return Redirect::to('/#/');
     }
 });
 

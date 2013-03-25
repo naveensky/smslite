@@ -73,6 +73,14 @@ class User_Controller extends Base_Controller
 
     public function action_register($step = 1)
     {
+        //filter to check if email is already verified then redirect user to sms compose screen
+        if ($step == 4 && Auth::user()->emailVerificationCode == null) {
+            if (Request::ajax())
+                return Redirect::to('/sms/compose');
+            else
+                return Redirect::to('/#/sms/compose');
+        }
+
         switch ($step) {
             case 1:
                 return View::make('user.register');

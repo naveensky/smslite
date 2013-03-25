@@ -8,7 +8,7 @@ angular.module('app', ['LoaderServices']).
             .when('/user/register', {templateUrl: '/user/register', controller: 'User_Register'})
             .when('/user/register/1', {templateUrl: '/user/register', controller: 'User_Register'})
             .when('/user/register/2', {templateUrl: '/user/register/2', controller: 'User_Register'})
-            .when('/user/register/3', {templateUrl: '/user/register/3', controller: 'User_Register'})
+            .when('/user/register/3', {templateUrl: '/user/register/3'})
             .when('/user/register/4', {templateUrl: '/user/register/4', controller: 'User_Register'})
             .when('/user/forgot-password', {templateUrl: '/user/forgot_password', controller: 'User_Forgot_Password'})
             .when('/user/password_reset_success', {templateUrl: '/user/password_reset_success', controller: 'User_Change_Password'})
@@ -41,9 +41,10 @@ angular.module('app', ['LoaderServices']).
         ///sms routes
         $routeProvider
             .when('/sms/', {redirectTo: '/sms/compose'})
-            .when('/sms/compose', {templateUrl: '/sms/compose', controller: 'Sms_Compose'});
+            .when('/sms/compose', {templateUrl: '/sms/compose'});
 
         $routeProvider.otherwise({redirectTo: '/sms/compose'});
+
     }]);
 
 function initComponents() {

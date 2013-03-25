@@ -13,7 +13,8 @@ class TestSchoolController extends ControllerTestCase
 //        );
     }
 
-    public function tearDown(){
+    public function tearDown()
+    {
         $this->tearDownAfterTests();
     }
 
@@ -199,6 +200,16 @@ class TestSchoolController extends ControllerTestCase
         $smsTemplate2->save();
 
         $response = $this->get('school@get_available_templates');
+        $this->assertEquals(200, $response->status());
+        $this->assertEquals(2, count(json_decode($response->content, true)));
+
+    }
+
+    public function testGetAllSchools()
+    {
+        $user = $this->getSampleUser();
+        Auth::login($user->id);
+        $response = $this->get('school@get_all_schools');
         $this->assertEquals(200, $response->status());
         $this->assertEquals(2, count(json_decode($response->content, true)));
 

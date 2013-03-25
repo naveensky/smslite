@@ -1,5 +1,5 @@
 <section class="container" style="margin-top:20px;">
-    <div class="box">
+    <div class="box" ng-controller="User_Register">
         <!--<div class="tabbable">-->
 
         <!-- Tabs
@@ -28,8 +28,9 @@
                             <input type="text" id="inputVerificationCode" name="mobileCode" ng-required="true"
                                    ng-model="mobileVerificationCode"
                                    placeholder="Enter Verification Code">
-                            <span ng-show="mobileVerifyForm.mobileCode.$error.required && !mobileVerifyForm.mobileCode.$pristine "
-                                  class="validation invalid"><i class="icon-remove padding-right-5"></i>Please enter code we have sent to your mobile</span>
+                            <span
+                                ng-show="mobileVerifyForm.mobileCode.$error.required && !mobileVerifyForm.mobileCode.$pristine "
+                                class="validation invalid"><i class="icon-remove padding-right-5"></i>Please enter code we have sent to your mobile</span>
                         </div>
                         <br>
 
@@ -58,7 +59,8 @@
                         <label class="control-label" for="inputUpdateMobile">Update Mobile</label>
 
                         <div class="controls">
-                            <input type="text" id="inputUpdateMobile" ng-model="newMobileNumber" ng-minLength="8" ng-required="true" ng-pattern="/^\+{0,1}\d+$/"
+                            <input type="text" id="inputUpdateMobile" ng-model="newMobileNumber" ng-minLength="8"
+                                   ng-required="true" ng-pattern="/^\+{0,1}\d+$/"
                                    name="newNumber"
                                    placeholder="Update Mobile">
                             <span ng-show="mobileUpdateForm.newNumber.$valid && !mobileUpdateForm.newNumber.$pristine"
@@ -68,10 +70,16 @@
                                     class="btn">Update
                             </button>
 
-                            <div ng-show="mobileUpdateForm.newNumber.$error.required && !mobileUpdateForm.newNumber.$pristine "
-                                 class="validation invalid"><i class="icon-remove padding-right-5"></i>Please enter your mobile number</div>
-                            <div ng-show="mobileUpdateForm.newNumber.$invalid && !mobileUpdateForm.newNumber.$pristine && !mobileUpdateForm.newNumber.$error.required" class="validation invalid"><i
-                                    class="icon-remove padding-right-5"></i>The mobile number must be at least 8 digits</div>
+                            <div
+                                ng-show="mobileUpdateForm.newNumber.$error.required && !mobileUpdateForm.newNumber.$pristine "
+                                class="validation invalid"><i class="icon-remove padding-right-5"></i>Please enter your
+                                mobile number
+                            </div>
+                            <div
+                                ng-show="mobileUpdateForm.newNumber.$invalid && !mobileUpdateForm.newNumber.$pristine && !mobileUpdateForm.newNumber.$error.required"
+                                class="validation invalid"><i
+                                    class="icon-remove padding-right-5"></i>The mobile number must be at least 8 digits
+                            </div>
 
                         </div>
 

@@ -40,7 +40,7 @@
                                 <i class="icon-upload"></i> Upload Another File</a>
                         </div>
                         <div class="control-group" ng-hide="showError || importStatus">
-                            <button type="submit" class="btn" ng-click="importStudents()">
+                            <button type="submit" class="btn" ng-disabled="{{path==''}}" ng-click="importStudents()">
                                 <i class="icon-upload icon-large padding-right-5"></i>Import
                             </button>
                         </div>
@@ -49,7 +49,7 @@
 
                             <p ng-show="rowErrors!=0">Row Numbers having Errors: {{rowErrors}} </p>
 
-                            <p>Want to upload another file <a href="#/student/upload">Click Here</a></p>
+                            <p>Want to upload another file <a href ng-click="resetModel()">Click Here</a></p>
                         </div>
                     </form>
                 </div>

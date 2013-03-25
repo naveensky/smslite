@@ -50,6 +50,8 @@ class Teacher_Controller extends Base_Controller
         $filePath = $data->filePath;
         $path = path('public');
         $contents = File::get($path . $filePath);
+        //delete file after reading content
+        File::delete($path . $filePath);
         $contents = trim($contents);
         $result = Teacher::parseFromCSV($contents);
         $teacherInserted = count($result['bulkTeachers']);

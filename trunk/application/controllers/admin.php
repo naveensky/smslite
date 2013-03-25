@@ -16,7 +16,6 @@ class Admin_Controller extends Base_Controller
     public function __construct()
     {
         parent::__construct();
-
         //add auth filter
         $this->filter('before', 'auth');
         //proceed ahead if user is super admin
@@ -24,7 +23,6 @@ class Admin_Controller extends Base_Controller
         $this->schoolRepo = new SchoolRepository();
         $this->adminRepo = new AdminRepository();
         $this->appSmsRepo = new AppSMSRepository();
-
     }
 
 
@@ -39,7 +37,6 @@ class Admin_Controller extends Base_Controller
         if (empty($data) || count($data) == 0) {
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
         }
-
         $schoolCode = isset($data->school) ? $data->school : null;
         $credits = isset($data->credits) ? $data->credits : null;
         $amount = isset($data->amount) ? $data->amount : null;
