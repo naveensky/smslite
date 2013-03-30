@@ -26,14 +26,7 @@ class Teacher_Controller extends Base_Controller
 
     public function action_list()
     {
-        $user = Auth::user();
-        $departments = $this->schoolRepo->getDepartments($user->schoolId);
-        $morningBusRoutes = $this->schoolRepo->getMorningBusRoutesOfTeachers($user->schoolId);
-        $eveningBusRoutes = $this->schoolRepo->getEveningBusRoutesOfTeachers($user->schoolId);
-        $data['departments'] = $departments;
-        $data['morningRoutes'] = $morningBusRoutes;
-        $data['eveningRoutes'] = $eveningBusRoutes;
-        return View::make('teacher.list', $data);
+        return View::make('teacher.list');
     }
 
     public function action_upload()

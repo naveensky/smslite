@@ -31,7 +31,10 @@ class User_Controller extends Base_Controller
     public function action_login()
     {
         if (Auth::check()) {
-            return "You are already Login";
+            if (Request::ajax())
+                return Redirect::to('/sms/compose');
+            else
+                return Redirect::to('/#/sms/compose');
         }
         return View::make('user/login');
     }

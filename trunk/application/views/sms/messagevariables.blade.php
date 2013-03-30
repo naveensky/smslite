@@ -17,7 +17,7 @@
 @endforeach
 @endif
 @if(count($knownVariables)==0 && count($messageVars)==0)
-Sorry no placeholder for the above message
+No placeholders for the above message
 @endif
 
 
