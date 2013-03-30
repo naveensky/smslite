@@ -12,19 +12,21 @@
 </div>
 
 
-<div class="row">
-    <div class="span10 offset1">
-        <div id="introductory-video">
-            <iframe src="http://player.vimeo.com/video/1935228?title=0&amp;byline=0&amp;portrait=0" width="100%"
-                    height="500px"
-                    frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+<!--Video for Home Page-->
 
-        </div>
-        <div class="video-shadow">
-            <img src="img/shadow.png">
-        </div>
-    </div>
-</div>
+<!--<div class="row">-->
+<!--    <div class="span8 offset2">-->
+<!--        <div id="introductory-video">-->
+<!--            <iframe src="http://player.vimeo.com/video/1935228?title=0&amp;byline=0&amp;portrait=0" width="100%"-->
+<!--                    height="400px"-->
+<!--                    frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>-->
+<!---->
+<!--        </div>-->
+<!--        <div class="video-shadow">-->
+<!--            <img src="img/shadow.png">-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
 
 <div class="row">
     <div class="span8 offset2">
@@ -55,10 +57,10 @@
     <div class="span12">
         <h3>Happy Clients</h3>
     </div>
-    <div class="span3"><img src="http://placehold.it/270x210"></div>
-    <div class="span3"><img src="http://placehold.it/270x210"></div>
-    <div class="span3"><img src="http://placehold.it/270x210"></div>
-    <div class="span3"><img src="http://placehold.it/270x210"></div>
+    <div class="span3"><img src="<% URL::asset('img/presidium.png') %>" alt="Presidium School, Delhi"></div>
+    <div class="span3"><img src="<% URL::asset('img/holy-innocent.png') %>" alt="Holy Innocents Public School, Delhi"></div>
+    <div class="span3"><img src="<% URL::asset('img/ramjas.png') %>" alt="Ramjas School, Delhi"></div>
+    <div class="span3"><img src="<% URL::asset('img/sms.png') %>" alt="St. Marks, Delhi"></div>
 </div>
 
 @stop
