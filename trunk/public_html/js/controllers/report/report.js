@@ -62,12 +62,14 @@ angular.module('app')
                 series: [
                     {
                         name: 'Queue SMS',
-                        data: $scope.smsReportData.queueValues
+                        data: $scope.smsReportData.queueValues,
+                        color: 'grey'
 
                     },
                     {
                         name: 'Sent SMS',
-                        data: $scope.smsReportData.sentValues
+                        data: $scope.smsReportData.sentValues,
+                        color: 'green'
 
                     }
 
@@ -139,7 +141,7 @@ angular.module('app')
         }
 
         $scope.getFormattedDate = function ($date) {
-            return moment($date).format('Do MMMM  YYYY');
+            return moment($date).format('Do MMM  YYYY h:mm');
         }
 
         $scope.getStatusCss = function ($smsRow) {

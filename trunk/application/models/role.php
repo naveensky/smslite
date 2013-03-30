@@ -8,8 +8,11 @@
  */
 class Role extends Eloquent
 {
-    const USER_ROLE_ADMIN='admin';
-    const USER_ROLE_EDITOR='editor';
+    const USER_ROLE_ADMIN = 'admin';
+    const USER_ROLE_SUPER_ADMIN = 'superadmin';
+    const USER_ROLE_EDITOR = 'editor';
+    const USER_ROLE_AUTHENTICATED = 'authenticated';
+
     public function users()
     {
         $this->has_many_and_belongs_to('User');

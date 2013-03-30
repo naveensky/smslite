@@ -172,6 +172,11 @@ class Init
 
         });
 
+        DB::table('roles')->insert(
+            array(array(
+                'name' => 'superadmin','created_at'=>'now','updated_at'=>'now'
+            ), array('name' => 'admin','created_at'=>'now','updated_at'=>'now'), array('name' => 'authenticated','created_at'=>'now','updated_at'=>'now'))
+        );
     }
 
     /**

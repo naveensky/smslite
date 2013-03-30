@@ -15,7 +15,7 @@ class UserRepository
 
     public function createAdmin($email, $mobile, $password, $schoolCode)
     {
-        $roles = array(Role::USER_ROLE_ADMIN, Role::USER_ROLE_EDITOR);
+        $roles = array(Role::USER_ROLE_ADMIN);
         return $this->createUser($email, $mobile, $password, $schoolCode, $roles);
     }
 

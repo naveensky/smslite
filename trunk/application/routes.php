@@ -115,8 +115,8 @@ Route::filter('checkmobile', function () {
     }
 });
 
-Route::filter('superadmin', function () {
-    if (!Util::is_in_role("superadmin")) {
+Route::filter(Role::USER_ROLE_SUPER_ADMIN, function () {
+    if (!Util::is_in_role(Role::USER_ROLE_SUPER_ADMIN)) {
         if (Request::ajax())
             return Redirect::to('/');
         else

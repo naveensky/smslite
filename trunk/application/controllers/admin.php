@@ -19,7 +19,7 @@ class Admin_Controller extends Base_Controller
         //add auth filter
         $this->filter('before', 'auth');
         //proceed ahead if user is super admin
-        $this->filter('before', 'superadmin');
+        $this->filter('before', Role::USER_ROLE_SUPER_ADMIN);
         $this->schoolRepo = new SchoolRepository();
         $this->adminRepo = new AdminRepository();
         $this->appSmsRepo = new AppSMSRepository();
