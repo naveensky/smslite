@@ -7,7 +7,7 @@
  */
 //for route user/register
 angular.module('app')
-    .controller('User_Register', ['$scope', '$http', '$routeParams', '$window', function ($scope, $http, $routeParams, $window) {
+    .controller('User_Register', ['$scope', '$http', '$routeParams', '$window', '$location', function ($scope, $http, $routeParams, $window, $location) {
 
         $scope.mobile = '';
         $scope.email = '';
@@ -106,9 +106,8 @@ angular.module('app')
                 .success(function ($data) {
                     if ($data.status == true) {
                         $scope.IsMobileVerified = true;
-                        $window.location.href = "#/user/register/4";
+                        $location.path('/user/register/4');
                     }
-
                     else {
                         $scope.SMSResentError = true;
                     }
@@ -153,6 +152,9 @@ angular.module('app')
                 });
         }
 
+        $scope.skipEmailVerify = function () {
+            $location.path('/sms/compose');
+        }
 
         $scope.sendEmailAgain = function () {
             $http.get(

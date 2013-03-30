@@ -91,7 +91,7 @@ class MailServices
         $emails = Config::get('app.system_alert_emails');
         try {
             Message::send(function ($message) use ($emailData, $emails) {
-                $message->to($emails[1]);
+                $message->to($emails);
                 $message->from(Config::get('email.from_email'), Config::get('email.adminName'));
                 $message->subject(__('emailsubjects.credits_allocated_admin'));
                 $message->body("view: user.email.admin.creditsallocation");

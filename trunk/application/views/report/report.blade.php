@@ -20,20 +20,23 @@
                 <input type="text" class="width-86" ng-model="teacherName" placeholder="Teacher name..">
                 <label><strong>Select Classes</strong></label>
 
-                <div ng-repeat="class in classes">
-                    <label class="checkbox">
-                        <input type="checkbox" ng-model="class.selected"
-                               ng-click="setClassSections(class.class,class.selected)">
-                        {{class.class}}
-                    </label>
+                <div class="scrollfix">
+                    <div ng-repeat="class in classes">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-model="class.selected"
+                                   ng-click="setClassSections(class.class,class.selected)">
+                            {{class.class}}
+                        </label>
+                    </div>
                 </div>
+
                 <button class="btn btn-primary" ng-click="filterSMS()">Filter</button>
             </div>
         </div>
         <div class="span9">
+            {{smsReportData.sentSMSData}}
             <div class="box">
                 <!-- Recent users email-verify -->
-
                 <div id="container" style="min-width: 400px; height: 200px; margin: 0 auto"></div>
             </div>
             <div class="box">
@@ -82,7 +85,6 @@
                 </div>
             </div>
         </div>
-    </div>
     </div>
 </section>
 <script type="text/javascript">

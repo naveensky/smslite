@@ -9,12 +9,13 @@
 
 return array(
 
+//    'url' => "http://dndopen.dove-sms.com/SMSAPI.jsp",
+
     'url' => "http://smslite.localhost.com/cron/test",
+    'username' => 'NaveenG',
 
-    'username' => 'username',
+    'password' => 'NaveenG',
 
-    'password' => 'password',
+    'senderid' => 'INFOIN'
 
-    'senderid' => 'GAPS'
-
-    );
+);

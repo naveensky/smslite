@@ -47,13 +47,16 @@
                                    ng-model="newEmail" placeholder="Update Email">
                             <span ng-show="form.email.$valid && !form.email.$pristine" class="validation valid"><i
                                     class="icon-ok padding-right-5"></i></span>
-                            <button type="submit" class="btn" ng-click="updateEmail()"  ng-disabled="form.$invalid">Update</button>
+                            <button type="submit" class="btn" ng-click="updateEmail()" ng-disabled="form.$invalid">
+                                Update
+                            </button>
                             <div ng-show="form.email.$error.required && !form.email.$pristine "
                                  class="validation invalid"><i class="icon-remove padding-right-5"></i>Please enter an
                                 email
                             </div>
-                            <div ng-show="form.email.$error.email && !form.email.$pristine && !form.email.$error.required"
-                                 class="validation invalid"><i
+                            <div
+                                ng-show="form.email.$error.email && !form.email.$pristine && !form.email.$error.required"
+                                class="validation invalid"><i
                                     class="icon-remove padding-right-5"></i>Enter a valid email id.
                             </div>
                             <div class="alert alert-success margin-top-20" style="width:35%" ng-show="resetEmail">
@@ -62,7 +65,7 @@
                             </div>
                         </div>
                         <div class="controls margin-top-20">
-                            <button type="button" class="btn btn-success">Skip</button>
+                            <button type="button" class="btn btn-success" ng-click="skipEmailVerify()">Skip</button>
                         </div>
 
                     </div>

@@ -44,17 +44,18 @@ class CronRepository
             foreach ($pendingSMS as $sms) {
                 //create api url to hit
                 $sms_url = Config::get('sms.url');
-                $sms_url = "$sms_url ?username=$username&password=$password&mobile=$sms->mobile&senderId=$sms->senderId&message=$sms->message";
+                $sms_url = "$sms_url?username=$username&password=$password&sendername=$sms->senderId&mobileno=$sms->mobile&message=" . urlencode($sms->message);
 
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, $sms_url);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HEADER, true);
                 curl_setopt($ch, CURLOPT_TIMEOUT, '6');
                 $result = curl_exec($ch);
                 $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
                 curl_close($ch);
                 if ($http_status == HTTPConstants::SUCCESS_CODE)
-                    $this->smsRepo->updateStatus($sms->id, "sent");
+                    $this->smsRepo->updateStatus($sms->id, SMSTransaction::SMS_STATUS_SENT);
             }
         }
         //mark cron as free for next request

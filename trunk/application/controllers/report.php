@@ -67,4 +67,12 @@ class Report_Controller extends Base_Controller
 
         return Response::json($result);
     }
+
+    public function action_get_sms_graph_data()
+    {
+        $schoolId = Auth::user()->schoolId;
+        $result = $this->reportRepo->getLast30DaysSMS($schoolId);
+        return Response::json($result);
+
+    }
 }

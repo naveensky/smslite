@@ -36,6 +36,32 @@ module.factory('ReportService', ["$http", "$q", function ($http, $q) {
             );
 
             return deferred.promise;
+        },
+        getSMSReport: function () {
+
+            //create a defer
+            var deferred = $q.defer();
+
+            //make post request with params
+            $http.get(
+                '/report/get_sms_graph_data',
+                { }
+            ).success(function (data) {
+                    //if data is proper array, return data else empty array
+                    deferred.resolve(data);
+//                    if (Array.isArray(data))
+//                        deferred.resolve(data);
+//                    else
+//                        deferred.resolve([]);
+                }
+            ).error(function ($e) {
+                    //todo: log this
+                    //if there is an error processing data, reject it and log error
+                    console.log($e);
+                    deferred.reject($e);
+                }
+            );
+            return deferred.promise;
         }
     }
 }]);

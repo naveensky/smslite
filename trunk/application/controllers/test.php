@@ -348,5 +348,62 @@ class Test_Controller extends Base_Controller
 
     }
 
+    public function action_testDate()
+    {
+        Auth::login(1);
+        $schoolId = Auth::user()->schoolId;
+        $dateWiseData = array();
+        $toDate = new DateTime();
+        for ($i = 0; $i < 30; $i++) {
+            $dateWiseData[$toDate->format('Y-m-d')] = 0;
+            $toDate = $this->getFromDate($toDate);
+        }
+        var_dump($dateWiseData);
+//        $query = DB::table('smsTransactions')
+//            ->join('users', 'smsTransactions.userId', '=', 'users.id')->where_schoolId($schoolId);
+//        $query = $query->where(function ($query) use ($toDate) {
+//            $query->where("smsTransactions.updated_at", '>=', $toDate);
+//            $query->where("smsTransactions.updated_at", '<', $this->getToDate(new DateTime()));
+//        });
+
+//        $count = $query->group_by(DB::raw('"smsTransactions"."updated_at"::date'))->count('smsTransactions.id');
+//        $query=DB::last_query();
+//        var_dump($query);
+        $fromDate = $this->getToDate(new DateTime())->format("Y-m-d");
+        $count = DB::query('select "smsTransactions"."updated_at"::date,count("smsTransactions"."id") as countSMS from "smsTransactions" join "users" on "smsTransactions"."userId"="users"."id" where "schoolId" =' . $schoolId . ' and "smsTransactions"."updated_at" >= ' . '\'' . $toDate->format("Y-m-d") . '\' and "smsTransactions"."updated_at" < \'' . $fromDate . ' \' group by "smsTransactions"."updated_at"::date order by "smsTransactions"."updated_at"::date DESC');
+        var_dump($count);
+        foreach ($count as $row) {
+            $dateWiseData[$row->updated_at] = $row->countsms;
+        }
+        var_dump($dateWiseData);
+    }
+
+    public function getFromDate($toDate)
+    {
+        if (empty($toDate))
+            return $toDate;
+        $dateid = date('Y', $toDate->getTimestamp()) . "-" . date('m', $toDate->getTimestamp()) . "-" . date('d', $toDate->getTimestamp()) . " 00:00:00";
+        $toDate = new DateTime($dateid);
+        $toDate->sub(new DateInterval('P1D'));
+        return $toDate;
+    }
+
+    public function getToDate($toDate)
+    {
+        if (empty($toDate))
+            return $toDate;
+        $dateid = date('Y', $toDate->getTimestamp()) . "-" . date('m', $toDate->getTimestamp()) . "-" . date('d', $toDate->getTimestamp()) . " 00:00:00";
+        $toDate = new DateTime($dateid);
+        $toDate->add(new DateInterval('P1D'));
+        return $toDate;
+    }
+
+    public function action_getReportSMS()
+    {
+        Auth::login(1);
+        $report = new ReportRepository();
+        var_dump($report->getLast30DaysSMS(Auth::user()->schoolId));
+    }
+
 
 }

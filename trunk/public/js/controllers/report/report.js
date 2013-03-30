@@ -20,8 +20,88 @@ angular.module('app')
                 return {"class": classVar, "selected": false};
             })
         });
+        reportService.getSMSReport().then(function (data) {
+            $scope.smsReportData = data;
+            $('#container').highcharts({
+                chart: {
+                    type: 'column'
+
+                },
+                title: {
+                    text: 'Last 30 days SMS'
+                },
+                xAxis: {
+                    categories: $scope.smsReportData.dates,
+                    title: {
+                        text: 'Dates'
+                    }
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Total SMS'
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                        '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    dataLabels: {
+                        enabled: true
+                    },
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0
+                    }
+                },
+                series: [
+                    {
+                        name: 'Queue SMS',
+                        data: $scope.smsReportData.queueValues
+
+                    },
+                    {
+                        name: 'Sent SMS',
+                        data: $scope.smsReportData.sentValues
+
+                    }
+
+                ]
+            });
+        });
 
         $scope.filterSMS = function () {
+            $scope.pageNumber = 1;
+            $scope.pageCount = 25;
+            $scope.previousPage = 0;
+            $scope.nextPage = $scope.pageNumber + 1;
+            $scope.queueDate = $('#dpd1').val();
+            $scope.sentDate = $('#dpd2').val();
+
+            if ($scope.queueDate != '' && $scope.sentDate != '') {
+                if ($scope.queueDate > $scope.sentDate) {
+                    bootbox.alert('Queue Date can not be greater than sentDate');
+                    return;
+                }
+            }
+
+            $scope.smsRows = reportService.getSMS(
+                $scope.classSections,
+                $scope.studentName,
+                $scope.teacherName,
+                $scope.queueDate,
+                $scope.sentDate,
+                $scope.pageNumber,
+                $scope.pageCount
+            );
+        }
+
+        $scope.getNextOrPreviousSMS = function () {
             $scope.queueDate = $('#dpd1').val();
             $scope.sentDate = $('#dpd2').val();
 
@@ -47,14 +127,14 @@ angular.module('app')
             $scope.previousPage = $scope.pageNumber;
             $scope.pageNumber = $scope.nextPage;
             $scope.nextPage = $scope.nextPage + 1;
-            $scope.filterSMS();
+            $scope.getNextOrPreviousSMS();
         }
 
         $scope.updatePrevious = function () {
             $scope.pageNumber = $scope.previousPage;
             $scope.nextPage = $scope.pageNumber + 1;
             $scope.previousPage = $scope.previousPage - 1;
-            $scope.filterSMS();
+            $scope.getNextOrPreviousSMS();
 
         }
 
