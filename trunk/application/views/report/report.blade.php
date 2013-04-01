@@ -34,7 +34,6 @@
             </div>
         </div>
         <div class="span9">
-            {{smsReportData.sentSMSData}}
             <div class="box">
                 <!-- Recent users email-verify -->
                 <div id="container" style="min-width: 400px; height: 200px; margin: 0 auto"></div>
@@ -42,6 +41,11 @@
             <div class="box">
                 <!-- Recent users email-verify -->
                 <h3 class="margin-top-0"><i class="icon-file-alt icon-large padding-right-5"></i>Reports</h3>
+
+                <p><strong>Disclaimer:</strong> <em>The SMS Log does not show SMS sent to admin, but those SMS are counted
+                    against
+                    your
+                    total consumption</em></p>
                 <table class="table table-striped">
                     <thead>
                     <tr>

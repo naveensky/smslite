@@ -21,7 +21,7 @@ class SMSTemplate_Task
             'Late' => 'Your ward <%name%> of class <%class%> was late in reaching school today. Please ensure that it is not repeated in future',
             'LibraryBook' => 'Your ward <%name%> of class <%class%> has not returned the library book issued to him. Please ensure that he/she returns it on the next working day, positively',
             'Stay Back Information:' => 'Your ward <%name%> of class <%class%> has to stay back after school for <%text_reason%>. Please pick up your ward from school at <%text_time%>. In case your ward has to be allowed to go home on his/her own,please send a proper application signed by you for the same',
-            'BUNKING CLASSES'=>'This is to inform you that your ward <%name%> of class <%class%> did not attend the <%text_subject_name%> class in the <%text_period%> period. You are requested to meet the Vice Principal/Educational Supervisor/Class Teacher in this connection on <%text_date%> at <%text_time%>',
+            'BUNKING CLASSES' => 'This is to inform you that your ward <%name%> of class <%class%> did not attend the <%text_subject_name%> class in the <%text_period%> period. You are requested to meet the Vice Principal/Educational Supervisor/Class Teacher in this connection on <%text_date%> at <%text_time%>',
             'Worksheets' => "Your ward's worksheets are being sent home for your perusal and appraisal",
             'Well Being' => "We are glad to inform you that your ward has settled well during the current academic year and is doing well. We hope to continue receiving your whole-hearted co-operation for your ward's all round development",
             'Magzine' => 'Entries are invited from all the students for the school magazine. Students should submit their entries to their class teachers/English Teachers/Student Editors',
@@ -39,8 +39,8 @@ class SMSTemplate_Task
             'Inappropriate Behaviour' => 'We regret to inform you that your ward <%name%> of class <%class%> has been showing inappropriate behaviour.You are requested to meet the Vice Principal/Educational Supervisor on <%text_date%> at <%text_time%> to discuss about the same',
             'Damaging School Property' => 'We regret to inform you that your ward <%name%> of class <%class%> has been found damaging school property.You are requested to meet the Vice Principal/Educational Supervisor on <%text_date%> at <%text_time%> to discuss about the same.',
             'Physical Aggeression' => 'We regret to inform you that your ward <%name%> of class <%class%> has been found showing physical aggression.You are requested to meet the Vice Principal/Educational Supervisor on <%text_date%> at <%text_time%> to discuss about the same.',
-            'Rule Violation'=>'We regret to inform you that your ward <%name%> of class <%class%> has been found violating school rules.You are requested to meet the Vice Principal/Educational Supervisor on <%text_date%> at <%text_time%> to discuss about the same.',
-            'Abusive Language'=>'We regret to inform you that your ward <%name%> of class <%class%> has been found using abusive language.You are requested to meet the Vice Principal/Educational Supervisor on <%text_date%> at <%text_time%> to discuss about the same',
+            'Rule Violation' => 'We regret to inform you that your ward <%name%> of class <%class%> has been found violating school rules.You are requested to meet the Vice Principal/Educational Supervisor on <%text_date%> at <%text_time%> to discuss about the same.',
+            'Abusive Language' => 'We regret to inform you that your ward <%name%> of class <%class%> has been found using abusive language.You are requested to meet the Vice Principal/Educational Supervisor on <%text_date%> at <%text_time%> to discuss about the same',
             'Holiday AssignMents' => 'The Holiday assignments have been posted on the school website <%text_school_website_name%>.Please check the same for details',
             'Final Result' => 'This is to inform you that circulars regarding Final Results have been given to the students.Please read the same very carefully and collect the result on the specified date and time.',
             'Report Card Return' => 'The Report card/Result Sheet for <%text_exam_name%> have been given to the students today.Please send it back on the next working day,duly signed',
@@ -50,9 +50,9 @@ class SMSTemplate_Task
             'Working Saturday' => 'Please note that <%text_date%> will be a working day for all students/students of classes <%text_class%> The time-table of <%text_day%> will be followed.',
             'Absent For LongTime' => 'It has been observed that your ward <%name%> of class <%class%> has been absent from school since <%text_date%> without any intimation.Kindly notify the school about the reason for the absence with a proper application at the earliest.',
             'Holiday Announcement' => 'This is to inform you that <%text_date%> will be a holiday on account of <%text_reason%>',
-            'CALLING STUDENTS ON NON-WORKING DAYS FOR EXTRA CLASSES/ CO-CURRICULAR ACTIVITIES'=> 'Your ward <%name%> of class <%class%> has to come to school on <%text_date%> for <%text_reason%> from <%text_start_time%> to <%text_end_time%> In case your ward has to be allowed to go home on his/her own, please send a proper application signed by you for the same.',
+            'CALLING STUDENTS ON NON-WORKING DAYS FOR EXTRA CLASSES/ CO-CURRICULAR ACTIVITIES' => 'Your ward <%name%> of class <%class%> has to come to school on <%text_date%> for <%text_reason%> from <%text_start_time%> to <%text_end_time%> In case your ward has to be allowed to go home on his/her own, please send a proper application signed by you for the same.',
             'Fees' => 'Kindly deposit the school fees due by <%text_date%> positively.',
-            'Extra Time'=>'Your ward <%name%> of class <%class%> has to stay back after school for <%text_reason%> Please pick up your ward from school at <%text_time%> In case your ward has to be allowed to go home on his/her own,please send a proper application signed by you for the same',
+            'Extra Time' => 'Your ward <%name%> of class <%class%> has to stay back after school for <%text_reason%> Please pick up your ward from school at <%text_time%> In case your ward has to be allowed to go home on his/her own,please send a proper application signed by you for the same',
             'Circular' => 'This is to inform you that circular(s)regarding <%text_subject_name%> has/have been given to your ward.Please go through the same.',
             'Picnic' => 'Class <%class%> will be going for a picnic/excursion/outing to <%text_picnic_place%> on <%text_date%> Please pick up your ward from school at <%text_time%> In case your ward has to be allowed to go home on his/her own, please send a proper application signed by you for the same.',
             'Parents, Meeting' => 'The Parent Teacher Meeting for class <%class%> will be held on <%text_date%> from <%text_start_time%> to <%text_end_time%>',
@@ -82,6 +82,9 @@ class SMSTemplate_Task
             array_push($templatesData, $row);
         }
 
-        SMSTemplate::insert($templatesData);
+        $smstemplate = SMSTemplate::where_schoolId($schoolId)->get();
+       if (count($smstemplate) == 0 && empty($smstemplate))
+            SMSTemplate::insert($templatesData);
+
     }
 }

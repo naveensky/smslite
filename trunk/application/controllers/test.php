@@ -405,5 +405,10 @@ class Test_Controller extends Base_Controller
         var_dump($report->getLast30DaysSMS(Auth::user()->schoolId));
     }
 
-
+    public function action_checkTime()
+    {
+        //command to create templates for the school
+        Command::run(array('smsdispatcher'));
+        Command::run(array('highprioritysmsdispatcher'));
+    }
 }

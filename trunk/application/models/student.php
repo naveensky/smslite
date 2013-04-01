@@ -51,7 +51,7 @@ class Student extends Eloquent
                     continue;
                 }
                 if ($validator->errors->has('email')) {
-                    $dataRow[6] = "";
+                    $dataRow[7] = "";
                 }
 
             }

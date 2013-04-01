@@ -141,7 +141,7 @@ angular.module('app')
         }
 
         $scope.getFormattedDate = function ($date) {
-            return moment($date).format('Do MMM  YYYY h:mm');
+            return moment($date).format('D MMM  YYYY h:mm');
         }
 
         $scope.getStatusCss = function ($smsRow) {
@@ -152,7 +152,7 @@ angular.module('app')
                 case 'sent':
                     return 'success';
                     break;
-                case 'failed':
+                case 'fail':
                     return 'error';
                     break;
                 default:
