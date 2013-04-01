@@ -100,6 +100,7 @@ class SMSRepository
             $sms_data['credits'] = $creditsForMessage;
             $sms_data['teacherId'] = NULL;
             $sms_data['userId'] = $userId;
+            $sms_data['name'] = $student->name;
             $sms_data['senderId'] = $senderId;
             $sms_data['status'] = SMSTransaction::SMS_STATUS_PENDING;
             $sms_data['priority'] = SMSTransaction::SMS_NORMAL_PRIORITY;
@@ -144,6 +145,7 @@ class SMSRepository
             $sms_data['senderId'] = $senderId;
             $sms_data['status'] = SMSTransaction::SMS_STATUS_PENDING;
             $sms_data['priority'] = SMSTransaction::SMS_NORMAL_PRIORITY;
+            $sms_data['name'] = $teacher->name;
             $sms_data['teacherId'] = $teacher->id;
             $sms_data['created_at'] = new DateTime(); //this a pain but laravel doesnt set these values in bulk operations.;
             $sms_data['updated_at'] = new DateTime(); //this a pain but laravel doesnt set these values in bulk operations.;
@@ -355,11 +357,14 @@ class SMSRepository
 
     public function createAppSms($mobile, $message, $senderId, $userId)
     {
+        $schoolId = Auth::user()->schoolId;
+        $users = School::find($schoolId)->users;
         $message = $this->formatMessage($message);
         $credits = $this->countCredits($message);
         $appSms = new SMSTransaction();
         $appSms->mobile = $mobile;
         $appSms->message = $message;
+        $appSms->name = empty($users) ? $users[0]->name : '';
         $appSms->studentId = NULL;
         $appSms->teacherId = NULL;
         $appSms->priority = SMSTransaction::SMS_HIGH_PRIORITY;

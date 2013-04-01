@@ -50,22 +50,7 @@ class Report_Controller extends Base_Controller
         if ($filterSMS == false && !is_array($filterSMS))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
-        $result = array();
-        foreach ($filterSMS as $smsRow) {
-            $smsData = array();
-            if ($smsRow->teacher_name != NULL)
-                $smsData['name'] = $smsRow->teacher_name;
-            else
-                $smsData['name'] = $smsRow->student_name;
-            $smsData['message'] = $smsRow->message;
-            $smsData['status'] = $smsRow->status;
-            $smsData['mobile'] = $smsRow->mobile;
-            $smsData['queue_time'] = $smsRow->queue_time;
-            $smsData['sent_time'] = $smsRow->sent_time;
-            $result[] = $smsData;
-        }
-
-        return Response::json($result);
+        return Response::json($filterSMS);
     }
 
     public function action_get_sms_graph_data()

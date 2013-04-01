@@ -71,6 +71,12 @@ angular.module('app')
                         data: $scope.smsReportData.sentValues,
                         color: 'green'
 
+                    },
+                    {
+                        name: 'Fail SMS',
+                        data: $scope.smsReportData.failValues,
+                        color: 'red'
+
                     }
 
                 ]

@@ -9,9 +9,10 @@
 
 return array(
 
-    'from_email' => 'info@msngr.in',
-    'host' => 'email-smtp.us-east-1.amazonaws.com',
+    'from_email' => 'hmalhotra@greenapplesolutions.com',
+    'host' => 'smtp.gmail.com',
     'port' => 465,
-    'username' => 'AKIAIBQ2IWGTT3ZR57IQ',
-    'password' => 'AmrmfwPVX7Hh2K4I/HpSSJTT9RJfeNXNFbaK2WuhG1fU',
+    'username' => 'green.smtp@gmail.com',
+    'password' => '@sdf1234',
+
 );

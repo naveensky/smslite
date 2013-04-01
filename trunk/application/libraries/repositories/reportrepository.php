@@ -83,13 +83,12 @@ class ReportRepository
         }
 
         try {
-            $smsLog = $query->skip($skip)->take($perPage)->get(array('students.name as student_name', 'teachers.name as teacher_name', 'smsTransactions.mobile', 'smsTransactions.message', 'smsTransactions.status', 'smsTransactions.created_at as queue_time', 'smsTransactions.updated_at as sent_time'));
+            $smsLog = $query->skip($skip)->take($perPage)->order_by(DB::raw('"smsTransactions"."created_at"'),'Desc')->get(array('smsTransactions.name', 'smsTransactions.mobile', 'smsTransactions.message', 'smsTransactions.status', 'smsTransactions.created_at as queue_time', 'smsTransactions.updated_at as sent_time'));
         } catch (Exception $e) {
             Log::exception($e);
             return false;
         }
         return $smsLog;
-
     }
 
     //get last 30 days sms delivered
@@ -110,6 +109,25 @@ class ReportRepository
         return array_reverse($dateWiseData, true);
 
     }
+
+    public function getLast30DaysSMSFailStatus($schoolId)
+    {
+        $dateWiseData = array();
+        $toDate = new DateTime();
+        for ($i = 0; $i < 30; $i++) {
+            $dateWiseData[$toDate->format('Y-m-d')] = 0;
+            $toDate = Util::getFromDate($toDate);
+        }
+        $fromDate = Util::getToDate(new DateTime())->format("Y-m-d");
+        $count = DB::query('select "smsTransactions"."updated_at"::date,count("smsTransactions"."id") as countSMS from "smsTransactions" join "users" on "smsTransactions"."userId"="users"."id" where "schoolId" =' . $schoolId . ' and "status"=\'' . SMSTransaction::SMS_STATUS_FAIL . '\'and "smsTransactions"."updated_at" >= ' . '\'' . $toDate->format("Y-m-d") . '\' and "smsTransactions"."updated_at" < \'' . $fromDate . ' \' group by "smsTransactions"."updated_at"::date order by "smsTransactions"."updated_at"::date DESC');
+        foreach ($count as $row) {
+            $dateWiseData[$row->updated_at] = $row->countsms;
+        }
+
+        return array_reverse($dateWiseData, true);
+
+    }
+
 
     //get last 30 days sms Queued
     public function getLast30DaysSMSQueuedStatus($schoolId)
@@ -132,6 +150,7 @@ class ReportRepository
     {
         $sentSMSData = $this->getLast30DaysSMSSentStatus($schoolId);
         $queueSMSData = $this->getLast30DaysSMSQueuedStatus($schoolId);
+        $failSMSData = $this->getLast30DaysSMSFailStatus($schoolId);
         $dates = array();
         foreach ($sentSMSData as $key => $value) {
             $key = explode('-', $key);
@@ -139,8 +158,9 @@ class ReportRepository
         }
         $sentValues = array_values($sentSMSData);
         $queueValues = array_values($queueSMSData);
+        $failValues = array_values($failSMSData);
 
-        return array('dates' => $dates, 'sentValues' => $sentValues, 'queueValues' => $queueValues);
+        return array('dates' => $dates, 'sentValues' => $sentValues, 'queueValues' => $queueValues, 'failValues' => $failValues);
     }
 
 }
