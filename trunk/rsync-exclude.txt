@@ -1,0 +1,15 @@
+trunk/.idea/*
+trunk/.idea
+.idea/*
+.git/*
+.idea
+.git
+sync.sh
+rsync-exclude.txt
+public/tmp/*
+storage/views/*
+storage/logs/*
+storage/sessions/*
+storage/work/*
+storage/database/*
+storage/cache/*
