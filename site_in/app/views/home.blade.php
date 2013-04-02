@@ -6,7 +6,7 @@
     <div class="span12">
         <div id="logo">
             <img src="img/logo.png">
-            <small>Next Generation Communication</small>
+            <small>Stay connected with Parents</small>
         </div>
     </div>
 </div>
@@ -32,13 +32,15 @@
     <div class="span8 offset2">
         <div class="intro-text">
             <p>
-                Assertively syndicate leveraged web services via enterprise-wide process improvements. Synergistically
-                transition world-class methods of empowerment with functionalized convergence.
+                Information is everything. The parents of your students want to stay informed about everything. They
+                want to know how their child is performing, they want to know when the next PTA meeting is going to
+                happen, when the fees are due and when the school is off.
             </p>
 
             <p>
-                Compellingly pursue visionary e-business whereas resource sucking interfaces. Objectively evolve 24/365
-                services rather than principle-centered potentialities.
+                Gone are the days of paper circulars and diary notes. This is the time of instant alerts. Use MSNGR to easily communicate with the parents
+                by text messages(sms). Share latest updates and alerts with the parents with the click of a button. <br> <a
+                href="">Know more</a>
             </p>
         </div>
     </div>
@@ -47,8 +49,8 @@
 <div class="row">
     <div class="span12">
         <div class="punchline top-gap">
-            This is the punchline area
-            <a href="#" class="pull-right btn btn-large btn-primary">Know More</a>
+            Try and evaluate this service for free with our complimentary 100 credits plan
+            <a href="#" class="pull-right btn btn-large btn-primary">Sign Up</a>
         </div>
     </div>
 </div>
@@ -58,7 +60,8 @@
         <h3>Happy Clients</h3>
     </div>
     <div class="span3"><img src="<% URL::asset('img/presidium.png') %>" alt="Presidium School, Delhi"></div>
-    <div class="span3"><img src="<% URL::asset('img/holy-innocent.png') %>" alt="Holy Innocents Public School, Delhi"></div>
+    <div class="span3"><img src="<% URL::asset('img/holy-innocent.png') %>" alt="Holy Innocents Public School, Delhi">
+    </div>
     <div class="span3"><img src="<% URL::asset('img/ramjas.png') %>" alt="Ramjas School, Delhi"></div>
     <div class="span3"><img src="<% URL::asset('img/sms.png') %>" alt="St. Marks, Delhi"></div>
 </div>

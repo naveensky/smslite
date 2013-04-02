@@ -39,7 +39,7 @@
             <a class="brand" href="/"><img src="img/logo_icon_large.png"/> </a>
 
             <ul class="nav">
-                <li><a href="/about">About</a></li>
+                <li><a href="/about">Features</a></li>
                 <li><a href="/pricing">Pricing</a></li>
                 <li><a href="/buy">Buy</a></li>
                 <li><a href="/contact">Contact</a></li>
