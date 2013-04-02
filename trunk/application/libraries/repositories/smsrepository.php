@@ -100,8 +100,10 @@ class SMSRepository
             $sms_data['credits'] = $creditsForMessage;
             $sms_data['teacherId'] = NULL;
             $sms_data['userId'] = $userId;
+            $sms_data['name'] = $student->name;
             $sms_data['senderId'] = $senderId;
             $sms_data['status'] = SMSTransaction::SMS_STATUS_PENDING;
+            $sms_data['priority'] = SMSTransaction::SMS_NORMAL_PRIORITY;
             $sms_data['created_at'] = new DateTime(); //this a pain but laravel doesnt set these values in bulk operations.
             $sms_data['updated_at'] = new DateTime(); //this a pain but laravel doesnt set these values in bulk operations.
             $sms_data['studentId'] = $student->id;
@@ -142,6 +144,8 @@ class SMSRepository
             $sms_data['userId'] = $userId;
             $sms_data['senderId'] = $senderId;
             $sms_data['status'] = SMSTransaction::SMS_STATUS_PENDING;
+            $sms_data['priority'] = SMSTransaction::SMS_NORMAL_PRIORITY;
+            $sms_data['name'] = $teacher->name;
             $sms_data['teacherId'] = $teacher->id;
             $sms_data['created_at'] = new DateTime(); //this a pain but laravel doesnt set these values in bulk operations.;
             $sms_data['updated_at'] = new DateTime(); //this a pain but laravel doesnt set these values in bulk operations.;
@@ -263,29 +267,49 @@ class SMSRepository
         return $mobiles;
     }
 
-    public function getAllPendingSMS()
+    //get pending sms according to the priority given
+    public function getAllPendingSMS($priority)
     {
-        $pendingSmsData = SMSTransaction::where_status(SMSTransaction::SMS_STATUS_PENDING)->get();
-        if (!empty($pendingSmsData))
-            return $pendingSmsData;
-        else
-            return false;
-    }
-
-    public function updateStatus($id, $status)
-    {
-
-        $data = array(
-            'status' => $status
-        );
+        $cutoff = Config::get('sms.cutoff');
+        $currentDate = new DateTime();
+        $currentDate->sub(new DateInterval('PT' . $cutoff . 'S'));
         try {
-            $sms = SMSTransaction::update($id, $data);
+            $result = DB::table('smsTransactions')
+                ->where('priority', '=', $priority)
+                ->where('status', '=', SMSTransaction::SMS_STATUS_PENDING)
+                ->where('created_at', '>=', $currentDate)
+                ->get();
+            return $result;
         } catch (Exception $e) {
             Log::exception($e);
-            return false;
+            return array();
         }
+    }
 
-        return true;
+    //function to update sms status whether fails or pending
+    public function updateStatus($ids, $status)
+    {
+        DB::table('smsTransactions')
+            ->where_in('id', $ids)
+            ->update(array('status' => $status, 'updated_at' => new DateTime()));
+    }
+
+    public function updateFailedSMSStatus($priority)
+    {
+        $cutoff = Config::get('sms.cutoff');
+        $currentDate = new DateTime();
+        $currentDate->sub(new DateInterval('PT' . $cutoff . 'S'));
+        try {
+            $result = DB::table('smsTransactions')
+                ->where('priority', '=', $priority)
+                ->where('status', '=', SMSTransaction::SMS_STATUS_PENDING)
+                ->where('created_at', '<', $currentDate)
+                ->update(array('status' => SMSTransaction::SMS_STATUS_FAIL, 'updated_at' => new DateTime()));
+            return $result;
+        } catch (Exception $e) {
+            Log::exception($e);
+            return array();
+        }
     }
 
     public function getFormattedMessage($studentCodes, $messageTemplate)
@@ -329,6 +353,33 @@ class SMSRepository
         if ($availableCredits > $requiredCredits)
             return true;
         return false;
+    }
+
+    public function createAppSms($mobile, $message, $senderId, $userId)
+    {
+        $schoolId = Auth::user()->schoolId;
+        $users = School::find($schoolId)->users;
+        $message = $this->formatMessage($message);
+        $credits = $this->countCredits($message);
+        $appSms = new SMSTransaction();
+        $appSms->mobile = $mobile;
+        $appSms->message = $message;
+        $appSms->name = empty($users) ? $users[0]->name : '';
+        $appSms->studentId = NULL;
+        $appSms->teacherId = NULL;
+        $appSms->priority = SMSTransaction::SMS_HIGH_PRIORITY;
+        $appSms->status = SMSTransaction::SMS_STATUS_PENDING;
+        $appSms->credits = $credits;
+        $appSms->senderId = $senderId;
+        $appSms->userId = $userId;
+        try {
+            $appSms->save();
+        } catch (Exception $e) {
+            Log::exception($e);
+            return false;
+        }
+
+        return true;
     }
 
 }

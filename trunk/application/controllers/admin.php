@@ -11,7 +11,7 @@ class Admin_Controller extends Base_Controller
 {
     private $schoolRepo;
     private $adminRepo;
-    private $appSmsRepo;
+    private $smsRepo;
 
     public function __construct()
     {
@@ -22,7 +22,7 @@ class Admin_Controller extends Base_Controller
         $this->filter('before', Role::USER_ROLE_SUPER_ADMIN);
         $this->schoolRepo = new SchoolRepository();
         $this->adminRepo = new AdminRepository();
-        $this->appSmsRepo = new AppSMSRepository();
+        $this->smsRepo = new SMSRepository();
     }
 
 
@@ -82,7 +82,7 @@ class Admin_Controller extends Base_Controller
                     Event::fire(ListenerConstants::APP_CREDITS_ALLOTED, array($emailData));
                 }
                 $credits_allocation_message = __('smstemplate.credits_alloted_message', array('credits' => $credits));
-                $status = $this->appSmsRepo->createAppSms($schoolMobile, $credits_allocation_message, Config::get('sms.senderid'), Auth::user()->id);
+                $status = $this->smsRepo->createAppSms($schoolMobile, $credits_allocation_message, Config::get('sms.senderid'), Auth::user()->id);
             }
         }
         return Response::json(array('status' => true, 'message' => 'credits allocated successfully'));

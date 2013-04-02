@@ -16,6 +16,7 @@ return array(
 
     'password' => 'NaveenG',
 
-    'senderid' => 'INFOIN'
+    'senderid' => 'INFOIN',
+    'cutoff' => 10800
 
 );

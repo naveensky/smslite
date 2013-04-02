@@ -25,7 +25,7 @@ class User_Controller extends Base_Controller
 
         $this->userRepo = new UserRepository();
         $this->schoolRepo = new SchoolRepository();
-        $this->appSmsRepo = new AppSMSRepository();
+        $this->smsRepo = new SMSRepository();
     }
 
     public function action_login()
@@ -133,7 +133,7 @@ class User_Controller extends Base_Controller
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
 
         $welcome_message = __('smstemplate.welcome_message', array('code' => $user->mobileVerificationCode));
-        $status = $this->appSmsRepo->createAppSms($user->mobile, $welcome_message, Config::get('sms.senderid'), $user->id);
+        $status = $this->smsRepo->createAppSms($user->mobile, $welcome_message, Config::get('sms.senderid'), $user->id);
 
         //fire user created event
         Event::fire(ListenerConstants::APP_USER_CREATED, array($user));
@@ -178,7 +178,7 @@ class User_Controller extends Base_Controller
 
         //if user is deactivated successfully send a message and email.
         $deactivation_message = __('smstemplate.deactivation_message');
-        $this->appSmsRepo->createAppSms(Auth::user()->mobile, $deactivation_message, Config::get('sms.senderid'), $userId);
+        $this->smsRepo->createAppSms(Auth::user()->mobile, $deactivation_message, Config::get('sms.senderid'), $userId);
 
         //fire event for user deactivation
         Event::fire(ListenerConstants::APP_USER_DEACTIVATED, array(User::find($userId)));
@@ -203,7 +203,7 @@ class User_Controller extends Base_Controller
 
 
         $restore_message = __('smstemplate.restore_message');
-        $this->appSmsRepo->createAppSms($user->mobile, $restore_message, Config::get('sms.senderid'), $user->id);
+        $this->smsRepo->createAppSms($user->mobile, $restore_message, Config::get('sms.senderid'), $user->id);
         //fire user restore event
         Event::fire(ListenerConstants::APP_USER_RESTORE, array($user));
         return Response::make(__('responseerror.activate_success'), HTTPConstants::SUCCESS_CODE);
@@ -223,7 +223,7 @@ class User_Controller extends Base_Controller
 
         //success deletion
         $deletion_message = __('smstemplate.deletion_message');
-        $this->appSmsRepo->createAppSms(Auth::user()->mobile, $deletion_message, Config::get('sms.senderid'), $userId);
+        $this->smsRepo->createAppSms(Auth::user()->mobile, $deletion_message, Config::get('sms.senderid'), $userId);
 
         //todo: send complete user here rather than ID
         Event::fire(ListenerConstants::APP_USER_DELETE, array(User::find($userId)));
@@ -281,7 +281,7 @@ class User_Controller extends Base_Controller
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
 
         $newPasswordMessage = __('smstemplate.new_password_message', array('code' => $data['password']));
-        $this->appSmsRepo->createAppSms($data['user']->mobile, $newPasswordMessage, Config::get('sms.senderid'), $data['user']->id);
+        $this->smsRepo->createAppSms($data['user']->mobile, $newPasswordMessage, Config::get('sms.senderid'), $data['user']->id);
         return Response::json(array('status' => true, 'message' => __('responsemessages.forgot_password_by_mobile_success')), HTTPConstants::SUCCESS_CODE);
     }
 
@@ -344,7 +344,7 @@ class User_Controller extends Base_Controller
 
         $password_reset_message = __('smstemplate.password_reset_successfully_message');
         $senderId = Config::get('sms.senderid');
-        $this->appSmsRepo->createAppSms($user->mobile, $password_reset_message, $senderId, $user->id);
+        $this->smsRepo->createAppSms($user->mobile, $password_reset_message, $senderId, $user->id);
 
         //setting success message for password change on session to show to user
         Session::flash('password_change_success', __('responsemessages.password_changed_successfully'));
@@ -358,7 +358,7 @@ class User_Controller extends Base_Controller
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
         $welcomeMessage = __('smstemplate.welcome_message', array('code' => Auth::user()->mobileVerificationCode));
-        $this->appSmsRepo->createAppSms(Auth::user()->mobile, $welcomeMessage, Config::get('sms.senderId'), Auth::user()->id);
+        $this->smsRepo->createAppSms(Auth::user()->mobile, $welcomeMessage, Config::get('sms.senderId'), Auth::user()->id);
         return Response::json(array('status' => true), HTTPConstants::SUCCESS_CODE);
 
     }
@@ -415,7 +415,7 @@ class User_Controller extends Base_Controller
         if (!empty($user)) {
             Event::first(ListenerConstants::APP_USER_PASSWORD_UPDATE, array($user));
             $passwordUpdateMessage = __('smstemplate.password_update_message');
-            $this->appSmsRepo->createAppSms($user->mobile, $passwordUpdateMessage, Config::get('sms.senderid'), $user->id);
+            $this->smsRepo->createAppSms($user->mobile, $passwordUpdateMessage, Config::get('sms.senderid'), $user->id);
             return Response::json(array('status' => true, 'message' => Lang::line('responsemessages.password_update_success')->get()), HTTPConstants::SUCCESS_CODE);
         }
         return Response::json(array('status' => false, 'message' => Lang::line('responsemessages.password_update_error')->get()), HTTPConstants::SUCCESS_CODE);
@@ -439,7 +439,7 @@ class User_Controller extends Base_Controller
         }
         if (!empty($user)) {
             $mobilePhoneUpdated = __('smstemplate.mobile_updated_message');
-            $this->appSmsRepo->createAppSms($user->mobile, $mobilePhoneUpdated, Config::get('sms.senderid'), $user->id);
+            $this->smsRepo->createAppSms($user->mobile, $mobilePhoneUpdated, Config::get('sms.senderid'), $user->id);
             return Response::json(array('status' => true), HTTPConstants::SUCCESS_CODE);
         }
         return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);

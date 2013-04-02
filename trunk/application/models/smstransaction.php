@@ -11,6 +11,8 @@ class SMSTransaction extends Eloquent
     const SMS_STATUS_PENDING = 'pending';
     const SMS_STATUS_FAIL = 'fail';
     const SMS_STATUS_SENT = 'sent';
+    const SMS_NORMAL_PRIORITY = 1;
+    const SMS_HIGH_PRIORITY = 100;
 
     public static $table = 'smsTransactions';
     public static $hidden = array('id'); //to exclude id from json array
