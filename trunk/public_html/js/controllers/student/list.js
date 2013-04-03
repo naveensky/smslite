@@ -2,7 +2,7 @@
 
 //for route student/list
 angular.module('app')
-    .controller('Student_List', ['$scope', '$http', 'StudentService', 'SchoolService', function ($scope, $http, studentService, schoolService) {
+    .controller('Student_List', ['$scope', '$http', 'StudentService', 'SchoolService', '$routeParams', function ($scope, $http, studentService, schoolService, routeParams) {
         $scope.classSections = [];
         $scope.morningRoutes = [];
         $scope.eveningRoutes = [];
@@ -12,6 +12,9 @@ angular.module('app')
         $scope.previousPage = 0;
         $scope.nextPage = $scope.pageNumber + 1;
         $scope.mobiles = '';
+        $scope.studentData = {};
+        $scope.showEditScreenError = false;
+        $scope.errorEditMessage = '';
 
         $scope.getMobileNumbers = function (student) {
 
@@ -79,7 +82,33 @@ angular.module('app')
             $scope.findNextStudents();
 
         }
+        $scope.getFormattedDate = function ($date) {
+            return moment($date).format('D MMMM  YYYY');
+        }
+
+        if (routeParams.code) {
+            studentService.getStudentsData(routeParams.code).then(function (data) {
+                if (data.length == 1) {
+                    $scope.studentData = data[0];
+                }
+            });
+        }
+
+        $scope.saveStudentData = function () {
+            var code = routeParams.code;
+            $scope.studentData.dob = $('#dob').val();
+            studentService.updateStudentData($scope.studentData, code).then(function (data) {
+                if (data.status) {
+                    window.location.href = "#/student/list";
+                }
+                else {
+                    $scope.showEditScreenError = true;
+                    $scope.errorEditMessage = data.message;
+                }
+            });
+        }
         //init data for first page load
         $scope.filterStudents();
+
 
     }]);

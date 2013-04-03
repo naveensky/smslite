@@ -62,9 +62,9 @@ class MessageParser
     public function parseTemplate($template, $students, $teachers, $messageVars)
     {
         $viewsDirectory = path('app') . 'views/'; //directory to make temporary files
-        $template = preg_replace_callback('/<%[^%>]*%>/',
+        $template = preg_replace_callback('/<%text_[^%>]*%>/',
             function ($match) {
-                return str_replace('text_', '$text_', $match[0]);
+                return Util::getFormattedTemplate(str_replace('text_', '$text_', $match[0]));
             },
             $template
         );

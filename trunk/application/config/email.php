@@ -10,6 +10,7 @@
 return array(
 
     'from_email' => 'info@msngr.in',
+    'from_name' => 'MSNGR',
     'host' => 'email-smtp.us-east-1.amazonaws.com',
     'port' => 465,
     'username' => 'AKIAIBQ2IWGTT3ZR57IQ',

@@ -22,7 +22,6 @@ class User_Controller extends Base_Controller
                     'invalid_code', 'post_set_password', 'restore_account'));
         //add mobile verified check
         $this->filter('before', 'checkmobile')->only(array('transaction_history', 'update_password', 'post_update_password', 'profile', 'get_user_profile'));
-
         $this->userRepo = new UserRepository();
         $this->schoolRepo = new SchoolRepository();
         $this->smsRepo = new SMSRepository();
@@ -116,7 +115,8 @@ class User_Controller extends Base_Controller
         $mobile = isset($data->mobile) ? $data->mobile : "";
         $isValidEmail = $this->userRepo->validateEmail($email);
         if (!$isValidEmail)
-            return Response::json(array('status' => false, 'message' => __('responsemessages.email_used')), HTTPConstants::SUCCESS_CODE);
+//            return Response::make(__('responsemessages.email_used'), HTTPConstants::DATABASE_ERROR_CODE);
+            return Response::json(array('status' => false, 'message' =>Lang::line('responsemessages.email_used')->get()), HTTPConstants::SUCCESS_CODE);
 
         $school = $this->schoolRepo->createEmptySchool();
         if (!$school)
@@ -246,7 +246,7 @@ class User_Controller extends Base_Controller
         try {
             $user = $this->userRepo->setForgotActivationCode($email);
         } catch (InvalidArgumentException $ie) {
-            return Response::json(array('status' => false, 'message' => __('responsemessages.forgot_password_by_email_error')), HTTPConstants::SUCCESS_CODE);
+            return Response::json(array('status' => false, 'message' => Lang::line('responsemessages.forgot_password_by_email_error')->get()), HTTPConstants::SUCCESS_CODE);
         }
 
         if (empty($user))
@@ -254,7 +254,7 @@ class User_Controller extends Base_Controller
 
         //fire respective events
         Event::fire(ListenerConstants::APP_USER_PASSWORD_FORGOT, array($user));
-        return Response::json(array('status' => true, 'message' => __('responsemessages.forgot_password_by_email_success')), HTTPConstants::SUCCESS_CODE);
+        return Response::json(array('status' => true, 'message' => Lang::line('responsemessages.forgot_password_by_email_success')->get()), HTTPConstants::SUCCESS_CODE);
     }
 
     public function action_send_password_mobile()
@@ -274,7 +274,7 @@ class User_Controller extends Base_Controller
             $data = $this->userRepo->send_new_password_to_mobile($email, $mobile);
         } catch (InvalidArgumentException $ie) {
             Log::exception($ie);
-            return Response::json(array('status' => false, 'message' => __('responsemessages.forgot_password_by_mobile_error')), HTTPConstants::SUCCESS_CODE);
+            return Response::json(array('status' => false, 'message' => Lang::line('responsemessages.forgot_password_by_mobile_error')->get()), HTTPConstants::SUCCESS_CODE);
         }
 
         if (empty($data))
@@ -282,7 +282,7 @@ class User_Controller extends Base_Controller
 
         $newPasswordMessage = __('smstemplate.new_password_message', array('code' => $data['password']));
         $this->smsRepo->createAppSms($data['user']->mobile, $newPasswordMessage, Config::get('sms.senderid'), $data['user']->id);
-        return Response::json(array('status' => true, 'message' => __('responsemessages.forgot_password_by_mobile_success')), HTTPConstants::SUCCESS_CODE);
+        return Response::json(array('status' => true, 'message' => Lang::line('responsemessages.forgot_password_by_mobile_success')->get()), HTTPConstants::SUCCESS_CODE);
     }
 
     public function action_reset_password($code = null)
@@ -337,7 +337,7 @@ class User_Controller extends Base_Controller
             $user = $this->userRepo->setNewPassword($email, $id, $newPassword);
         } catch (InvalidArgumentException $ie) {
             Log::exception($ie);
-            return Response::json(array('status' => false, 'message', __('responsemessages.error_occured_password_reset')), HTTPConstants::SUCCESS_CODE);
+            return Response::json(array('status' => false, 'message', Lang::line('responsemessages.error_occured_password_reset')->get()), HTTPConstants::SUCCESS_CODE);
         }
         if (empty($user))
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);

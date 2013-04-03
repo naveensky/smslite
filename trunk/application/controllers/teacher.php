@@ -61,21 +61,27 @@ class Teacher_Controller extends Base_Controller
         return Response::json(array('numberOfTeacherInserted' => $teacherInserted, 'rowNumbersError' => $result['errorRows']));
     }
 
-    public function action_get($code = NULL)
+    public function action_edit()
     {
-        if (empty($code))
-            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+        return View::make('teacher.edit');
+    }
 
+    public function action_post_get()
+    {
+        $data = Input::json();
+
+        if (empty($data))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+        $codes = isset($data->codes) ? $data->codes : array();
         try {
-            $result = $this->teacherRepo->getTeacher($code);
-            if (empty($result))
+            $teachers = $this->teacherRepo->getTeachersFromCodes($codes);
+            if (empty($teachers))
                 return Response::make(__('responseerror.not_found'), HTTPConstants::NOT_FOUND_ERROR_CODE);
         } catch (Exception $e) {
             Log::exception($e);
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
         }
-        return Response::eloquent($result);
-
+        return Response::eloquent($teachers);
     }
 
 
@@ -99,7 +105,7 @@ class Teacher_Controller extends Base_Controller
     }
 
 
-    public function action_post_update()
+    public function action_update()
     {
 
         $update_data = Input::json();
@@ -129,7 +135,7 @@ class Teacher_Controller extends Base_Controller
         if (isset($update_data->MorningBusRoute))
             $updateData['morningBusRoute'] = $update_data->MorningBusRoute;
         if (isset($update_data->EveningBusRoute))
-            $updateData['eveningBusroute'] = $update_data->EveningBusRoute;
+            $updateData['eveningBusRoute'] = $update_data->EveningBusRoute;
         if (isset($update_data->Gender))
             $updateData['gender'] = $update_data->Gender;
         if (isset($update_data->Code))
@@ -142,16 +148,12 @@ class Teacher_Controller extends Base_Controller
             $result = $this->teacherRepo->updateTeacher($teacherCode, $updateData);
         } catch (InvalidArgumentException $ie) {
             Log::exception($ie);
-            return Response::make(__('responseerror.not_found'), HTTPConstants::NOT_FOUND_ERROR_CODE);
+            return Response::json(array('status' => false, 'message' => Lang::line('responseerror.not_found')->get()));
         }
-
-
         if (empty($result)) {
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
-
         }
-        return Response::Eloquent($result);
-
+        return Response::json(array('status' => true));
     }
 
     public function action_getTeachers()

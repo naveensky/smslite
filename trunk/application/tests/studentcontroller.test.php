@@ -36,10 +36,10 @@ class TestStudentController extends ControllerTestCase
         $student->save();
 
         $parameters = array(
-            'code' => $student->code
+            'codes' => array($student->code)
         );
-
-        $response = $this->get('student@get', $parameters);
+        Input::$json = (object)$parameters;
+        $response = $this->post('student@post_get', array());
         $this->assertEquals(200, $response->status());
     }
 

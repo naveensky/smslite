@@ -357,7 +357,8 @@ class SMSRepository
 
     public function createAppSms($mobile, $message, $senderId, $userId)
     {
-        $schoolId = Auth::user()->schoolId;
+        $user = User::find($userId);
+        $schoolId = $user->schoolId;
         $users = School::find($schoolId)->users;
         $message = $this->formatMessage($message);
         $credits = $this->countCredits($message);

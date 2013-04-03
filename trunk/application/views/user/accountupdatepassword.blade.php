@@ -38,9 +38,6 @@
                             ng-show="form.rePassword.$invalid && !form.rePassword.$pristine && !form.rePassword.$error.required"
                             class="validation invalid"><i
                                 class="icon-remove padding-right-5"></i>Password Not Matched</span>
-                            <span ng-show="form.rePassword.$valid && !form.rePassword.$pristine"
-                                  class="validation valid"><i
-                                    class="icon-ok padding-right-5"></i></span>
                         </div>
                         <div class="control-group">
                             <div class="alert alert-success margin-top-20" style="width:35%"

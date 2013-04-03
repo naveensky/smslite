@@ -10,6 +10,7 @@
 return array(
 
     'from_email' => 'hmalhotra@greenapplesolutions.com',
+    'from_name' => 'MSNGR',
     'host' => 'smtp.gmail.com',
     'port' => 465,
     'username' => 'green.smtp@gmail.com',

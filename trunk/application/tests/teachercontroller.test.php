@@ -27,9 +27,10 @@ class TestTeacherController extends ControllerTestCase
         $teacher->department = "Hindi";
         $teacher->save();
         $parameters = array(
-            'code' => $teacher->code
+            'codes' => array($teacher->code)
         );
-        $response = $this->get('teacher@get', $parameters);
+        Input::$json = (object)$parameters;
+        $response = $this->post('teacher@post_get', array());
         $this->assertEquals(200, $response->status());
     }
 
@@ -71,7 +72,7 @@ class TestTeacherController extends ControllerTestCase
         );
 
         Input::$json = (object)$parameters;
-        $response = $this->post('teacher@post_update', array());
+        $response = $this->post('teacher@update', array());
         $this->assertEquals(200, $response->status());
     }
 

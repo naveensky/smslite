@@ -8,7 +8,7 @@
 
             <label>Departments</label>
             <select ng-model="departments" multiple="multiple">
-               <option ng-repeat="totaldepartment in totaldepartments">{{totaldepartment}}</option>
+                <option ng-repeat="totaldepartment in totaldepartments">{{totaldepartment}}</option>
             </select>
             <label>MorningBusRoute</label>
             <select ng-model="morningRoutes" multiple="multiple">
@@ -46,6 +46,7 @@
                             <th>Morning Bus Route</th>
                             <th>Evening Bus Route</th>
                             <th>Mobile</th>
+                            <th>&nbsp;</th>
 
 
                         </tr>
@@ -59,6 +60,7 @@
                             <td>{{ teacher.eveningBusRoute }}</td>
                             <td><a href
                                    title="{{getMobileNumbers(teacher)}}">{{teacher.mobile1}}</a></td>
+                            <td><a href="#/teacher/edit/{{teacher.code}}">Edit</a></td>
                         </tr>
                         </tbody>
                         <tbody ng-show="teachers.length==0">

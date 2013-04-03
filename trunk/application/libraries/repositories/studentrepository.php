@@ -66,6 +66,7 @@ class StudentRepository
         return Student::where_code($studentCode)->get();
     }
 
+
     public function deleteStudent($studentCode)
     {
         $deleteCount = Student::where_code($studentCode)->delete();
@@ -183,12 +184,11 @@ class StudentRepository
             $query = $query->where_in("eveningBusRoute", $eveningBusRoute);
 
         try {
-            $student = $query->skip($skip)->take($perPage)->order_by(DB::raw('"classStandard"::integer'))->order_by(DB::raw('"classSection"'))->get();
+            $student = $query->skip($skip)->take($perPage)->order_by(DB::raw('"classStandard"::integer'))->order_by(DB::raw('"classSection"'))->order_by(DB::raw('"uniqueIdentifier"'))->get();
         } catch (Exception $e) {
             Log::exception($e);
             return false;
         }
-
         return $student;
     }
 

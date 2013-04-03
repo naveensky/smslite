@@ -65,21 +65,29 @@ class Student_Controller extends Base_Controller
         return Response::json(array('numberOfStudentInserted' => $studentInserted, 'rowNumbersError' => $result['errorRows']));
     }
 
-    public function action_get($code = NULL)
+    public function action_edit()
     {
-        if (empty($code))
+        return View::make('student.edit');
+    }
+
+    public function action_post_get()
+    {
+        $data = Input::json();
+        if (empty($data))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+        $codes = isset($data->codes) ? $data->codes : array();
+
+        if (empty($codes))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
         try {
-            $result = $this->studentRepo->getStudent($code);
-            if (empty($result))
+            $students = $this->studentRepo->getStudentsFromCodes($codes);
+            if (empty($students))
                 return Response::make(__('responseerror.not_found'), HTTPConstants::NOT_FOUND_ERROR_CODE);
-
-
         } catch (Exception $e) {
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
         }
-        return Response::eloquent($result);
+        return Response::eloquent($students);
     }
 
 
@@ -116,9 +124,9 @@ class Student_Controller extends Base_Controller
         if (isset($update_data->Email))
             $updateData['email'] = $update_data->Email;
         if (isset($update_data->MothersName))
-            $updateData['mothersName'] = $update_data->MothersName;
+            $updateData['motherName'] = $update_data->MothersName;
         if (isset($update_data->FathersName))
-            $updateData['fathersName'] = $update_data->FathersName;
+            $updateData['fatherName'] = $update_data->FathersName;
         if (isset($update_data->Mobile1))
             $updateData['mobile1'] = $update_data->Mobile1;
         if (isset($update_data->Mobile2))
@@ -130,7 +138,7 @@ class Student_Controller extends Base_Controller
         if (isset($update_data->Mobile5))
             $updateData['mobile5'] = $update_data->Mobile5;
         if (isset($update_data->DOB))
-            $updateData['dob'] = $update_data->DOB;
+            $updateData['dob'] = new DateTime($update_data->DOB);
         if (isset($update_data->admissionNumber))
             $updateData['uniqueIdentifier'] = $update_data->admissionNumber;
         if (isset($update_data->ClassStandard))
@@ -140,7 +148,7 @@ class Student_Controller extends Base_Controller
         if (isset($update_data->MorningBusRoute))
             $updateData['morningBusRoute'] = $update_data->MorningBusRoute;
         if (isset($update_data->EveningBusRoute))
-            $updateData['eveningBusroute'] = $update_data->EveningBusRoute;
+            $updateData['eveningBusRoute'] = $update_data->EveningBusRoute;
         if (isset($update_data->Gender))
             $updateData['gender'] = $update_data->Gender;
         if (isset($update_data->Code))
@@ -151,15 +159,12 @@ class Student_Controller extends Base_Controller
             $result = $this->studentRepo->updateStudent($studentCode, $updateData);
         } catch (InvalidArgumentException $ie) {
             Log::exception($ie);
-            return Response::make(__('responseerror.not_found'), HTTPConstants::NOT_FOUND_ERROR_CODE);
+            return Response::json(array('status' => false, 'message' => Lang::line('responseerror.not_found')->get()));
         }
-
         if (empty($result)) {
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
-
         }
-        return Response::Eloquent($result);
-
+        return Response::json(array('status' => true));
     }
 
     public function action_getStudents()
