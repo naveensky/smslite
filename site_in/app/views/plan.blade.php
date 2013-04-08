@@ -18,7 +18,7 @@
     </div>
     <div class="span8">
         <p>
-            Please fill the following form with your correct details and our sales superstars will get in ouch with you
+            Please fill the following form with your correct details and our sales superstars will get in touch with you
             to sign you up.
         </p>
 
