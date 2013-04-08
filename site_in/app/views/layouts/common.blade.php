@@ -64,7 +64,8 @@
                 | <a href="/terms">Terms of Use</a>
                 | <a href="/privacy">Privacy Policy</a>
             </div>
-            <div class="span8"><span class="pull-right"> made with ❤ at <a target="_blank"
+            <div class="span4" style="text-align: center"><span class="center">Stay connected with Parents</span></div>
+            <div class="span4"><span class="pull-right"> made with ❤ at <a target="_blank"
                         href="http://www.greenapplesolutions.com">green apple solutions</a></span></div>
         </div>
     </div>
