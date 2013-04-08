@@ -2,6 +2,7 @@
 <?php $leftMenu = array(
     '/student/list' => 'List',
     '/student/upload' => 'Upload',
+    '/student/edit' => 'Edit',
     '/student/export' => 'Export',
     '/student/help' => 'Help');
 ?>

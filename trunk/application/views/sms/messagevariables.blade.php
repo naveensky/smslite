@@ -12,7 +12,7 @@
 </table>
 @foreach ($messageVars as $key => $value)
 <div class="control-group">
-    <label><%$value%></label><input type="text" ng-model="model.<% $key %>"/>
+    <label><%$value%></label><input type="text" ng-model="model.<% $key %>" value=""/>
 </div>
 @endforeach
 @endif

@@ -45,8 +45,6 @@
                         <div class="controls">
                             <input type="email" id="inputUpdateEmail" ng-required="true" name="email"
                                    ng-model="newEmail" placeholder="Update Email">
-                            <span ng-show="form.email.$valid && !form.email.$pristine" class="validation valid"><i
-                                    class="icon-ok padding-right-5"></i></span>
                             <button type="submit" class="btn" ng-click="updateEmail()" ng-disabled="form.$invalid">
                                 Update
                             </button>

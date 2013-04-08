@@ -58,8 +58,10 @@ angular.module('app')
                         $scope.emailUsedMessage = $data.message;
                     }
                 }
-            ).error(function ($e) {
-
+            ).error(function (data) {
+//                    $scope.emailUsed = true;
+//                    $scope.emailUsedMessage = data;
+                    log('error', data);
                 });
         }
 

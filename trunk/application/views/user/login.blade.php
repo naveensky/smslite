@@ -34,5 +34,6 @@
         <div class="control-group">
             <a href="#/user/register">Sign up for a free account</a>
         </div>
+        <% Form::token();%>
     </form>
 </div>

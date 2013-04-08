@@ -7,7 +7,7 @@
  * To change this template use File | Settings | File Templates.
  */
 return array(
-    'email_used' => 'Email is already used',
+    'email_used' => 'Email address you have entered is already used',
     'forgot_password_by_email_error' => 'Please check your email or either you have not created any account yet.',
     'forgot_password_by_email_success' => 'Email containing further instructions is sent to your email id.',
     'forgot_password_by_mobile_error' => 'Please Check the mobile number and email id you have entered.',
@@ -18,5 +18,6 @@ return array(
     'pdo_error_sms' => 'please try again some internal error occured',
     'insufficient_credits_error_sms' => 'You have insufficient credits to send sms please buy credits now',
     'password_update_success'=>'Your password has been updated successfully',
-    'password_update_error'=>'Sorry your password is not updated please try again'
+    'password_update_error'=>'Sorry your password is not updated please try again',
+
 );

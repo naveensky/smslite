@@ -105,7 +105,7 @@ class TeacherRepository
             $query = $query->where_in("eveningBusRoute", $eveningBusRoute);
 
         try {
-            $teacher = $query->skip($skip)->take($perPage)->get();
+            $teacher = $query->skip($skip)->take($perPage)->order_by(DB::raw('"id"'))->get();
         } catch (Exception $e) {
             log::exception($e);
             return false;

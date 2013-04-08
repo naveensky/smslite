@@ -39,4 +39,10 @@ class Util
         $toDate->add(new DateInterval('P1D'));
         return $toDate;
     }
+
+    public static function getFormattedTemplate($match)
+    {
+        $value = rtrim(ltrim($match, '<%'), '%>');
+        return '<% isset(' . $value . ')?' . $value . ':"Not Mentioned";%>';
+    }
 }

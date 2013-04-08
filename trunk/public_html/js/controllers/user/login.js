@@ -6,11 +6,13 @@ angular.module('app')
         $scope.showError = false;
         $scope.login = function (user) {
             $scope.showError = false;
+//            var csrf = $('input[name="csrf_token"]').val();
             $http.post(
                 '/user/post_login',
                 {
                     "email": user.email,
                     "password": user.password
+//                    "csrf_token":csrf
                 }).
                 success(function (data) {
                     if (data.status) {
