@@ -4,7 +4,7 @@
 
 <div class="row">
     <div class="span12 page-title">
-        <h2>Buy Subscription</h2>
+        <h2>Plans</h2>
         <hr>
     </div>
 
@@ -16,34 +16,45 @@
             <i class="icon-shopping-cart"></i>
         </div>
     </div>
-    <div class="span8">
-        <p>
-            Authoritatively predominate long-term high-impact leadership skills for user-centric catalysts for change.
-            Seamlessly enhance high-quality niches via visionary core competencies. Completely provide access to unique
-            applications via intuitive manufactured products. Quickly seize 24/7 leadership without installed base
-            platforms. Compellingly plagiarize functional outsourcing after client-centered best practices.
-        </p>
+    <div class="span8"><p>
+        Credit is the basic unit of purchase which MSNGR.IN sells. Each credit allows you to send a single text message
+        of 160 characters or less. If you send message beyond 160 characters, you are debited two credits. Messages
+        beyond 320 characters are not allowed as per TRAI policies.
+    </p>
 
         <p>
-            Progressively engineer virtual imperatives with sticky quality vectors. Uniquely maximize extensible
-            networks whereas one-to-one relationships. Quickly cultivate professional partnerships via distributed
-            e-tailers. Dynamically monetize leading-edge methodologies rather than alternative opportunities.
-            Collaboratively evolve compelling technologies with B2C quality vectors.
+            MSNGR.IN offer multiple plans to fit your needs. You can buy the plant that fulfil your requirements without
+            having to buy limited or excess credits. The plans become more economical as you go upwards. Each plan
+            requires one time payment
+            and requires no monthly or recurring costs. Once you consume the credits, you can purchase more credits are
+            per plans available & top up your account.
         </p>
 
-        <p>
-            Phosfluorescently empower strategic value vis-a-vis 24/7 portals. Collaboratively facilitate premier
-            leadership vis-a-vis sticky bandwidth. Rapidiously simplify B2C "outside the box" thinking and user-centric
-            supply chains. Progressively evisculate 24/365 e-services rather than maintainable leadership. Appropriately
-            coordinate ubiquitous leadership skills vis-a-vis team building internal or "organic" sources.
-        </p>
+        <h3>Plans</h3>
 
-        <p>
-            Seamlessly utilize exceptional paradigms before enabled ROI. Completely enable cross functional resources
-            rather than parallel models. Professionally engineer multifunctional channels for vertical human capital.
-            Progressively evisculate synergistic scenarios rather than high-payoff schemas. Phosfluorescently
-            predominate cross functional total linkage with excellent e-services.
-        </p>
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>SMSs</th>
+                <th>Price (Rs.)</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach($plans as $plan): ?>
+
+            <tr>
+                <td><% $plan["credits"] %></td>
+                <td><% $plan["price"] %></td>
+                <td><a href="/plan/<% $plan["id"] %>" class="btn btn-small">Buy This</a></td>
+            </tr>
+            <?php endforeach; ?>
+
+            </tbody>
+
+        </table>
+
+
     </div>
 </div>
 

@@ -11,8 +11,8 @@
     <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css"
           rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css" rel="stylesheet">
-    <link href="css/flat-ui.css" rel="stylesheet">
-    <link href="css/app.css" rel="stylesheet">
+    <link href="<% URL::asset('css/flat-ui.css') %>" rel="stylesheet">
+    <link href="<% URL::asset('css/app.css') %>" rel="stylesheet">
 
     <!--[if lt IE 7]>
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome-ie7.css" rel="stylesheet">
@@ -36,10 +36,10 @@
 <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container">
-            <a class="brand" href="/"><img src="img/logo_icon_large.png"/> </a>
+            <a class="brand" href="/"><img src="<% URL::asset('img/logo_icon_large.png') %>"/> </a>
 
             <ul class="nav">
-                <li><a href="/about">Features</a></li>
+                <li><a href="/features">Features</a></li>
                 <li><a href="/pricing">Pricing</a></li>
                 <li><a href="/buy">Buy</a></li>
                 <li><a href="/contact">Contact</a></li>
@@ -60,8 +60,11 @@
 <div class="footer palette palette-clouds">
     <div class="container">
         <div class="row">
-            <div class="span3">&copy <a href="/">MSNGR.IN</a></div>
-            <div class="span9"><span class="pull-right"> made with ❤ at <a
+            <div class="span4">&copy <a href="/">MSNGR.IN</a>
+                | <a href="/terms">Terms of Use</a>
+                | <a href="/privacy">Privacy Policy</a>
+            </div>
+            <div class="span8"><span class="pull-right"> made with ❤ at <a target="_blank"
                         href="http://www.greenapplesolutions.com">green apple solutions</a></span></div>
         </div>
     </div>
@@ -87,8 +90,8 @@
 <!-- Le javascript
 ================================================== -->
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/app.js"></script>
+<script src="<% URL::asset('js/bootstrap.min.js') %>"></script>
+<script src="<% URL::asset('js/app.js') %>"></script>
 
 </body>
 </html>
