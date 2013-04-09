@@ -39,9 +39,9 @@
             <a class="brand" href="/"><img src="<% URL::asset('img/logo_icon_large.png') %>"/> </a>
 
             <ul class="nav">
+
                 <li><a href="/features">Features</a></li>
                 <li><a href="/pricing">Pricing</a></li>
-                <li><a href="/buy">Buy</a></li>
                 <li><a href="/contact">Contact</a></li>
             </ul>
             <ul class="nav contact-info pull-right">

@@ -18,8 +18,8 @@
     </div>
     <div class="span8">
         <p>
-            Please fill the following form with your correct details and our sales superstars will get in touch with you
-            to sign you up.
+            Please fill the following form with your correct details and our Sales Superstars will get in touch with you
+            to sign you up for your MSNGR account.
         </p>
 
         <script type="text/javascript" src="http://saberforms.com/assets/js/3822f66936"></script>

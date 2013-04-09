@@ -18,7 +18,7 @@
     </div>
     <div class="span8">
         <p>If you want to know more about how MSNGR can help you better or how to purchase a MSNGR subscription or have any query, please fill the following
-            form and our support superstars will get in touch with you.</p>
+            form and our Support Superstars will get in touch with you.</p>
 
         <script type="text/javascript" src="http://saberforms.com/assets/js/avvbnz6lvl"></script>
         <form class="form-horizontal" id="form_avvbnz6lvl" method="post"
