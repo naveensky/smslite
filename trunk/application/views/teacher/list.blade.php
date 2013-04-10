@@ -28,11 +28,7 @@
 
             <h3><i class="icon-th-list icon-large"></i>List Teachers</h3>
 
-            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
-                has been
-                the industry's standard dummy text ever since the 1500s, when an unknown printer took a
-                galley
-                of type and scrambled it to make a type specimen book.</p>
+            <p>This is a list of all the teachers that meet the filter criteria that you have selected on the left.</p>
 
 
             <div class="row">

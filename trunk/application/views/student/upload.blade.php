@@ -10,11 +10,7 @@
             <!-- Recent users email-verify -->
             <h3><i class="icon-th-list icon-large"></i>Import Students</h3>
 
-            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
-                has been
-                the industry's standard dummy text ever since the 1500s, when an unknown printer took a
-                galley
-                of type and scrambled it to make a type specimen book.</p>
+            <p>To upload and add students, just click the "Upload File" link, choose your file and click "Upload".</p>
 
             <div class="row">
                 <div class="span5 border-right">
@@ -56,14 +52,12 @@
                 <div class="span3">
                     <h5>Download Sample file</h5>
 
-                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
-                        been
-                        the industry's</p>
+                    <p>Click the following button to download the sample file which you can use to upload your data.</p>
 
                     <form class="form-horizontal">
                         <div class="control-group">
                             <button type="submit" class="btn"><i
-                                    class="icon-download icon-large padding-right-5"></i>Download
+                                class="icon-download icon-large padding-right-5"></i>Download
                             </button>
                         </div>
                     </form>

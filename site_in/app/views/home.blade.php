@@ -34,7 +34,7 @@
             <p>
                 Information is everything. The parents of your students want to stay informed about everything. They
                 want to know how their child is performing, they want to know when the next PTA meeting is going to
-                happen, when the fees are due and when the school is off.
+                happen, when the fees are due or when the school is off.
             </p>
 
             <p>
