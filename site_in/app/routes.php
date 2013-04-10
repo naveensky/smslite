@@ -7,3 +7,4 @@ Route::get('/plan/{num}', 'HomeController@getPlan');
 Route::get('/contact', 'HomeController@getContact');
 Route::get('/terms', 'HomeController@getTerms');
 Route::get('/privacy', 'HomeController@getPrivacy');
+Route::get('/thanks', 'HomeController@getThanks');

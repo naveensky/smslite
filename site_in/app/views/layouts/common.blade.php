@@ -2,10 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>MSNGR.IN</title>
+    <title>@if(empty($title))
+        Stay connected with patents - MSNGR.IN
+        @else
+        <% $title %>
+        @endif</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="description" content="Stay Connected With Parents">
+    <meta name="author" content="Green Apple Solutions">
 
     <!-- Le styles -->
     <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css"
@@ -13,14 +17,14 @@
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css" rel="stylesheet">
     <link href="<% URL::asset('css/flat-ui.css') %>" rel="stylesheet">
     <link href="<% URL::asset('css/app.css') %>" rel="stylesheet">
-
+    <title>Stay Connected with Parents</title>
     <!--[if lt IE 7]>
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome-ie7.css" rel="stylesheet">
     <![endif]-->
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
-    <script src="../assets/js/html5shiv.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.2/html5shiv.js"></script>
     <![endif]-->
 
     <!-- Fav and touch icons -->
@@ -28,7 +32,15 @@
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">
-    <link rel="shortcut icon" href="img/favicon.png">
+    <link rel="shortcut icon" href=""<% URL::asset('img/favicon.png') %>">
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="MSNGR" />
+    <meta property="og:description" content="Stay connected with Parents" />
+    <meta property="og:url" content="http://msngr.in/" />
+    <meta property="og:image" content="<% URL::asset('img/logo_icon_large.png') %>" />
+    <meta property="fb:admins" content="534000562"/>
+
 </head>
 
 <body>
@@ -45,7 +57,7 @@
                 <li><a href="/contact">Contact</a></li>
             </ul>
             <ul class="nav contact-info pull-right">
-                <li><a href="#">info@msngr.in</a></li>
+                <li><a href="mailto:info@msngr.in">info@msngr.in</a></li>
                 <li><a href="#">+91 - 989 141 0701 </a></li>
             </ul>
         </div>

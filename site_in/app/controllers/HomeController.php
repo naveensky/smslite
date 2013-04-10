@@ -13,22 +13,22 @@ class HomeController extends BaseController
 
     public function getHome()
     {
-        return View::make('home');
+        return View::make('home')->with('title','Stay Connected with Parents with MSNGR');
     }
 
     public function getAbout()
     {
-        return View::make('about');
+        return View::make('about')->with('title',"Send instant alerts and notifications to parents and teachers");
     }
 
     public function getPricing()
     {
-        return View::make('pricing');
+        return View::make('pricing')->with('title',"Plans - MSNGR");
     }
 
     public function getBuy()
     {
-        return View::make('buy')->with('plans', $this->plans);
+        return View::make('buy')->with('plans', $this->plans)->with('title',"Our Plans - MSNGR");
     }
 
     public function getPlan($id)
@@ -54,14 +54,18 @@ class HomeController extends BaseController
 
     public function getContact()
     {
-        return View::make('contact');
+        return View::make('contact')->with('title',"Contact us - MSNGR");
     }
     public function getTerms()
     {
-        return View::make('terms');
+        return View::make('terms')->with('title',"Terms of Use - MSNGR");
     }
     public function getPrivacy()
     {
-        return View::make('privacy');
+        return View::make('privacy')->with('title',"Privacy Policy - MSNGR");
+    }
+    public function getThanks()
+    {
+        return View::make('thanks')->with('title',"Thank You for contacting us - MSNGR");
     }
 }
