@@ -1,7 +1,7 @@
-<p>Hi <% $result->name %>,</p>
+<p>Hi User,</p>
 
-<p>We have successfully credited <% $result->added %> credits to your MSNGR account.</p>y
-<p>With this addition your total credit balance is <% $result->total %> credits.</p>
+<p>We have successfully credited <% $result['credits'] %> credits to your MSNGR account.</p>
+<p>With this addition your total credit balance is <% $result['totalCredits'] %> credits.</p>
 
 <p>In case you have not initiated any such a request or feel that your account safety has been compromised please
     contact the MSNGR support team here <a href="http://msngr.in/contact">here</a>.</p>
@@ -11,7 +11,7 @@
 <hr>
 <small style="color:#aaaaaa">
     <p>
-        This email was sent to <% $result->email %>, which was used to register for an account at http://www.msngr.in.
+        This email was sent to <% $result['schoolEmail'] %>, which was used to register for an account at http://www.msngr.in.
         It
         is deemed necessary communication and is not part of any newsletter or promotional offer.
     </p>

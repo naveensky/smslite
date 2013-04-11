@@ -10,10 +10,9 @@ class MailServices
 {
     public function sendActivationEmail($user)
     {
-        $user = $user->to_array();
         try {
             Message::send(function ($message) use ($user) {
-                $message->to($user['email']);
+                $message->to($user->email);
                 $message->from(Config::get('email.from_email'), Config::get('email.from_name'));
                 //email subject can be changed from language file
                 $message->subject(__('emailsubjects.welcome_email_subject'));
@@ -32,10 +31,9 @@ class MailServices
 
     public function sendForgottenPasswordEmail($user)
     {
-        $user = $user->to_array();
         try {
             Message::send(function ($message) use ($user) {
-                $message->to($user['email']);
+                $message->to($user->email);
                 $message->from(Config::get('email.from_email'), Config::get('email.from_name'));
                 $message->subject(__('emailsubjects.forgot_password_email_subject'));
                 $message->body("view: user.email.forgotpassword");
@@ -52,10 +50,9 @@ class MailServices
 
     public function sendForgottenPasswordCompleteEmail($user)
     {
-        $user = $user->to_array();
         try {
             Message::send(function ($message) use ($user) {
-                $message->to($user['email']);
+                $message->to($user->email);
                 $message->from(Config::get('email.from_email'), Config::get('email.from_name'));
                 $message->subject(__('emailsubjects.new_password_email_subject'));
                 $message->body("view: user.email.passwordreset");
@@ -162,13 +159,28 @@ class MailServices
 
     public function sendUserEmailUpdate($user)
     {
-        $user = $user->to_array();
         try {
             Message::send(function ($message) use ($user) {
-                $message->to($user['email']);
+                $message->to($user->email);
                 $message->from(Config::get('email.from_email'), Config::get('email.from_name'));
                 $message->subject(__('emailsubjects.account_email_update_subject'));
                 $message->body("view: user.email.useremailupdate");
+                $message->body->result = $user;
+                $message->html(true);
+            });
+        } catch (Exception $e) {
+            Log::exception($e);
+        }
+    }
+
+    public function sendUserPasswordUpdate($user)
+    {
+        try {
+            Message::send(function ($message) use ($user) {
+                $message->to($user->email);
+                $message->from(Config::get('email.from_email'), Config::get('email.from_name'));
+                $message->subject(__('emailsubjects.update_password_email_subject'));
+                $message->body("view: user.email.updatepassword");
                 $message->body->result = $user;
                 $message->html(true);
             });

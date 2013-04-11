@@ -411,4 +411,11 @@ class Test_Controller extends Base_Controller
         Command::run(array('smsdispatcher'));
         Command::run(array('highprioritysmsdispatcher'));
     }
+
+    public function action_testMail()
+    {
+        Auth::login(1);
+        $user = Auth::user();
+        var_dump($user->to_array());
+    }
 }

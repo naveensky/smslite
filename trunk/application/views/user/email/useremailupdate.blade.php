@@ -1,4 +1,4 @@
-<p>Hi <% $result->name %>,</p>
+<p>Hi User,</p>
 
 <p>You have successfully updated the email id associated your MSNGR account.</p>
 

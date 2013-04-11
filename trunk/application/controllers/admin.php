@@ -76,6 +76,7 @@ class Admin_Controller extends Base_Controller
                 $emailData['credits'] = $credits;
                 $emailData['amount'] = $amount;
                 $emailData['discount'] = $discount;
+                $emailData['totalCredits'] = $this->smsRepo->getRemainingCredits($schoolId);
                 $email = $users[0]->email;
                 if (!empty($email)) {
                     $emailData['schoolEmail'] = $email;
