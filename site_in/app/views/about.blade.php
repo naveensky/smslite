@@ -1,5 +1,11 @@
 @extends('layouts.common')
+@section('meta')
+<title>Send instant alerts and notifications to parents and teachers</title>
+<meta name="description" content="MSNGR is a central platform specially built for schools using which they can communicate and connect with the parents of their students.">
+<meta name="keywords"
+      content="">
 
+@stop
 @section('content')
 
 <style type="text/css">

@@ -1,5 +1,13 @@
 @extends('layouts.common')
 
+@section('meta')
+<title>Our Plans - MSNGR</title>
+<meta name="description"
+      content="MSNGR.IN offers multiple plans to fit your needs. You can buy the plan that fulfills your requirements without having to buy limited or excess credits.">
+<meta name="keywords"
+      content="">
+
+@stop
 @section('content')
 
 <div class="row">
@@ -17,13 +25,16 @@
         </div>
     </div>
     <div class="span8"><p>
-        Credit is the basic unit of purchase that you can buy from MSNGR. A credit allows you to send a single text message (sms)
-        of 160 characters or less. If you send a message that is beyond 160 characters, you will be charged two credits. Messages
+        Credit is the basic unit of purchase that you can buy from MSNGR. A credit allows you to send a single text
+        message (sms)
+        of 160 characters or less. If you send a message that is beyond 160 characters, you will be charged two credits.
+        Messages
         beyond 320 characters are not allowed as per TRAI policies.
     </p>
 
         <p>
-            MSNGR.IN offers multiple plans to fit your needs. You can buy the plan that fulfills your requirements without
+            MSNGR.IN offers multiple plans to fit your needs. You can buy the plan that fulfills your requirements
+            without
             having to buy limited or excess credits. The plans become more economical as you go upwards. Each plan
             requires one time payment
             and there are no monthly or recurring costs. Once you use up the credits, you can purchase more credits are
@@ -41,14 +52,14 @@
             </tr>
             </thead>
             <tbody>
-            <?php foreach($plans as $plan): ?>
+            <?php foreach ($plans as $plan): ?>
 
             <tr>
                 <td><% $plan["credits"] %></td>
                 <td><% $plan["price"] %></td>
                 <td><a href="/plan/<% $plan["id"] %>" class="btn btn-small">Buy This</a></td>
             </tr>
-            <?php endforeach; ?>
+                <?php endforeach; ?>
 
             </tbody>
 

@@ -2,13 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>@if(empty($title))
-        Stay connected with patents - MSNGR.IN
-        @else
-        <% $title %>
-        @endif</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Stay Connected With Parents">
+
+    @yield('meta')
     <meta name="author" content="Green Apple Solutions">
 
     <!-- Le styles -->

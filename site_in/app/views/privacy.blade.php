@@ -1,5 +1,8 @@
 @extends('layouts.common')
+@section('meta')
+<title>Privacy Policy - MSNGR</title>
 
+@stop
 @section('content')
 
 <style type="text/css">

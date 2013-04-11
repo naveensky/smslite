@@ -1,5 +1,10 @@
 @extends('layouts.common')
 
+@section('meta')
+<title>Terms of Use - MSNGR</title>
+
+@stop
+
 @section('content')
 
 <style type="text/css">

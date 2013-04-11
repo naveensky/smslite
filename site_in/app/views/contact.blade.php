@@ -1,5 +1,11 @@
 @extends('layouts.common')
+@section('meta')
+<title>Contact Us - MSNGR</title>
+<meta name="description" content="If you want to know more about how MSNGR can help you better or how to purchase a MSNGR subscription or have any query, please fill the following form and our Support Superstars will get in touch with you.">
+<meta name="keywords"
+      content="">
 
+@stop
 @section('content')
 
 <div class="row">

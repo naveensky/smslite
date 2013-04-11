@@ -1,5 +1,15 @@
 @extends('layouts.common')
 
+@section('meta')
+<title>Stay Connected with Parents with MSNGR</title>
+<meta name="description" content="Use MSNGR to
+                easily communicate with the parents
+                by text messages(sms). Share latest updates and alerts with the parents with the click of a button.">
+<meta name="keywords"
+      content="school sms solutions, send sms to parents, school sms software, sms software, connect with parents, sms system for schools, school notification system">
+
+@stop
+
 @section('content')
 
 <div class="row">

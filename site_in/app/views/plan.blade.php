@@ -1,5 +1,13 @@
 @extends('layouts.common')
 
+@section('meta')
+<title>Selected Plan - MSNGR</title>
+<meta name="description"
+      content="Please fill the following form with your correct details and our Sales Superstars will get in touch with you to sign you up for your MSNGR account">
+<meta name="keywords"
+      content="">
+
+@stop
 @section('content')
 
 <div class="row">

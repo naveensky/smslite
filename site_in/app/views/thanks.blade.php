@@ -1,5 +1,12 @@
 @extends('layouts.common')
+@section('meta')
+<title>Thank You for contacting us</title>
+<meta name="description"
+      content="Thank you for getting in touch with us. Our Support Superstars will get in touch with you shortly to help you with your requirement.">
+<meta name="keywords"
+      content="">
 
+@stop
 @section('content')
 
 <style type="text/css">
@@ -30,6 +37,7 @@
         <p>In case you wish to get in touch with us directly you can</p>
 
         <p>Email us at: info@msngr.in</p>
+
         <p>Call us at: +91 - 9891410701</p>
     </div>
 </div>
