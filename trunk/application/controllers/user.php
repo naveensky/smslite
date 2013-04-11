@@ -19,7 +19,7 @@ class User_Controller extends Base_Controller
                     'post_register', 'forgot_password',
                     'post_forgot_password', 'send_password_mobile',
                     'password_reset_success', 'reset_password',
-                    'invalid_code', 'post_set_password', 'restore_account'));
+                    'invalid_code', 'post_set_password', 'restore_account','invalid_activation_code'));
         //add mobile verified check
         $this->filter('before', 'checkmobile')->only(array('transaction_history', 'update_password', 'post_update_password', 'profile', 'get_user_profile'));
         $this->userRepo = new UserRepository();
@@ -116,7 +116,7 @@ class User_Controller extends Base_Controller
         $isValidEmail = $this->userRepo->validateEmail($email);
         if (!$isValidEmail)
 //            return Response::make(__('responsemessages.email_used'), HTTPConstants::DATABASE_ERROR_CODE);
-            return Response::json(array('status' => false, 'message' =>Lang::line('responsemessages.email_used')->get()), HTTPConstants::SUCCESS_CODE);
+            return Response::json(array('status' => false, 'message' => Lang::line('responsemessages.email_used')->get()), HTTPConstants::SUCCESS_CODE);
 
         $school = $this->schoolRepo->createEmptySchool();
         if (!$school)
@@ -147,18 +147,23 @@ class User_Controller extends Base_Controller
         $activationCode = isset($activationCode) ? $activationCode : "";
 
         if (empty($activationCode))
-            return "You have entered incorrect code view missing";
+            return Redirect::to('/#/user/invalid_activation_code');
 
         try {
             $status = $this->userRepo->activate($activationCode);
         } catch (InvalidArgumentException $ie) {
-            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+            return Redirect::to('/#/user/invalid_activation_code');
         }
         if ($status) {
-            return "Thank you for your email verification view missing";
+            return Redirect::to('/#/user/login');
         } else {
-            return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
+            return Redirect::to('/#/user/invalid_activation_code');
         }
+    }
+
+    public function action_invalid_activation_code()
+    {
+        return View::make('user.invalidactivationcode');
     }
 
     public function action_deactivate()

@@ -13,6 +13,7 @@ angular.module('app', ['LoaderServices']).
             .when('/user/forgot-password', {templateUrl: '/user/forgot_password', controller: 'User_Forgot_Password'})
             .when('/user/password_reset_success', {templateUrl: '/user/password_reset_success', controller: 'User_Change_Password'})
             .when('/user/invalid_code', {templateUrl: '/user/invalid_code' })
+            .when('/user/invalid_activation_code', {templateUrl: '/user/invalid_activation_code' })
             .when('/user/profile', {templateUrl: '/user/profile', controller: 'User_Account'})
             .when('/user/update_password', {templateUrl: '/user/update_password', controller: 'User_Account'})
             .when('/user/transaction_history', {templateUrl: '/user/transaction_history', controller: 'User_Account'});

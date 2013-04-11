@@ -73,7 +73,7 @@ class TestAuthcontroller extends ControllerTestCase
             'code' => $user->emailVerificationCode,
         );
         $response = $this->get('user@activate', $data);
-        $this->assertEquals(200, $response->status());
+        $this->assertEquals(302, $response->status());
     }
 
     public function testDeactivation()
