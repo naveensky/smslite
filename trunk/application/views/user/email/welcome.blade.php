@@ -1,13 +1,15 @@
-<p>Hi <% $result->name %>,</p>
+<p>Hi User,</p>
 
 <p>Thank you for signning up for MSNGR!</p>
 
-<p>Please <a href="<% $result->link %>">click here</a> to confirm your email address.</p>
+<p>Please <a href="<% URL::to('user/activate/' . $result->emailVerificationCode); %>">click here</a> to confirm your
+    email address.</p>
 
 <p>If clicking the link above does not work, copy and paste the following URL in a new browser window instead. <br>
-    <% $result->link %></p>
+    <% URL::to('user/activate/' . $result->emailVerificationCode);%></p>
 
-<p>It is also a good idea to add [our sender email] to your address book to ensure that you receive our messages (no
+<p>It is also a good idea to add <% Config::get('email.from_email') %> to your address book to ensure that you receive
+    our messages (no
     spam, we promise!)</p>
 
 <p>All the best</p>

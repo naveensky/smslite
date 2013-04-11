@@ -314,7 +314,7 @@ class User_Controller extends Base_Controller
 
     public function action_invalid_code()
     {
-        return View::make('error.404');
+        return View::make('user.invalidcode');
     }
 
     public function action_post_set_password()

@@ -50,6 +50,10 @@ class MailListener
             $mailService = new MailServices();
             $mailService->sendEmailOnCreditsAllocation($allocateData);
         });
+        Event::listen(ListenerConstants::APP_USER_PASSWORD_UPDATE, function ($user) {
+            $mailService = new MailServices();
+            $mailService->sendUserPasswordUpdate($user);
+        });
 
     }
 }

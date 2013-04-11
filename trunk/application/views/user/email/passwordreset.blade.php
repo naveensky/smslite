@@ -1,4 +1,4 @@
-<p>Hi <% $result->name %>,</p>
+<p>Hi User,</p>
 
 <p>You have successfully reset the password to your MSNGR account.</p>
 

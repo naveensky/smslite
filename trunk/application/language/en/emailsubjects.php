@@ -17,6 +17,7 @@ return array(
     'account_email_update_subject' => 'MSNGR - Email Updated',
     'new_password_email_subject' => 'MSNGR - Password Reset',
     'credits_allocated' => 'MSNGR - SMS Credits Alloted',
-    'credits_allocated_admin' => 'MSNGR - SMS Credits Alloted',
+    'credits_allocated_admin' => 'MSNGR - SMS Credits Alloted'
+
 
 );
