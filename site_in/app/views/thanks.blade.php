@@ -38,7 +38,7 @@
 
         <p>Email us at: info@msngr.in</p>
 
-        <p>Call us at: +91 - 9891410701</p>
+        <p>Call us at: +91 - 995 322 2492</p>
     </div>
 </div>
 

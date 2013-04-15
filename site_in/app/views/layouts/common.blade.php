@@ -54,7 +54,7 @@
             </ul>
             <ul class="nav contact-info pull-right">
                 <li><a href="mailto:info@msngr.in">info@msngr.in</a></li>
-                <li><a href="#">+91 - 989 141 0701 </a></li>
+                <li><a href="#">+91 - 995 322 2492 </a></li>
             </ul>
         </div>
     </div>
