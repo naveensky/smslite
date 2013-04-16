@@ -56,9 +56,9 @@
 
                     <form class="form-horizontal">
                         <div class="control-group">
-                            <button type="submit" class="btn"><i
+                            <a class="btn" href="<%url::to('sampleFiles/student-sample.csv');%>" target="_blank"><i
                                 class="icon-download icon-large padding-right-5"></i>Download
-                            </button>
+                            </a>
                         </div>
                     </form>
                 </div>

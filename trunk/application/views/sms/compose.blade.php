@@ -175,8 +175,10 @@
                 </div>
                 <div class="control-group">
                     <label>Credits Available <a href="#" class="pull-right">
-                            <small><i class="icon-money"></i> Buy Credits</small></label>
-                    </a>
+                            <small><a href="http://msngr.in/pricing" target="_blank"><i class="icon-money"></i> Buy
+                                    Credits</small>
+                        </a></label>
+                    
                     <input class="input-block-level" type="text" readonly="readonly" ng-model="creditsAvailable">
                 </div>
                 <div class="control-group">
