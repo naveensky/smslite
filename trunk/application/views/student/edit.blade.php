@@ -1,7 +1,7 @@
 <div class="row">
     <div class="span3">
         <div class="box" style="padding: 8px 0;">
-            @render('student.leftmenu')
+            @render('student.editleftmenu')
         </div>
     </div>
     <div class="span9">

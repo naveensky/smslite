@@ -2,8 +2,9 @@
 <?php $leftMenu = array(
     '/teacher/list' => 'List',
     '/teacher/upload' => 'Upload',
-    '/teacher/export' => 'Export',
-    '/teacher/help' => 'Help');
+//    '/teacher/export' => 'Export',
+//    '/teacher/help' => 'Help'
+);
 
 ?>
 <ul class="nav nav-list">

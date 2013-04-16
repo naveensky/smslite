@@ -4,7 +4,7 @@ class User_Controller extends Base_Controller
 {
     private $userRepo;
     private $schoolRepo;
-    private $appSmsRepo;
+    private $adminRepo;
 
 
     public function __construct()
@@ -19,12 +19,13 @@ class User_Controller extends Base_Controller
                     'post_register', 'forgot_password',
                     'post_forgot_password', 'send_password_mobile',
                     'password_reset_success', 'reset_password',
-                    'invalid_code', 'post_set_password', 'restore_account','invalid_activation_code'));
+                    'invalid_code', 'post_set_password', 'restore_account', 'invalid_activation_code'));
         //add mobile verified check
         $this->filter('before', 'checkmobile')->only(array('transaction_history', 'update_password', 'post_update_password', 'profile', 'get_user_profile'));
         $this->userRepo = new UserRepository();
         $this->schoolRepo = new SchoolRepository();
         $this->smsRepo = new SMSRepository();
+        $this->adminRepo = new AdminRepository();
     }
 
     public function action_login()
@@ -119,6 +120,7 @@ class User_Controller extends Base_Controller
             return Response::json(array('status' => false, 'message' => Lang::line('responsemessages.email_used')->get()), HTTPConstants::SUCCESS_CODE);
 
         $school = $this->schoolRepo->createEmptySchool();
+
         if (!$school)
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
         $schoolCode = $school->code;
@@ -131,14 +133,18 @@ class User_Controller extends Base_Controller
         }
         if (empty($user))
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
+        //make the user as logged in user
+        Auth::login($user->id);
 
+        //providing free 100 credits to school
+        $transaction = $this->adminRepo->createTransaction(Auth::user()->id, null, 0, 0, "Free credits allocated", 100, $school->id, Request::ip());
         $welcome_message = __('smstemplate.welcome_message', array('code' => $user->mobileVerificationCode));
         $status = $this->smsRepo->createAppSms($user->mobile, $welcome_message, Config::get('sms.senderid'), $user->id);
 
         //fire user created event
         Event::fire(ListenerConstants::APP_USER_CREATED, array($user));
-        //make the user as logged in user
-        Auth::login($user->id);
+
+
         return Response::json(array('status' => true), HTTPConstants::SUCCESS_CODE);
     }
 

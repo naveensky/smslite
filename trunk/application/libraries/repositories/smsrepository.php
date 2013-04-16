@@ -61,14 +61,23 @@ class SMSRepository
         return $status;
     }
 
+    //function used to add credits used in admin and for giving free credits to school
     public function addCredits($creditsToAdd, $schoolId)
     {
         $SMSCredit = SMSCredit::where('schoolId', '=', $schoolId)->first();
+        if (empty($SMSCredit)) {
+            $credit = new SMSCredit();
+            $credit->schoolId = $schoolId;
+            $credit->credits = $creditsToAdd;
+            $credit->save();
+            return true;
+        }
         $updatedCredits = $SMSCredit->credits + $creditsToAdd;
         $attributes = array('credits' => $updatedCredits);
         $status = SMSCredit::update($SMSCredit->id, $attributes);
         return $status;
     }
+
 
     public function createSMS(array $studentCodes, array $teachersCodes, $senderId, $userId, $schoolId, $adminMobile)
     {
