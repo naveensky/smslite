@@ -83,6 +83,8 @@ angular.module('app')
 
         }
         $scope.getFormattedDate = function ($date) {
+            if($date==null)
+            return null;
             return moment($date).format('D MMMM  YYYY');
         }
 

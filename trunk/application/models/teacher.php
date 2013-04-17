@@ -64,7 +64,7 @@ class Teacher extends Eloquent
             $insertRow['mobile3'] = isset($dataRow[6]) ? $dataRow[6] : ""; //Mobile3
             $insertRow['mobile4'] = isset($dataRow[7]) ? $dataRow[7] : ""; //Mobile4
             $insertRow['mobile5'] = isset($dataRow[8]) ? $dataRow[8] : ""; //Mobile5
-            $insertRow['dob'] = isset($dataRow[9]) ? $dataRow[9] : ""; //DOB
+            $insertRow['dob'] = !empty($dataRow[9]) ? $dataRow[9] : null; //DOB
             $insertRow['morningBusRoute'] = isset($dataRow[10]) ? $dataRow[10] : ""; //Morning Bus Route
             $insertRow['eveningBusRoute'] = isset($dataRow[11]) ? $dataRow[11] : ""; //Evening Bus Route
             $insertRow['code'] = Str::random(64, 'alpha'); //student Code

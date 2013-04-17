@@ -97,10 +97,10 @@ class StudentRepository
         } catch (PDOException $e) {
             //rollback if any error while bulk insertion
             DB::connection()->pdo->rollBack();
-            log::exception($e);
+            Log::exception($e);
             throw new PDOException("Exception while bulk insertion");
         } catch (Exception $e) {
-            log::exception($e);
+            Log::exception($e);
             return false;
         }
 
@@ -184,7 +184,7 @@ class StudentRepository
             $query = $query->where_in("eveningBusRoute", $eveningBusRoute);
 
         try {
-            $student = $query->skip($skip)->take($perPage)->order_by(DB::raw('"classStandard"::integer'))->order_by(DB::raw('"classSection"'))->order_by(DB::raw('"uniqueIdentifier"'))->get();
+            $student = $query->skip($skip)->take($perPage)->order_by(DB::raw('"classStandard"'))->order_by(DB::raw('"classSection"'))->order_by(DB::raw('"uniqueIdentifier"'))->get();
         } catch (Exception $e) {
             Log::exception($e);
             return false;

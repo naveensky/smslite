@@ -128,8 +128,10 @@ class Teacher_Controller extends Base_Controller
             $updateData['mobile4'] = $update_data->Mobile4;
         if (isset($update_data->Mobile5))
             $updateData['mobile5'] = $update_data->Mobile5;
-        if (isset($update_data->DOB))
-            $updateData['dob'] = $update_data->DOB;
+        if (isset($update_data->DOB)) {
+            if (!empty($update_data->DOB))
+                $updateData['dob'] = new DateTime($update_data->DOB);
+        }
         if (isset($update_data->Department))
             $updateData['department'] = $update_data->Department;
         if (isset($update_data->MorningBusRoute))
