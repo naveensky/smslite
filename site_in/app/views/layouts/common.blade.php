@@ -50,6 +50,7 @@
 
                 <li><a href="/features">Features</a></li>
                 <li><a href="/pricing">Pricing</a></li>
+                <li><a target="_blank" href="http://app.msngr.in">Login / Signup</a></li>
                 <li><a href="/contact">Contact</a></li>
             </ul>
             <ul class="nav contact-info pull-right">
