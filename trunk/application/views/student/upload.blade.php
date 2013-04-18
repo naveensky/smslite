@@ -46,6 +46,7 @@
                             <p ng-show="rowErrors!=0">Row Numbers having Errors: {{rowErrors}} </p>
 
                             <p>Want to upload another file <a href ng-click="resetModel()">Click Here</a></p>
+
                         </div>
                     </form>
                 </div>
@@ -61,6 +62,7 @@
                             </a>
                         </div>
                     </form>
+                    <p>Compulsory fields: <b> <br>Admission No <br>Full Name <br>Mobile1</b></p>
                 </div>
             </div>
         </div>
