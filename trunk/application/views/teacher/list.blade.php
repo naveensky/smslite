@@ -29,7 +29,18 @@
             <h3><i class="icon-th-list icon-large"></i>List Teachers</h3>
 
             <p>This is a list of all the teachers that meet the filter criteria that you have selected on the left.</p>
-
+            <div class="row" ng-show="deleteTeacherSuccess" style="margin-left:0px">
+                <div class="alert alert-success">
+                    <button type="button" class="close" data-dismiss="alert">×</button>
+                    {{deleteSuccessMessage}}
+                </div>
+            </div>
+            <div class="row" ng-show="deleteTeacherError" style="margin-left:0px">
+                <div class="alert alert-error margin-top-20">
+                    <button type="button" class="close" data-dismiss="alert">×</button>
+                    {{deleteErrorMessage}}
+                </div>
+            </div>
 
             <div class="row">
 
@@ -42,6 +53,7 @@
                             <th>Morning Bus Route</th>
                             <th>Evening Bus Route</th>
                             <th>Mobile</th>
+                            <th>&nbsp;</th>
                             <th>&nbsp;</th>
 
 
@@ -57,6 +69,7 @@
                             <td><a href
                                    title="{{getMobileNumbers(teacher)}}">{{teacher.mobile1}}</a></td>
                             <td><a href="#/teacher/edit/{{teacher.code}}">Edit</a></td>
+                            <td><a ng-click="deleteTeacher($index)">Delete</a></td>
                         </tr>
                         </tbody>
                         <tbody ng-show="teachers.length==0">

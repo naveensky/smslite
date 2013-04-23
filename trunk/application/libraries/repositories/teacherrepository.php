@@ -58,6 +58,8 @@ class TeacherRepository
 
     public function deleteTeacher($teacherCode)
     {
+        if (empty($teacherCode))
+            return 0;
         $deleteCount = Teacher::where_code($teacherCode)->delete();
         return $deleteCount > 0;
     }
@@ -170,7 +172,7 @@ class TeacherRepository
     {
         $query = Teacher::where_schoolId($schoolId)->where(function ($query) use ($searchValue) {
             $query->where('name', '~*', ".*$searchValue.*");
-            for($i=1;$i<=5;$i++){
+            for ($i = 1; $i <= 5; $i++) {
                 $query->or_where("mobile$i", '~*', ".*$searchValue.*");
             }
         });
@@ -181,6 +183,35 @@ class TeacherRepository
             return false;
         }
         return $teachers;
+    }
+
+    public function addTeacher($teacherData, $schoolId)
+    {
+        $teacher = new Teacher();
+        $teacher->name = $teacherData['name'];
+        $teacher->email = $teacherData['email'];
+        $teacher->mobile1 = $teacherData['mobile1'];
+        $teacher->mobile2 = $teacherData['mobile2'];
+        $teacher->mobile3 = $teacherData['mobile3'];
+        $teacher->mobile4 = $teacherData['mobile4'];
+        $teacher->mobile5 = $teacherData['mobile5'];
+        $teacher->dob = $teacherData['dob'];
+        $teacher->department = $teacherData['department'];
+        $teacher->morningBusRoute = $teacherData['morningBusRoute'];
+        $teacher->eveningBusRoute = $teacherData['eveningBusRoute'];
+        $teacher->gender = $teacherData['gender'];
+        $teacher->code = $teacherData['code'];
+        $teacher->schoolId = $schoolId;
+
+        try {
+            $teacher->save();
+        } catch (Exception $e) {
+            Log::exception($e);
+            return false;
+        }
+        return true;
+
+
     }
 
 }

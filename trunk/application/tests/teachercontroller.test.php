@@ -46,8 +46,28 @@ class TestTeacherController extends ControllerTestCase
         $parameters = array(
             'code' => $teacher->code
         );
-        $response = $this->get('teacher@delete', $parameters);
+        Input::$json = (object)$parameters;
+        $response = $this->post('teacher@delete', array());
         $this->assertEquals(200, $response->status());
+    }
+
+    public function testDeleteTeacherError()
+    {
+        $user = $this->getSampleUser();
+        Auth::login($user->id);
+
+        $teacher = FactoryMuff::create('Teacher');
+        $teacher->schoolId = $user->school()->first()->id;
+        $teacher->department = "Hindi";
+        $teacher->save();
+        $parameters = array(
+            'code' => "sfsfkljsfsklfsfs"
+        );
+        Input::$json = (object)$parameters;
+        $response = $this->post('teacher@delete', array());
+        $this->assertEquals(200, $response->status());
+        $result = json_decode($response->content);
+        $this->assertEquals(false, $result->status);
     }
 
     public function testUpdateTeacher()
@@ -73,6 +93,38 @@ class TestTeacherController extends ControllerTestCase
 
         Input::$json = (object)$parameters;
         $response = $this->post('teacher@update', array());
+        $this->assertEquals(200, $response->status());
+    }
+
+    public function testAddTeacher()
+    {
+        $school = FactoryMuff::create('School');
+        $school->save();
+
+        $user = FactoryMuff::create('User');
+        $user->schoolId = $school->id;
+        $user->isVerified = 1;
+        $user->save();
+
+        Auth::login($user->id);
+
+        $parameters = array(
+            'Name' => 'Hitanshu',
+            'Email' => '',
+            'Mobile1' => '9958205181',
+            'Mobile2' => '',
+            'Mobile3' => '',
+            'Mobile4' => '',
+            'Mobile5' => '',
+            'DOB' => '',
+            'Department' => '',
+            'gender' => '',
+            'MorningBusRoute' => '',
+            'EveningBusRoute' => '',
+        );
+
+        Input::$json = (object)$parameters;
+        $response = $this->post('teacher@create', array());
         $this->assertEquals(200, $response->status());
     }
 

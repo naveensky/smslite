@@ -125,6 +125,41 @@ module.factory('StudentService', ["$http", "$q", function ($http, $q) {
                     deferred.reject($e);
                 });
             return deferred.promise;
+        },
+        //insert new student
+        newStudentAdd: function (addStudentData) {
+            //make post request with params
+            //make post call for queue the message
+            var deferred = $q.defer();
+            $http.post(
+                '/student/create',
+                {
+                    'Name': addStudentData.name,
+                    'Email': addStudentData.email,
+                    'MothersName': addStudentData.motherName,
+                    'FathersName': addStudentData.fatherName,
+                    'Mobile1': addStudentData.mobile1,
+                    'Mobile2': addStudentData.mobile2,
+                    'Mobile3': addStudentData.mobile3,
+                    'Mobile4': addStudentData.mobile4,
+                    'Mobile5': addStudentData.mobile5,
+                    'DOB': addStudentData.dob,
+                    'admission': addStudentData.uniqueIdentifier,
+                    'ClassStandard': addStudentData.classStandard,
+                    'ClassSection': addStudentData.classSection,
+                    'MorningBusRoute': addStudentData.morningBusRoute,
+                    'EveningBusRoute': addStudentData.eveningBusRoute,
+                    'gender': addStudentData.gender
+                }
+            ).success(function (data) {
+                    deferred.resolve(data);
+                }).error(function (e) {
+                    //todo: log this
+                    //if there is an error processing data, reject it and log error
+                    console.log($e);
+                    deferred.reject($e);
+                });
+            return deferred.promise;
         }
     }
 }]);

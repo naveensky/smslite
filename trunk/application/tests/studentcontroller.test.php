@@ -62,9 +62,35 @@ class TestStudentController extends ControllerTestCase
         $parameters = array(
             'code' => $student->code
         );
-
-        $response = $this->get('student@delete', $parameters);
+        Input::$json = (object)$parameters;
+        $response = $this->post('student@delete', array());
         $this->assertEquals(200, $response->status());
+    }
+
+    public function testDeleteStudentError()
+    {
+        $school = FactoryMuff::create('School');
+        $school->save();
+
+        $user = FactoryMuff::create('User');
+        $user->schoolId = $school->id;
+        $user->save();
+
+        Auth::login($user->id);
+
+        $student = FactoryMuff::create('Student');
+        $student->classStandard = "6";
+        $student->classSection = "A";
+        $student->schoolId = $school->id;
+        $student->save();
+        $parameters = array(
+            'code' => 'ksgsgsgshgsksgsgkl'
+        );
+        Input::$json = (object)$parameters;
+        $response = $this->post('student@delete', array());
+        $this->assertEquals(200, $response->status());
+        $result = json_decode($response->content);
+        $this->assertEquals(false, $result->status);
     }
 
 
@@ -92,6 +118,42 @@ class TestStudentController extends ControllerTestCase
 
         Input::$json = (object)$parameters;
         $response = $this->post('student@update', array());
+        $this->assertEquals(200, $response->status());
+    }
+
+    public function testAddStudent()
+    {
+        $school = FactoryMuff::create('School');
+        $school->save();
+
+        $user = FactoryMuff::create('User');
+        $user->schoolId = $school->id;
+        $user->isVerified = 1;
+        $user->save();
+
+        Auth::login($user->id);
+
+        $parameters = array(
+            'admission' => 12345,
+            'Name' => 'Hitanshu',
+            'Email' => '',
+            'MothersName' => '',
+            'FathersName' => '',
+            'Mobile1' => '9958205181',
+            'Mobile2' => '',
+            'Mobile3' => '',
+            'Mobile4' => '',
+            'Mobile5' => '',
+            'DOB' => '',
+            'ClassStandard' => '',
+            'ClassSection' => '',
+            'gender' => '',
+            'MorningBusRoute' => '',
+            'EveningBusRoute' => '',
+        );
+
+        Input::$json = (object)$parameters;
+        $response = $this->post('student@create', array());
         $this->assertEquals(200, $response->status());
     }
 

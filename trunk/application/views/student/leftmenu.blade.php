@@ -1,7 +1,8 @@
 <!--All links for left hand side menus-->
 <?php $leftMenu = array(
     '/student/list' => 'List',
-    '/student/upload' => 'Upload'
+    '/student/upload' => 'Upload',
+    '/student/add' => 'Add'
 //    '/student/edit' => 'Edit',
 //    '/student/export' => 'Export',
 //    '/student/help' => 'Help'

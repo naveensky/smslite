@@ -2,7 +2,7 @@
 
 //for route user/login
 angular.module('app')
-    .controller('Teacher_List', ['$scope', '$http', 'TeacherService','SchoolService','$routeParams', function ($scope, $http, teacherService,schoolService,routeParams) {
+    .controller('Teacher_List', ['$scope', '$http', 'TeacherService', 'SchoolService', '$routeParams', function ($scope, $http, teacherService, schoolService, routeParams) {
         $scope.departments = [];
         $scope.morningRoutes = [];
         $scope.eveningRoutes = [];
@@ -13,8 +13,13 @@ angular.module('app')
         $scope.nextPage = $scope.pageNumber + 1;
         $scope.mobiles = '';
         $scope.teacherData = {};
+        $scope.addTeacherData = {};
         $scope.showEditScreenError = false;
         $scope.errorEditMessage = '';
+        $scope.errorAddMessage = '';
+        $scope.deleteTeacherSuccess = false;
+        $scope.deleteTeacherError = false;
+        $scope.showAddScreenError = false;
 
         $scope.getMobileNumbers = function (student) {
 
@@ -44,23 +49,31 @@ angular.module('app')
         });
 
         $scope.getTeachers = function () {
-            $scope.teachers = teacherService.getTeachers(
-                $scope.departments,
-                $scope.morningRoutes,
-                $scope.eveningRoutes,
-                $scope.pageNumber,
-                $scope.pageCount
-            );
+            $scope.pageNumber = 1;
+            $scope.pageCount = 25;
+            $scope.previousPage = 0;
+            $scope.nextPage = $scope.pageNumber + 1;
+            teacherService.getTeachers(
+                    $scope.departments,
+                    $scope.morningRoutes,
+                    $scope.eveningRoutes,
+                    $scope.pageNumber,
+                    $scope.pageCount
+                ).then(function (teachers) {
+                    $scope.teachers = teachers;
+                });
         }
 
         $scope.findNextTeachers = function () {
-            $scope.teachers = teacherService.getTeachers(
-                $scope.departments,
-                $scope.morningRoutes,
-                $scope.eveningRoutes,
-                $scope.pageNumber,
-                $scope.pageCount
-            );
+            teacherService.getTeachers(
+                    $scope.departments,
+                    $scope.morningRoutes,
+                    $scope.eveningRoutes,
+                    $scope.pageNumber,
+                    $scope.pageCount
+                ).then(function (teachers) {
+                    $scope.teachers = teachers;
+                });
         }
 
         $scope.updateNext = function () {
@@ -78,8 +91,38 @@ angular.module('app')
 
         }
 
+        $scope.deleteTeacher = function (index) {
+            bootbox.confirm("Are you sure you want to delete teacher", function (result) {
+                if (result) {
+                    var teacherCode = $scope.teachers[index].code;
+
+                    $http.post(
+                        '/teacher/delete',
+                        {
+                            "code": teacherCode
+                        }
+                    ).success(function ($data) {
+                            if ($data.status) {
+                                $scope.teachers.splice(index, 1);
+                                $scope.deleteTeacherError = false;
+                                $scope.deleteTeacherSuccess = true;
+                                $scope.deleteSuccessMessage = "Teacher Deleted Successfully";
+                            }
+                            else {
+                                $scope.deleteTeacherSuccess = false;
+                                $scope.deleteTeacherError = true;
+                                $scope.deleteStudentErrorMessage = $data.message;
+                            }
+                        }
+                    ).error(function ($e) {
+                            log($e);
+                        });
+                }
+            });
+        }
+
         $scope.getFormattedDate = function ($date) {
-            if($date==null)
+            if ($date == null)
                 return null;
             return moment($date).format('D MMMM  YYYY');
         }
@@ -104,6 +147,20 @@ angular.module('app')
                 }
             });
         }
+
+        $scope.addNewTeacher = function () {
+            $scope.addTeacherData.dob = $('#dateofbirth').val();
+            teacherService.newTeacherAdd($scope.addTeacherData).then(function (data) {
+                if (data.status) {
+                    window.location.href = "#/teacher/list";
+                }
+                else {
+                    $scope.showAddScreenError = true;
+                    $scope.errorAddMessage = data.message;
+                }
+            });
+        }
+
         //init data for first page load
         $scope.getTeachers();
 

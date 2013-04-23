@@ -69,6 +69,8 @@ class StudentRepository
 
     public function deleteStudent($studentCode)
     {
+        if (empty($studentCode))
+            return 0;
         $deleteCount = Student::where_code($studentCode)->delete();
         return $deleteCount > 0;
     }
@@ -266,6 +268,38 @@ class StudentRepository
             return false;
         }
         return $student;
+    }
+
+    public function addStudent($studentData, $schoolId)
+    {
+        $student = new Student();
+        $student->uniqueIdentifier = $studentData['uniqueIdentifier'];
+        $student->name = $studentData['name'];
+        $student->email = $studentData['email'];
+        $student->motherName = $studentData['motherName'];
+        $student->fatherName = $studentData['fatherName'];
+        $student->mobile1 = $studentData['mobile1'];
+        $student->mobile2 = $studentData['mobile2'];
+        $student->mobile3 = $studentData['mobile3'];
+        $student->mobile4 = $studentData['mobile4'];
+        $student->mobile5 = $studentData['mobile5'];
+        $student->dob = $studentData['dob'];
+        $student->classStandard = $studentData['classStandard'];
+        $student->classSection = $studentData['classSection'];
+        $student->morningBusRoute = $studentData['morningBusRoute'];
+        $student->eveningBusRoute = $studentData['eveningBusRoute'];
+        $student->gender = $studentData['gender'];
+        $student->code = $studentData['code'];
+        $student->schoolId = $schoolId;
+        try {
+            $student->save();
+        } catch (Exception $e) {
+            Log::exception($e);
+            return false;
+        }
+        return true;
+
+
     }
 
 

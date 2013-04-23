@@ -2,6 +2,7 @@
 <?php $leftMenu = array(
     '/teacher/list' => 'List',
     '/teacher/upload' => 'Upload',
+    '/teacher/add' => 'Add'
 //    '/teacher/export' => 'Export',
 //    '/teacher/help' => 'Help'
 );

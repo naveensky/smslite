@@ -96,19 +96,18 @@ class Student_Controller extends Base_Controller
         $data = Input::json();
         if (empty($data))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
-        $code = isset($data->code) ? $data->code : array();
+        $code = isset($data->code) ? $data->code : null;
         try {
             $result = $this->studentRepo->deleteStudent($code);
             if ($result) {
-                return Response::make(__('responseerror.delete_student'), HTTPConstants::SUCCESS_CODE);
+                return Response::json(array('status' => true));
             } else {
-                return Response::make(__('responseerror.not_found'), HTTPConstants::NOT_FOUND_ERROR_CODE);
+                return Response::json(array('status' => false, 'message' => Lang::line('responseerror.delete_student')->get()));
             }
         } catch (Exception $e) {
             Log::exception($e);
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
         }
-
     }
 
     public function action_update()
@@ -168,6 +167,46 @@ class Student_Controller extends Base_Controller
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
         }
         return Response::json(array('status' => true));
+    }
+
+    public function action_add_student()
+    {
+        return View::make('student.add');
+    }
+
+    public function action_create()
+    {
+        $data = Input::json();
+        if (empty($data))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        $schoolId = Auth::user()->schoolId;
+        $studentData = array();
+        $studentData['name'] = isset($data->Name) ? $data->Name : "";
+        $studentData['uniqueIdentifier'] = isset($data->admission) ? $data->admission : "";
+        $studentData['email'] = isset($data->Email) ? $data->Email : "";
+        $studentData['motherName'] = isset($data->MothersName) ? $data->MothersName : "";
+        $studentData['fatherName'] = isset($data->FathersName) ? $data->FathersName : "";
+        $studentData['mobile1'] = isset($data->Mobile1) ? $data->Mobile1 : "";
+        $studentData['mobile2'] = isset($data->Mobile2) ? $data->Mobile2 : "";
+        $studentData['mobile3'] = isset($data->Mobile3) ? $data->Mobile3 : "";
+        $studentData['mobile4'] = isset($data->Mobile4) ? $data->Mobile4 : "";
+        $studentData['mobile5'] = isset($data->Mobile5) ? $data->Mobile5 : "";
+        $studentData['dob'] = !empty($data->DOB) ? $data->DOB : null;
+        $studentData['classStandard'] = isset($data->ClassStandard) ? $data->ClassStandard : "";
+        $studentData['classSection'] = isset($data->ClassSection) ? $data->ClassSection : "";
+        $studentData['morningBusRoute'] = isset($data->MorningBusRoute) ? $data->MorningBusRoute : "";
+        $studentData['eveningBusRoute'] = isset($data->EveningBusRoute) ? $data->EveningBusRoute : "";
+        $studentData['gender'] = isset($data->gender) ? $data->gender : "";
+        $studentData['code'] = Str::random(64, 'alpha');
+
+        $result = $this->studentRepo->addStudent($studentData, $schoolId);
+        if ($result) {
+            return Response::json(array('status' => true));
+        } else {
+            return Response::json(array('status' => false, 'message' => Lang::line('responseerror.added_student_error')->get()));
+        }
+
     }
 
     public function action_getStudents()

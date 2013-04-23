@@ -120,6 +120,37 @@ module.factory('TeacherService', ["$http", "$q", function ($http, $q) {
                     deferred.reject($e);
                 });
             return deferred.promise;
+        },
+        //add new teacher
+        newTeacherAdd: function (addTeacherData, teacherCode) {
+            //make post request with params
+            //make post call for queue the message
+            var deferred = $q.defer();
+            $http.post(
+                '/teacher/create',
+                {
+                    'Name': addTeacherData.name,
+                    'Email': addTeacherData.email,
+                    'Mobile1': addTeacherData.mobile1,
+                    'Mobile2': addTeacherData.mobile2,
+                    'Mobile3': addTeacherData.mobile3,
+                    'Mobile4': addTeacherData.mobile4,
+                    'Mobile5': addTeacherData.mobile5,
+                    'DOB': addTeacherData.dob,
+                    'Department': addTeacherData.department,
+                    'MorningBusRoute': addTeacherData.morningBusRoute,
+                    'EveningBusRoute': addTeacherData.eveningBusRoute,
+                    'Gender': addTeacherData.gender
+                }
+            ).success(function (data) {
+                    deferred.resolve(data);
+                }).error(function (e) {
+                    //todo: log this
+                    //if there is an error processing data, reject it and log error
+                    console.log($e);
+                    deferred.reject($e);
+                });
+            return deferred.promise;
         }
     }
 }]);

@@ -31,6 +31,18 @@
 
             <p>This is a list of all the students that meet the filter criteria that you have selected on the left.</p>
 
+            <div class="row" ng-show="deleteStudentSuccess" style="margin-left:0px">
+                <div class="alert alert-success">
+                    <button type="button" class="close" data-dismiss="alert">×</button>
+                    {{deleteSuccessMessage}}
+                </div>
+            </div>
+            <div class="row" ng-show="deleteStudentError" style="margin-left:0px">
+                <div class="alert alert-error margin-top-20">
+                    <button type="button" class="close" data-dismiss="alert">×</button>
+                    {{deleteErrorMessage}}
+                </div>
+            </div>
             <div class="row">
 
                 <div class="span8">
@@ -59,7 +71,7 @@
                             <td><a href
                                    title="{{getMobileNumbers(student)}}">{{student.mobile1}}</a></td>
                             <td><a href="#/student/edit/{{student.code}}">Edit</a></td>
-                            <td><a href ng-click="deleteStudent(student.code)">Delete</a></td>
+                            <td><a ng-click="deleteStudent($index)">Delete</a></td>
                         </tr>
 
                         </tbody>

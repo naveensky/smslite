@@ -13,8 +13,14 @@ angular.module('app')
         $scope.nextPage = $scope.pageNumber + 1;
         $scope.mobiles = '';
         $scope.studentData = {};
+        $scope.addStudentData = {};
         $scope.showEditScreenError = false;
         $scope.errorEditMessage = '';
+        $scope.errorAddMessage = '';
+        $scope.deleteStudentSuccess = false;
+        $scope.deleteStudentError = false;
+        $scope.showAddScreenError = false;
+
 
         $scope.getMobileNumbers = function (student) {
 
@@ -37,23 +43,28 @@ angular.module('app')
             $scope.pageCount = 25;
             $scope.previousPage = 0;
             $scope.nextPage = $scope.pageNumber + 1;
-            $scope.students = studentService.getStudents(
-                $scope.classSections,
-                $scope.morningRoutes,
-                $scope.eveningRoutes,
-                $scope.pageNumber,
-                $scope.pageCount
-            );
+            studentService.getStudents(
+                    $scope.classSections,
+                    $scope.morningRoutes,
+                    $scope.eveningRoutes,
+                    $scope.pageNumber,
+                    $scope.pageCount
+                ).then(function (students) {
+                    $scope.students = students;
+                });
         }
+
         //function to be call when next or previous Button Clicked
         $scope.findNextStudents = function () {
-            $scope.students = studentService.getStudents(
-                $scope.classSections,
-                $scope.morningRoutes,
-                $scope.eveningRoutes,
-                $scope.pageNumber,
-                $scope.pageCount
-            );
+            studentService.getStudents(
+                    $scope.classSections,
+                    $scope.morningRoutes,
+                    $scope.eveningRoutes,
+                    $scope.pageNumber,
+                    $scope.pageCount
+                ).then(function (students) {
+                    $scope.students = students;
+                });
         }
 
         schoolService.getClasses().then(function (classes) {
@@ -96,18 +107,37 @@ angular.module('app')
             });
         }
 
-        $scope.deleteStudent = function ($code) {
-            $http.post(
-                '/student/delete',
-                {
-                    "code": $code
-                }
-            ).success(function ($data) {
-                    console.log($data);
-                }
-            ).error(function ($e) {
+        $scope.deleteStudent = function (index) {
+            bootbox.confirm("Are you sure you want to delete student", function (result) {
+                if (result) {
+                    var studentCode = $scope.students[index].code;
 
-                });
+                    $http.post(
+                        '/student/delete',
+                        {
+                            "code": studentCode
+                        }
+                    ).success(function ($data) {
+                            if ($data.status) {
+                                $scope.students.splice(index, 1);
+                                $scope.deleteStudentError = false;
+                                $scope.deleteStudentSuccess = true;
+                                $scope.deleteSuccessMessage = "Student Deleted Successfully";
+                            }
+                            else {
+                                $scope.deleteStudentSuccess = false;
+                                $scope.deleteStudentError = true;
+                                $scope.deleteStudentErrorMessage = $data.message;
+
+                            }
+                        }
+                    ).error(function ($e) {
+                            log($e);
+                        });
+                }
+
+            });
+
         }
 
         $scope.saveStudentData = function () {
@@ -120,6 +150,19 @@ angular.module('app')
                 else {
                     $scope.showEditScreenError = true;
                     $scope.errorEditMessage = data.message;
+                }
+            });
+        }
+
+        $scope.addNewStudent = function () {
+            $scope.addStudentData.dob = $('#dateofbirth').val();
+            studentService.newStudentAdd($scope.addStudentData).then(function (data) {
+                if (data.status) {
+                    window.location.href = "#/student/list";
+                }
+                else {
+                    $scope.showAddScreenError = true;
+                    $scope.errorAddMessage = data.message;
                 }
             });
         }

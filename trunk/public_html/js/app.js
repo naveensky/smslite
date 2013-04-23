@@ -23,14 +23,16 @@ angular.module('app', ['LoaderServices']).
             .when('/student', {templateUrl: '/student', controller: 'Student_List'})
             .when('/student/upload', {templateUrl: '/student/upload', controller: 'Student_Upload'})
             .when('/student/edit/:code', {templateUrl: '/student/edit', controller: 'Student_List'})
-            .when('/student/list', {templateUrl: '/student/list', controller: 'Student_List'});
+            .when('/student/list', {templateUrl: '/student/list', controller: 'Student_List'})
+            .when('/student/add', {templateUrl: '/student/add_student', controller: 'Student_List'});
 
         ///teacher routes
         $routeProvider
             .when('/teacher', {templateUrl: '/teacher', controller: 'Teacher_List'})
             .when('/teacher/upload', {templateUrl: '/teacher/upload', controller: 'Teacher_Upload'})
             .when('/teacher/edit/:code', {templateUrl: '/teacher/edit', controller: 'Teacher_List'})
-            .when('/teacher/list', {templateUrl: '/teacher/list', controller: 'Teacher_List'});
+            .when('/teacher/list', {templateUrl: '/teacher/list', controller: 'Teacher_List'})
+            .when('/teacher/add', {templateUrl: '/teacher/add_teacher', controller: 'Teacher_List'});
 
         ///Report Routes
         $routeProvider
