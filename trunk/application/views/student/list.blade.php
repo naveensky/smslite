@@ -44,6 +44,7 @@
                             <th>Evening Bus Route</th>
                             <th>Mobile</th>
                             <th>&nbsp;</th>
+                            <th>&nbsp;</th>
 
                         </tr>
                         </thead>
@@ -58,6 +59,7 @@
                             <td><a href
                                    title="{{getMobileNumbers(student)}}">{{student.mobile1}}</a></td>
                             <td><a href="#/student/edit/{{student.code}}">Edit</a></td>
+                            <td><a href ng-click="deleteStudent(student.code)">Delete</a></td>
                         </tr>
 
                         </tbody>

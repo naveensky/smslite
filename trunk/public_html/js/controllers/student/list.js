@@ -83,8 +83,8 @@ angular.module('app')
 
         }
         $scope.getFormattedDate = function ($date) {
-            if($date==null)
-            return null;
+            if ($date == null)
+                return null;
             return moment($date).format('D MMMM  YYYY');
         }
 
@@ -94,6 +94,20 @@ angular.module('app')
                     $scope.studentData = data[0];
                 }
             });
+        }
+
+        $scope.deleteStudent = function ($code) {
+            $http.post(
+                '/student/delete',
+                {
+                    "code": $code
+                }
+            ).success(function ($data) {
+                    console.log($data);
+                }
+            ).error(function ($e) {
+
+                });
         }
 
         $scope.saveStudentData = function () {

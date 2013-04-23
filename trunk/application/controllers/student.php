@@ -91,11 +91,12 @@ class Student_Controller extends Base_Controller
     }
 
 
-    public function action_delete($code = NULL)
+    public function action_delete()
     {
-        if (empty($code))
+        $data = Input::json();
+        if (empty($data))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
-
+        $code = isset($data->code) ? $data->code : array();
         try {
             $result = $this->studentRepo->deleteStudent($code);
             if ($result) {
