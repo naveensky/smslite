@@ -11,7 +11,7 @@
             <form name="form" novalidate="novalidate">
                 <div class="row">
                     <div class="span4">
-                        <label for="name">Name</label>
+                        <label for="name">Name*</label>
                         <input type="text" ng-model="addTeacherData.name" name="teacherName" ng-required="true"
                                id="name"
                                placeholder="Enter full name"
@@ -58,11 +58,11 @@
 
 
                     <div class="span4">
-                        <label for="mobile1">Mobile1</label>
+                        <label for="mobile1">Mobile1*</label>
                         <input name="mobile1" type="text" ng-model="addTeacherData.mobile1" ng-required="true"
-                               ng-minLength="8"
+                               ng-minLength="10"
                                id="mobile1" class="span4" placeholder="Mobile1">
-                        <span ng-show="form.mobile1.$invalid && !form.mobile1.$pristine" class="text-error">The mobile number should be atleast 8 digits </span>
+                        <span ng-show="form.mobile1.$invalid && !form.mobile1.$pristine" class="text-error">The mobile number should be atleast 10 digits </span>
                     </div>
                 </div>
                 <div class="row">

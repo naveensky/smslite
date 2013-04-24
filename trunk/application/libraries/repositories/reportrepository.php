@@ -54,18 +54,18 @@ class ReportRepository
 
         if (!empty($studentName) && empty($teacherName)) {
             $studentName = Str::lower($studentName);
-            $query = $query->where(("students.name"), '~*', ".*$studentName.*"); //todo:check for match alternative use like
+            $query = $query->where(("smsTransactions.name"), '~*', ".*$studentName.*"); //todo:check for match alternative use like
         }
 
         if (!empty($teacherName) && empty($studentName)) {
             $teacherName = Str::lower($teacherName);
-            $query = $query->where('teachers.name', '~*', ".*$teacherName.*"); //todo:check for match alternative use like
+            $query = $query->where('smsTransactions.name', '~*', ".*$teacherName.*"); //todo:check for match alternative use like
         }
 
         if (!empty($teacherName) && !empty($studentName)) {
             $query = $query->where(function ($query) use ($teacherName, $studentName) {
-                $query->where("students.name", '~*', ".*$studentName.*"); //todo:check for match alternative use like
-                $query->or_where("teachers.name", '~*', ".*$teacherName.*"); //todo:check for match alternative use like
+                $query->where("smsTransactions.name", '~*', ".*$studentName.*"); //todo:check for match alternative use like
+                $query->or_where("smsTransactions.name", '~*', ".*$teacherName.*"); //todo:check for match alternative use like
             });
         }
 
@@ -83,7 +83,7 @@ class ReportRepository
         }
 
         try {
-            $smsLog = $query->skip($skip)->take($perPage)->order_by(DB::raw('"smsTransactions"."created_at"'),'Desc')->get(array('smsTransactions.name', 'smsTransactions.mobile', 'smsTransactions.message', 'smsTransactions.status', 'smsTransactions.created_at as queue_time', 'smsTransactions.updated_at as sent_time'));
+            $smsLog = $query->skip($skip)->take($perPage)->order_by(DB::raw('"smsTransactions"."created_at"'), 'Desc')->get(array('smsTransactions.name', 'smsTransactions.mobile', 'smsTransactions.message', 'smsTransactions.status', 'smsTransactions.created_at as queue_time', 'smsTransactions.updated_at as sent_time'));
         } catch (Exception $e) {
             Log::exception($e);
             return false;
