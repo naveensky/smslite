@@ -8,3 +8,6 @@ Route::get('/contact', 'HomeController@getContact');
 Route::get('/terms', 'HomeController@getTerms');
 Route::get('/privacy', 'HomeController@getPrivacy');
 Route::get('/thanks', 'HomeController@getThanks');
+
+
+Route::get('/10-things-youll-love-about-msngr', 'BlogController@get10ThingsYouWillLoveMsngr');
