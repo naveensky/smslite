@@ -33,7 +33,7 @@
     <div class="span8">
         <p>
             MSNGR is a central platform specially built for schools using which they can communicate and connect with
-            the parents of their students. <u>Our core mission is to keep you connected with parents.</u> This system
+            the parents of their students. <u>Our core mission is to keep you connected with parents.</u> This
             system speeds up the process of sending alerts and updates to the
             parents and makes sure that your message reaches them. Schools can use this system to send attendance and
             progress updates, important and urgent notifications right to the mobile phone of the parent. Guaranteed
@@ -46,6 +46,7 @@
         <p>
         <ul class="list">
             <li>Inform parents of thousands of students with just a few clicks.</li>
+            <li>Templates pre-approved by TRAI -<b> Delivery to DND and non DND numbers.</b></li>
             <li>Send SMS to specific classes, sections or individual students.</li>
             <li>Not just parents, send messages to your teachers and other staff members.</li>
             <li>Instant delivery - No more waiting for circulars to reach home or making tedious phone calls.</li>

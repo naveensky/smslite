@@ -50,7 +50,7 @@
             <p>
                 Gone are the days of paper circulars and diary notes. This is the time of instant alerts. Use MSNGR to
                 easily communicate with the parents
-                by text messages(sms). Share latest updates and alerts with the parents with the click of a button. <br>
+                by text messages(sms). Share latest updates and alerts with the parents with the click of a button. Delivery to both DND and non DND numbers <br>
                 <a
                     href="/features">See Features</a>
             </p>
