@@ -5,6 +5,7 @@ class User_Controller extends Base_Controller
     private $userRepo;
     private $schoolRepo;
     private $adminRepo;
+    private $smsTemplateRepo;
 
 
     public function __construct()
@@ -26,6 +27,7 @@ class User_Controller extends Base_Controller
         $this->schoolRepo = new SchoolRepository();
         $this->smsRepo = new SMSRepository();
         $this->adminRepo = new AdminRepository();
+        $this->smsTemplateRepo = new SMSTemplateRepository();
     }
 
     public function action_login()
@@ -534,5 +536,37 @@ class User_Controller extends Base_Controller
     public function action_transaction_history()
     {
         return View::make('user/transaction/transactionhistory');
+    }
+
+    public function action_request_new_templates()
+    {
+        return View::make('user/requesttemplates');
+    }
+    public function action_request_templates_history()
+    {
+        return View::make('user/requesttemplatehistory');
+    }
+
+    public function action_post_request_new_template()
+    {
+        $data = Input::json();
+        if (empty($data))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+        $templateName = isset($data->templateName) ? $data->templateName : NULL;
+        $templateBody = isset($data->templateBody) ? $data->templateBody : NULL;
+        $schoolId = Auth::user()->schoolId;
+        $status = $this->smsTemplateRepo->insertNewTemplateRequest($templateName, $templateBody, $schoolId);
+        if (!$status)
+            return Response::json(array('status' => false, 'message' => Lang::line('responsemessages.request_new_template_error')), HTTPConstants::SUCCESS_CODE);
+
+        $school = School::find($schoolId);
+        $adminEmailData = array();
+        $adminEmailData['templateName'] = $templateName;
+        $adminEmailData['templateBody'] = $templateBody;
+        $adminEmailData['schoolName'] = $school->name;
+
+        //sending email to admin of the system for this new template request
+        Event::fire(ListenerConstants::APP_ADMIN_REQUEST_NEW_TEMPLATE, array($adminEmailData));
+        return Response::json(array('status' => true, 'message' => Lang::line('responsemessages.request_new_template_success')), HTTPConstants::SUCCESS_CODE);
     }
 }

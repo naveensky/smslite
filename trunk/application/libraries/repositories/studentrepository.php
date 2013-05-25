@@ -253,6 +253,28 @@ class StudentRepository
         return $studentCodes;
     }
 
+    /*
+     * getting distinct students from bus routes morning or evening
+     */
+    public function getStudentFromBusRoutes($morningBusRoutes, $eveningBusRoutes, $schoolId)
+    {
+        $query = Student::where_schoolId($schoolId);
+        $query = $query->where(function ($query) use ($morningBusRoutes, $eveningBusRoutes) {
+            if (!empty($morningBusRoutes))
+                $query->where_in("morningBusRoute", $morningBusRoutes);
+            if (!empty($eveningBusRoutes))
+                $query->or_where_in("eveningBusRoute", $eveningBusRoutes);
+
+        });
+        try {
+            $students = $query->distinct('code')->get();
+        } catch (Exception $e) {
+            Log::exception($e);
+            return false;
+        }
+        return $students;
+    }
+
     public function getStudentByNameOrMobileOrAdmissionNumber($schoolId, $searchValue)
     {
         $query = Student::where_schoolId($schoolId)->where(function ($query) use ($searchValue) {

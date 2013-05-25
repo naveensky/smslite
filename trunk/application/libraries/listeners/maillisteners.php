@@ -55,6 +55,11 @@ class MailListener
             $mailService->sendUserPasswordUpdate($user);
         });
 
+        Event::listen(ListenerConstants::APP_ADMIN_REQUEST_NEW_TEMPLATE, function ($data) {
+            $mailService = new MailServices();
+            $mailService->sendEmailtoSystemAdminOnNewTemplateRequest($data);
+        });
+
     }
 }
 

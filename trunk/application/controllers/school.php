@@ -10,6 +10,8 @@ class School_Controller extends Base_Controller
 {
     private $schoolRepo;
     private $smsRepo;
+    private $studentRepo;
+    private $teacherRepo;
 
     public function __construct()
     {
@@ -20,6 +22,8 @@ class School_Controller extends Base_Controller
 
         $this->schoolRepo = new SchoolRepository();
         $this->smsRepo = new SMSRepository();
+        $this->studentRepo = new StudentRepository();
+        $this->teacherRepo = new TeacherRepository();
 
     }
 
@@ -172,8 +176,8 @@ class School_Controller extends Base_Controller
         if (!$ignoreTeachers)
             $data3 = array_merge($data1, $data2);
 
-        $data = array_diff($data3, array_intersect($data1, $data2));
-        return Response::json($data);
+        $data = array_unique($data3);
+        return Response::json(array_values($data));
     }
 
     public function action_get_evening_routes($ignoreStudents = false, $ignoreTeachers = false)
@@ -190,8 +194,8 @@ class School_Controller extends Base_Controller
         if (!$ignoreTeachers)
             $data3 = array_merge($data1, $data2);
 
-        $data = array_diff($data3, array_intersect($data1, $data2));
-        return Response::json($data);
+        $data = array_unique($data3);
+        return Response::json(array_values($data));
     }
 
     public function action_get_available_credits()
@@ -212,6 +216,13 @@ class School_Controller extends Base_Controller
         return Response::eloquent($transactions);
     }
 
+    public function action_get_requested_templates_history()
+    {
+        $schoolId = Auth::user()->schoolId;
+        $transactions = RequestedTemplate::where_schoolId($schoolId)->get();
+        return Response::eloquent($transactions);
+    }
+
     public function action_get_all_schools()
     {
         $schools = $this->schoolRepo->getAllSchools();
@@ -227,6 +238,69 @@ class School_Controller extends Base_Controller
             $totalSchools[] = $row;
         }
         return Response::json($totalSchools);
+    }
+
+    public function action_get_students_or_teachers_from_bus_routes()
+    {
+        $data = Input::json();
+        if (empty($data))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+
+        $morningBusRoutes = isset($data->morningBusRoutes) ? $data->morningBusRoutes : array();
+        $eveningBusRoutes = isset($data->eveningBusRoutes) ? $data->eveningBusRoutes : array();
+        $schoolId = Auth::user()->schoolId;
+        $students = $this->studentRepo->getStudentFromBusRoutes($morningBusRoutes, $eveningBusRoutes, $schoolId);
+        if ($students == false && !is_array($students))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+        $teachers = $this->teacherRepo->getTeachersFromBusRoutes($morningBusRoutes, $eveningBusRoutes, $schoolId);
+        if ($teachers == false && !is_array($teachers))
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+        $studentsData = array();
+        foreach ($students as $student) {
+            $row = array();
+            $mobileCount = 0;
+            if ($student->mobile1 != "")
+                $mobileCount++;
+            if ($student->mobile2 != "")
+                $mobileCount++;
+            if ($student->mobile3 != "")
+                $mobileCount++;
+            if ($student->mobile4 != "")
+                $mobileCount++;
+            if ($student->mobile5 != "")
+                $mobileCount++;
+            $row['code'] = $student->code;
+            $row['name'] = $student->name;
+            $row['classStandard'] = $student->classStandard;
+            $row['classSection'] = $student->classSection;
+            $row['mobileCount'] = $mobileCount;
+            $studentsData[] = $row;
+        }
+
+
+        $teachersData = array();
+        foreach ($teachers as $teacher) {
+            $row = array();
+            $mobileCount = 0;
+            if ($teacher->mobile1 != "")
+                $mobileCount++;
+            if ($teacher->mobile2 != "")
+                $mobileCount++;
+            if ($teacher->mobile3 != "")
+                $mobileCount++;
+            if ($teacher->mobile4 != "")
+                $mobileCount++;
+            if ($teacher->mobile5 != "")
+                $mobileCount++;
+
+            $row['code'] = $teacher->code;
+            $row['name'] = $teacher->name;
+            $row['department'] = $teacher->department;
+            $row['mobileCount'] = $mobileCount;
+            $teachersData[] = $row;
+        }
+        $teacherAndStudentData = array('students' => $studentsData, 'teachers' => $teachersData);
+        return Response::json($teacherAndStudentData);
     }
 
 }

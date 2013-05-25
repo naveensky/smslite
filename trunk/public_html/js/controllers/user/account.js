@@ -22,13 +22,52 @@ angular.module('app')
         $scope.rePassword = '';
         $scope.newPassword = '';
         $scope.oldPassword = '';
-        $scope.message = '';
+        $scope.templateBody = '';
+        $scope.templateName = '';
         $scope.successUpdatePassword = false;
         $scope.errorUpdatePassword = false;
+        $scope.successRequestTemplate = false;
+        $scope.errorRequestTemplate = false;
+        $scope.iAgree = true;
         $scope.transactionsHistory = transactionsService.getTransactions();
+        transactionsService.getRequestedTemplatesHistory().then(function (result) {
+            $scope.requestedTemplatesHistory = result;
+        });
 
         $scope.getFormattedDate = function ($date) {
             return moment($date).format('Do MMMM  YYYY');
+        }
+
+        $scope.getStatusCss = function ($Row) {
+            switch ($Row.status) {
+                case 'pending':
+                    return '';
+                    break;
+                case 'approved':
+                    return 'success';
+                    break;
+                case 'fail':
+                    return 'error';
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        $scope.getTemplateStatusClass = function (status) {
+            switch (status) {
+                case 'pending':
+                    return 'icon-';
+                    break;
+                case 'approved':
+                    return 'icon-ok';
+                    break;
+                case 'fail':
+                    return 'icon-remove';
+                    break;
+                default:
+                    break;
+            }
         }
 
         $scope.getUserProfile = function () {
@@ -42,6 +81,12 @@ angular.module('app')
                 });
         }
         $scope.getUserProfile();
+
+        $scope.getSingleMessageCredit = function () {
+            if ($scope.message == null)
+                return 0;
+            return Math.ceil($scope.message.length / 160);
+        };
 
         $scope.updateProfile = function () {
             $http.post(
@@ -97,6 +142,24 @@ angular.module('app')
                     }
                 }
             ).error(function ($e) {
+
+                });
+        }
+
+        $scope.requestTemplate = function () {
+            $http.post(
+                '/user/post_request_new_template',
+                {
+                    "templateName": $scope.templateName,
+                    "templateBody": $scope.templateBody
+                }
+            ).success(function (data) {
+                    if (data.status == true) {
+                        $scope.errorRequestTemplate = false;
+                        $scope.successRequestTemplate = true;
+                        $scope.message = data.message;
+                    }
+                }).error(function ($e) {
 
                 });
         }

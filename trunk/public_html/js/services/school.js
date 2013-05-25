@@ -58,6 +58,7 @@ module.factory('SchoolService', ["$http", "$q", function ($http, $q) {
             ).success(function (data) {
                     //if data is proper array, return data else empty array
                     if (Array.isArray(data)) {
+                        console.log(data);
                         deferred.resolve(data);
                     }
                     else

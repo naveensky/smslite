@@ -108,6 +108,8 @@ angular.module('app')
         }
 
         $scope.deleteStudent = function (index) {
+            $scope.deleteStudentSuccess = false;
+            $scope.deleteStudentError = false;
             bootbox.confirm("Are you sure you want to delete student", function (result) {
                 if (result) {
                     var studentCode = $scope.students[index].code;
@@ -138,6 +140,28 @@ angular.module('app')
 
             });
 
+        }
+
+        $scope.exportData = function () {
+
+            $http.post(
+                '/student/exportStudent',
+                {
+                    classSection: $scope.classSections,
+                    morningBusRoute: $scope.morningRoutes,
+                    eveningBusRoute: $scope.eveningroutes
+                }
+            ).success(function ($data) {
+                    if ($data.status != false) {
+                        var downloadFrame = '<iframe height="0" width="0" style="display:none" src="' + $data.filePath + '"></iframe>';
+                        $(downloadFrame).appendTo('body');
+                    }
+                    else {
+                        alert('No Data to export');
+                    }
+                }).error(function ($data) {
+                    //todo: work for error
+                });
         }
 
         $scope.saveStudentData = function () {

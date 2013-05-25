@@ -45,4 +45,21 @@ class Util
         $value = rtrim(ltrim($match, '<%'), '%>');
         return '<% isset(' . $value . ')?' . $value . ':"Not Mentioned";%>';
     }
+
+    public static function convertToAbsoluteURL($filePath)
+    {
+        return path('public') . ltrim($filePath, "/");
+    }
+
+    public static function convertToHttpURL($filePath)
+    {
+        return URL::base() . "/" . ltrim($filePath, "/");
+    }
+
+    public static function  generateTempFilePath($extension)
+    {
+        $extension = rtrim(ltrim($extension, "."), ".");
+        $fileName = Str::random(64, 'alnum');
+        return "tmp/$fileName.$extension";
+    }
 }

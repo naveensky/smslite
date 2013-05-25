@@ -269,6 +269,9 @@ class Student_Controller extends Base_Controller
             if ($student->mobile5 != "")
                 $mobileCount++;
             $row['code'] = $student->code;
+            $row['name'] = $student->name;
+            $row['classStandard'] = $student->classStandard;
+            $row['classSection'] = $student->classSection;
             $row['mobileCount'] = $mobileCount;
             $codes[] = $row;
         }
@@ -311,10 +314,10 @@ class Student_Controller extends Base_Controller
         if ($students == false && !is_array($students))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
-        $studentsCSV = Student::parseToCSV($students);
-
-        //todo: pending download
-
+        $studentsCSVData = Student::parseToCSV($students);
+        $filePath = Util::generateTempFilePath("csv");
+        File::put(Util::convertToAbsoluteURL($filePath), $studentsCSVData);
+        return Response::json(array('status' => true, 'filePath' => Util::convertToHttpURL($filePath)));
     }
 
     public function action_findStudentByNameOrMobileOrAdmissionNumber()
@@ -351,6 +354,8 @@ class Student_Controller extends Base_Controller
             $row['mobile3'] = $student->mobile3;
             $row['mobile4'] = $student->mobile4;
             $row['mobile5'] = $student->mobile5;
+            $row['classStandard'] = $student->classStandard;
+            $row['classSection'] = $student->classSection;
             $row['admissionNumber'] = $student->uniqueIdentifier;
             $row['code'] = $student->code;
             $row['mobileCount'] = $mobileCount;

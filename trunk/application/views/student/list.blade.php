@@ -20,6 +20,7 @@
                 <option ng-repeat="eveningroute in eveningroutes">{{eveningroute}}</option>
             </select>
             <button class="btn btn-primary" ng-click="filterStudents()">Filter</button>
+            <button class="btn btn-primary" type="button" ng-click="exportData()">Export</button>
         </div>
 
     </div>
@@ -71,7 +72,7 @@
                             <td><a href
                                    title="{{getMobileNumbers(student)}}">{{student.mobile1}}</a></td>
                             <td><a href="#/student/edit/{{student.code}}">Edit</a></td>
-                            <td><a ng-click="deleteStudent($index)">Delete</a></td>
+                            <td><a ng-click="deleteStudent($index)"><i class="icon-trash icon-large"></i></a></td>
                         </tr>
 
                         </tbody>

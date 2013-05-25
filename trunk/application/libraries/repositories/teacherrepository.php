@@ -135,6 +135,36 @@ class TeacherRepository
         return $teacher;
     }
 
+    /**getting distinct teachers from the bus routes
+     * @param $morningBusRoutes
+     * @param $eveningBusRoutes
+     * @param $schoolId
+     * @return bool
+     */
+    public function getTeachersFromBusRoutes($morningBusRoutes, $eveningBusRoutes, $schoolId)
+    {
+
+        $query = Teacher::where_schoolId($schoolId);
+
+        $query = $query->where(function ($query) use ($morningBusRoutes, $eveningBusRoutes) {
+            if (!empty($morningBusRoutes))
+                $query->where_in("morningBusRoute", $morningBusRoutes);
+            if (!empty($eveningBusRoutes))
+                $query->or_where_in("eveningBusRoute", $eveningBusRoutes);
+
+        });
+
+        try {
+            $teachers = $query->distinct('code')->get();
+        } catch (Exception $e) {
+            Log::exception($e);
+            return false;
+        }
+
+        return $teachers;
+
+    }
+
     public function getTeacherCodeFromBusRoutes($morningBusRoutes, $eveningBusRoutes)
     {
         $schoolId = Auth::user()->schoolId;

@@ -17,11 +17,85 @@ angular.module('app')
         $scope.itemsPerPage = 10;
         $scope.currentPage = 0;
         $scope.templates = [];
-        $scope.templateSelected = 'custom';
+        $scope.templateSelected = 1;
         $scope.showPlaceholder = false;
         $scope.model = {};
         $scope.sendCopy = false;
+        $scope.studentList = false;
+        $scope.teacherList = false;
+        $scope.studentAndTeacherList = false;
 
+        //client side pagination code used for added user list view
+        $scope.calculatePageItemsForUserAdded = function (isStudent, isTeacher) {
+            $scope.pagedStudents = [];
+            $scope.pagedTeachers = [];
+            $scope.currentStudentListPage = 0;
+            $scope.currentTeacherListPage = 0;
+            if (isStudent == true && isTeacher == false) {
+                for (var i = 0; i < $scope.selectedStudents.length; i++) {
+                    if (i % $scope.itemsPerPage === 0) {
+                        $scope.pagedStudents[Math.floor(i / $scope.itemsPerPage)] = [ $scope.selectedStudents[i] ];
+                    } else {
+                        $scope.pagedStudents[Math.floor(i / $scope.itemsPerPage)].push($scope.selectedStudents[i]);
+                    }
+                }
+            }
+
+            else if (isStudent == false && isTeacher == true) {
+                for (var j = 0; j < $scope.selectedTeachers.length; j++) {
+                    if (j % $scope.itemsPerPage === 0) {
+                        $scope.pagedTeachers[Math.floor(j / $scope.itemsPerPage)] = [ $scope.selectedTeachers[j] ];
+                    } else {
+                        $scope.pagedTeachers[Math.floor(j / $scope.itemsPerPage)].push($scope.selectedTeachers[j]);
+                    }
+                }
+
+            }
+
+            else {
+                for (var k = 0; k < $scope.selectedStudents.length; k++) {
+                    if (k % $scope.itemsPerPage === 0) {
+                        $scope.pagedStudents[Math.floor(k / $scope.itemsPerPage)] = [ $scope.selectedStudents[k] ];
+                    } else {
+                        $scope.pagedStudents[Math.floor(k / $scope.itemsPerPage)].push($scope.selectedStudents[k]);
+                    }
+                }
+
+                for (var l = 0; l < $scope.selectedTeachers.length; l++) {
+                    if (l % $scope.itemsPerPage === 0) {
+                        $scope.pagedTeachers[Math.floor(l / $scope.itemsPerPage)] = [ $scope.selectedTeachers[l] ];
+                    } else {
+                        $scope.pagedTeachers[Math.floor(l / $scope.itemsPerPage)].push($scope.selectedTeachers[l]);
+                    }
+                }
+
+            }
+
+        }
+
+        $scope.prevPageStudent = function () {
+            if ($scope.currentStudentListPage > 0) {
+                $scope.currentStudentListPage--;
+            }
+        };
+
+        $scope.nextPageStudent = function () {
+            if ($scope.currentStudentListPage < $scope.pagedStudents.length - 1) {
+                $scope.currentStudentListPage++;
+            }
+        };
+
+        $scope.prevPageTeacher = function () {
+            if ($scope.currentTeacherListPage > 0) {
+                $scope.currentTeacherListPage--;
+            }
+        };
+
+        $scope.nextPageTeacher = function () {
+            if ($scope.currentTeacherListPage < $scope.pagedTeachers.length - 1) {
+                $scope.currentTeacherListPage++;
+            }
+        };
 
         //monitors the previous value of the filter
         $scope.monitorFunction = function () {
@@ -31,25 +105,9 @@ angular.module('app')
         $scope.monitorFunction();
 
         $scope.checkTemplateSelected = function () {
-            if ($scope.templateSelected == 'custom')
-                return false;
             return true;
         }
 
-        $scope.templateMessage = function () {
-            $scope.message = null;
-            $scope.link = null;
-            angular.forEach($scope.templates, function (template) {
-                if (template.id == $scope.templateSelected) {
-                    console.log(template.body);
-                    $scope.message = template.body;
-                    $scope.link = '/sms/get_template_message_vars/' + $scope.templateSelected;
-                }
-//                else {
-//                    $scope.message = null;
-//                }
-            })
-        }
         $scope.calculatePageItems = function () {
             for (var i = 0; i < $scope.searchResults.length; i++) {
                 if (i % $scope.itemsPerPage === 0) {
@@ -79,13 +137,30 @@ angular.module('app')
             }
         };
 
+
         smsService.getAvailableCredits().then(function (result) {
             $scope.creditsAvailable = result;
         });
 
         smsService.getAvailableTemplates().then(function (result) {
             $scope.templates = result;
+            $scope.templateSelected = $scope.templates[0].id;
+            $scope.message = $scope.templates[0].body;
+            $scope.link = '/sms/get_template_message_vars/' + $scope.templateSelected;
         });
+
+        $scope.templateMessage = function () {
+            $scope.message = null;
+            $scope.link = null;
+            angular.forEach($scope.templates, function (template) {
+                if (template.id == $scope.templateSelected) {
+                    console.log(template.body);
+                    $scope.message = template.body;
+                    $scope.link = '/sms/get_template_message_vars/' + $scope.templateSelected;
+
+                }
+            })
+        }
 
         $scope.searchPeople = function () {
 
@@ -273,6 +348,10 @@ angular.module('app')
                     }
                 }
             }
+            $scope.calculatePageItemsForUserAdded(true, true);
+            if ($scope.selectedStudents.length > 0 || $scope.selectedTeachers.length > 0) {
+                $scope.studentAndTeacherList = true;
+            }
             console.log($scope.selectedStudents);
             console.log($scope.selectedTeachers);
         }
@@ -292,10 +371,13 @@ angular.module('app')
                 {"classSection": selectedClasses}
             ).success(function (data) {
                     if (Array.isArray(data)) {
-//                        $scope.selectedStudents = $scope.selectedStudents.concat(data);
                         $scope.selectedTeachers = [];
                         $scope.selectedStudents = data;
                         $scope.selectedStudents = $scope.selectedStudents.unique();
+                        $scope.calculatePageItemsForUserAdded(true, false);
+                        if ($scope.selectedStudents.length > 0 && $scope.selectedTeachers.length == 0) {
+                            $scope.studentList = true;
+                        }
                     }
 
                     //todo: log this as this is not an array
@@ -324,6 +406,10 @@ angular.module('app')
                         $scope.selectedStudents = [];
                         $scope.selectedTeachers = data;
                         $scope.selectedTeachers = $scope.selectedTeachers.unique();
+                        $scope.calculatePageItemsForUserAdded(false, true);
+                        if ($scope.selectedStudents.length == 0 && $scope.selectedTeachers.length > 0) {
+                            $scope.teacherList = true;
+                        }
                     }
                     //todo: log if not array
                 }).error(function (e) {
@@ -347,80 +433,25 @@ angular.module('app')
                     selectedMorningBusRoutes.push($scope.morningRoutes[i].route);
             }
 
+            //make a call to get students from busRoutes
+            $http.post(
+                '/school/get_students_or_teachers_from_bus_routes',
+                {"morningBusRoutes": selectedMorningBusRoutes,
+                    "eveningBusRoutes": selectedEveningBusRoutes
+                }
 
-            //make post call for studentcodes from morningBusRoutes
-            if (selectedMorningBusRoutes.length != 0) {
-                $http.post(
-                    '/student/getStudentCodes',
-                    {"morningBusRoute": selectedMorningBusRoutes}
+            ).success(function (data) {
 
-                ).success(function (data) {
-                        if (Array.isArray(data)) {
-                            $scope.selectedStudents = data;
-                            $scope.selectedStudents = $scope.selectedStudents.unique();
-                        }
-                        console.log(Array.isArray(data));
-
-                        //todo: log this as this is not an array
-                    }).error(function (e) {
-                        log('error', e)
-                    });
-
-            }
-            //make post call for studentcodes from morningBusRoutes
-            if (selectedEveningBusRoutes.length != 0) {
-                $http.post(
-                    '/student/getStudentCodes',
-                    {"eveningBusRoute": selectedEveningBusRoutes}
-
-                ).success(function (data) {
-                        if (Array.isArray(data)) {
-                            $scope.selectedStudents = data;
-                            $scope.selectedStudents = $scope.selectedStudents.unique();
-                        }
-                        console.log(Array.isArray(data));
-
-                        //todo: log this as this is not an array
-                    }).error(function (e) {
-                        log('error', e)
-                    });
-            }
-            if (selectedMorningBusRoutes.length != 0) {
-                //make post call for teacherCodes from morning bus routes
-                $http.post(
-                    '/teacher/getTeacherCodes',
-                    {"morningBusRoute": selectedMorningBusRoutes
+                    $scope.selectedStudents = data.students;
+                    $scope.selectedTeachers = data.teachers;
+                    $scope.calculatePageItemsForUserAdded(true, true);
+                    if ($scope.selectedStudents.length > 0 || $scope.selectedTeachers.length > 0) {
+                        $scope.studentAndTeacherList = true;
                     }
-                ).success(function (data) {
-                        if (Array.isArray(data)) {
-                            $scope.selectedTeachers = data;
-                            $scope.selectedTeachers = $scope.selectedTeachers.unique();
-                        }
-                        console.log(Array.isArray(data));
-
-                        //todo: log this as this is not an array
-                    }).error(function (e) {
-                        log('error', e)
-                    });
-            }
-            if (selectedEveningBusRoutes.length != 0) {
-                //make post call for teacherCodes from morning bus routes
-                $http.post(
-                    '/teacher/getTeacherCodes',
-                    {"eveningBusRoute": selectedEveningBusRoutes
-                    }
-                ).success(function (data) {
-                        if (Array.isArray(data)) {
-                            $scope.selectedTeachers = data;
-                            $scope.selectedTeachers = $scope.selectedTeachers.unique();
-                        }
-                        console.log(Array.isArray(data));
-
-                        //todo: log this as this is not an array
-                    }).error(function (e) {
-                        log('error', e)
-                    });
-            }
+                    //todo: log this as this is not an array
+                }).error(function (e) {
+                    log('error', e)
+                });
 
         }
 
@@ -437,6 +468,14 @@ angular.module('app')
                     $scope.monitorFunction();
                     $scope.selectedStudents = [];
                     $scope.selectedTeachers = [];
+                    $scope.pagedStudents = [];
+                    $scope.pagedTeachers = [];
+                    $scope.currentStudentListPage = 0;
+                    $scope.currentTeacherListPage = 0;
+                    $scope.studentList = false;
+                    $scope.teacherList = false;
+                    $scope.studentAndTeacherList = false;
+
                 });
             }
             else {

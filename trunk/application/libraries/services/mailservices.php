@@ -188,4 +188,23 @@ class MailServices
             Log::exception($e);
         }
     }
+
+    public function sendEmailtoSystemAdminOnNewTemplateRequest($emailData)
+    {
+        $emails = Config::get('app.system_alert_emails');
+        try {
+            Message::send(function ($message) use ($emailData, $emails) {
+                $message->to($emails);
+                $message->from(Config::get('email.from_email'), Config::get('email.from_name'));
+                $message->subject(__('emailsubjects.requested_templates_allocated_admin'));
+                $message->body("view: user.email.admin.templaterequested");
+                // You can add View data by simply setting the value
+                // to the message.
+                $message->body->result = $emailData;
+                $message->html(true);
+            });
+        } catch (Exception $e) {
+            Log::exception($e);
+        }
+    }
 }

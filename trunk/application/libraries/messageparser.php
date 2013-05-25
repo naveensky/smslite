@@ -62,21 +62,23 @@ class MessageParser
     public function parseTemplate($template, $students, $teachers, $messageVars)
     {
         $viewsDirectory = path('app') . 'views/'; //directory to make temporary files
+
+        foreach ($this->knownVariables as $key => $value) {
+            $template = preg_replace_callback('/<%[^%>]*%>/',
+                function ($match) use ($key, $value) {
+                    if(preg_match('/<%text_[^%>]*%>/',$match[0]))
+                       return $match[0];
+                    return str_replace($key, '$' . $key, $match[0]);
+                },
+                $template
+            );
+        }
         $template = preg_replace_callback('/<%text_[^%>]*%>/',
             function ($match) {
                 return Util::getFormattedTemplate(str_replace('text_', '$text_', $match[0]));
             },
             $template
         );
-
-        foreach ($this->knownVariables as $key => $value) {
-            $template = preg_replace_callback('/<%[^%>]*%>/',
-                function ($match) use ($key, $value) {
-                    return str_replace($key, '$' . $key, $match[0]);
-                },
-                $template
-            );
-        }
         $studentsData = array();
         $teachersData = array();
 

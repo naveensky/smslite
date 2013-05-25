@@ -103,6 +103,7 @@ class Teacher_Controller extends Base_Controller
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
         }
     }
+
     public function action_add_teacher()
     {
         return View::make('teacher.add');
@@ -231,7 +232,10 @@ class Teacher_Controller extends Base_Controller
         if ($teachers == false && !is_array($teachers))
             return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
 
-        $teachersCSV = Teacher::parseToCSV($teachers);
+        $teachersCSVData = Teacher::parseToCSV($teachers);
+        $filePath = Util::generateTempFilePath("csv");
+        File::put(Util::convertToAbsoluteURL($filePath), $teachersCSVData);
+        return Response::json(array('status' => true, 'filePath' => Util::convertToHttpURL($filePath)));
 
     }
 
@@ -276,6 +280,8 @@ class Teacher_Controller extends Base_Controller
                 $mobileCount++;
 
             $code['code'] = $teacher->code;
+            $code['name'] = $teacher->name;
+            $code['department'] = $teacher->department;
             $code['mobileCount'] = $mobileCount;
             $codes[] = $code;
         }
@@ -318,6 +324,7 @@ class Teacher_Controller extends Base_Controller
             $row['mobile3'] = $teacher->mobile3;
             $row['mobile4'] = $teacher->mobile4;
             $row['mobile5'] = $teacher->mobile5;
+            $row['department'] = $teacher->department;
             $row['code'] = $teacher->code;
             $row['mobileCount'] = $mobileCount;
             $teacherData[] = $row;

@@ -19,5 +19,6 @@ class ListenerConstants
     const APP_ADMIN_CREDITS_ALLOTED = 'app.admin_credits_alloted';
     const APP_CREDITS_ALLOTED = 'app.credits_alloted';
     const MAXIMUM_MESSAGE_LENGTH = 306;
+    const APP_ADMIN_REQUEST_NEW_TEMPLATE = 'app.admin_request_new_template';
 
 }

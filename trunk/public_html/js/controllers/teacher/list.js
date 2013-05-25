@@ -92,6 +92,8 @@ angular.module('app')
         }
 
         $scope.deleteTeacher = function (index) {
+            $scope.deleteTeacherSuccess = false;
+            $scope.deleteTeacherError = false;
             bootbox.confirm("Are you sure you want to delete teacher", function (result) {
                 if (result) {
                     var teacherCode = $scope.teachers[index].code;
@@ -134,6 +136,30 @@ angular.module('app')
                 }
             });
         }
+
+
+        $scope.exportData = function () {
+
+            $http.post(
+                '/teacher/exportTeachers',
+                {
+                    departments: $scope.departments,
+                    morningBusRoutes: $scope.morningRoutes,
+                    eveningBusRoutes: $scope.eveningRoutes
+                }
+            ).success(function ($data) {
+                    if ($data.status != false) {
+                        var downloadFrame = '<iframe height="0" width="0" style="display:none" src="' + $data.filePath + '"></iframe>';
+                        $(downloadFrame).appendTo('body');
+                    }
+                    else {
+                        alert('No Data to export');
+                    }
+                }).error(function ($data) {
+                    //todo: work for error
+                });
+        }
+
 
         $scope.saveTeacherData = function () {
             var code = routeParams.code;

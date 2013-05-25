@@ -17,7 +17,9 @@ return array(
     'empty_message' => 'Please enter the message you want to send',
     'pdo_error_sms' => 'please try again some internal error occured',
     'insufficient_credits_error_sms' => 'You have insufficient credits to send sms please buy credits now',
-    'password_update_success'=>'Your password has been updated successfully',
-    'password_update_error'=>'Sorry your password is not updated please try again',
+    'password_update_success' => 'Your password has been updated successfully',
+    'password_update_error' => 'Sorry your password is not updated please try again',
+    'request_new_template_error' => 'Sorry an error occured please try again',
+    'request_new_template_success' => 'We have received a request and we will inform you when template get approved'
 
 );
