@@ -28,6 +28,7 @@ angular.module('app')
         $scope.errorUpdatePassword = false;
         $scope.successRequestTemplate = false;
         $scope.errorRequestTemplate = false;
+        $scope.requestTemplateMessage = '';
         $scope.iAgree = true;
         $scope.transactionsHistory = transactionsService.getTransactions();
         transactionsService.getRequestedTemplatesHistory().then(function (result) {
@@ -54,16 +55,16 @@ angular.module('app')
             }
         }
 
-        $scope.getTemplateStatusClass = function (status) {
+        $scope.getTemplateStatusMessage = function (status) {
             switch (status) {
                 case 'pending':
-                    return 'icon-';
+                    return 'Pending';
                     break;
                 case 'approved':
-                    return 'icon-ok';
+                    return 'Approved';
                     break;
                 case 'fail':
-                    return 'icon-remove';
+                    return 'Not Approved';
                     break;
                 default:
                     break;
@@ -157,7 +158,13 @@ angular.module('app')
                     if (data.status == true) {
                         $scope.errorRequestTemplate = false;
                         $scope.successRequestTemplate = true;
-                        $scope.message = data.message;
+                        $scope.requestTemplateMessage = data.message;
+                        window.location.href = "#/user/requested_templates_history";
+                    }
+                    else {
+                        $scope.successRequestTemplate = false;
+                        $scope.errorRequestTemplate = true;
+                        $scope.requestTemplateMessage = data.message;
                     }
                 }).error(function ($e) {
 

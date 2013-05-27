@@ -12,6 +12,7 @@ abstract class ControllerTestCase extends PHPUnit_Framework_TestCase
 
     protected function tearDownAfterTests()
     {
+        $this->removeSession();
         shell_exec("php artisan migrate:reset --env=testing");
         DB::query('DROP TABLE laravel_migrations');
     }
@@ -20,6 +21,11 @@ abstract class ControllerTestCase extends PHPUnit_Framework_TestCase
     protected function loadSession()
     {
         \Session::started() or \Session::load();
+    }
+
+    protected function removeSession()
+    {
+        \Session::flush();
     }
 
     private function createDatabase()
@@ -38,6 +44,8 @@ abstract class ControllerTestCase extends PHPUnit_Framework_TestCase
     protected function getSampleUser()
     {
         $school = FactoryMuff::create('School');
+        $school->contactMobile = '1234567890';
+        $school->code = Str::random(64, 'alpha');
         $school->save();
 
         $user = FactoryMuff::create('User');

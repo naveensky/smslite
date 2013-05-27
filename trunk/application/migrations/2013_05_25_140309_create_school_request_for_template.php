@@ -30,10 +30,10 @@ class Create_School_Request_For_Template
     public function down()
     {
         //
-        Schema::table('requestedTemplate', function ($table) {
-            $table->drop_foreign('requestedTemplate_schoolId_foreign');
+        Schema::table('requestedTemplates', function ($table) {
+            $table->drop_foreign('requestedTemplates_schoolId_foreign');
         });
-        Schema::drop('requestedTemplate');
+        Schema::drop('requestedTemplates');
     }
 
 }

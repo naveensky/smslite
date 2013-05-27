@@ -2,7 +2,10 @@
 <?php $leftMenu = array(
     '/user/profile' => 'Edit Profile',
     '/user/update_password' => 'Update Password',
-    '/user/transaction_history' => 'Transaction History');
+    '/user/transaction_history' => 'Transaction History',
+    '/user/request_new_template' => 'Request Templates',
+    '/user/request_templates_history' => 'Requested Templates History'
+);
 ?>
 
 <ul class="nav nav-list">

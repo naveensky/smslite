@@ -20,7 +20,6 @@ class TestAuthcontroller extends ControllerTestCase
         $this->assertTrue(true);
     }
 
-
     public function testLogin()
     {
         $school = FactoryMuff::create('School');

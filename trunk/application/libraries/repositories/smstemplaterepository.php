@@ -17,6 +17,7 @@ class SMSTemplateRepository
             $requestedTemplate->name = $templateName;
             $requestedTemplate->body = $templateBody;
             $requestedTemplate->schoolId = $schoolId;
+            $requestedTemplate->status = 'pending';
             $requestedTemplate->save();
         } catch (Exception $e) {
             Log::exception($e);

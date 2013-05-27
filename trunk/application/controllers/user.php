@@ -557,7 +557,7 @@ class User_Controller extends Base_Controller
         $schoolId = Auth::user()->schoolId;
         $status = $this->smsTemplateRepo->insertNewTemplateRequest($templateName, $templateBody, $schoolId);
         if (!$status)
-            return Response::json(array('status' => false, 'message' => Lang::line('responsemessages.request_new_template_error')), HTTPConstants::SUCCESS_CODE);
+            return Response::json(array('status' => false, 'message' => Lang::line('responsemessages.request_new_template_error')->get()), HTTPConstants::SUCCESS_CODE);
 
         $school = School::find($schoolId);
         $adminEmailData = array();
@@ -567,6 +567,6 @@ class User_Controller extends Base_Controller
 
         //sending email to admin of the system for this new template request
         Event::fire(ListenerConstants::APP_ADMIN_REQUEST_NEW_TEMPLATE, array($adminEmailData));
-        return Response::json(array('status' => true, 'message' => Lang::line('responsemessages.request_new_template_success')), HTTPConstants::SUCCESS_CODE);
+        return Response::json(array('status' => true, 'message' => Lang::line('responsemessages.request_new_template_success')->get()), HTTPConstants::SUCCESS_CODE);
     }
 }

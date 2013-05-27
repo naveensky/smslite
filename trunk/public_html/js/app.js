@@ -18,7 +18,7 @@ angular.module('app', ['LoaderServices']).
             .when('/user/update_password', {templateUrl: '/user/update_password', controller: 'User_Account'})
             .when('/user/transaction_history', {templateUrl: '/user/transaction_history', controller: 'User_Account'})
             .when('/user/request_new_template', {templateUrl: '/user/request_new_templates', controller: 'User_Account'})
-            .when('/user/requested_templates_history', {templateUrl: '/user/request_templates_history', controller: 'User_Account'});
+            .when('/user/request_templates_history', {templateUrl: '/user/request_templates_history', controller: 'User_Account'});
 
         //student routes
         $routeProvider

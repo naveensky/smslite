@@ -17,19 +17,20 @@
                     <table class="table table-striped table-hover table-condensed">
                         <thead>
                         <tr>
-                            <th>Template Name</th>
-                            <th>Template Body</th>
-                            <th>Is Approved</th>
-                            <th>Submit Date</th>
+                            <th class="width-20">Template Name</th>
+                            <th class="width-40">Template Body</th>
+                            <th class="width-15">Status</th>
+                            <th class="width-15">Submit Date</th>
                         </tr>
                         </thead>
                         <tbody ng-show="requestedTemplatesHistory.length>0">
 
-                        <tr ng-repeat="requestedHistory in requestedTemplatesHistory" ng-class="getStatusCss(smsRow)">
-                            <td>{{ requestedHistory.templateName }}</td>
-                            <td>{{ requestedHistory.templateBody }}</td>
-                            <td><i class="icon {{getTemplateStatusClass(requestedHistory.isApproved)}}"</td>
-                            <td>{{getFormattedDate(transaction.created_at)}}</td>
+                        <tr ng-repeat="requestedHistory in requestedTemplatesHistory"
+                            ng-class="getStatusCss(requestedHistory)">
+                            <td class="width-20">{{ requestedHistory.name }}</td>
+                            <td class="width-40">{{ requestedHistory.body }}</td>
+                            <td class="width-15">{{getTemplateStatusMessage(requestedHistory.status)}}</td>
+                            <td class="width-15">{{getFormattedDate(requestedHistory.created_at)}}</td>
 
                         </tr>
 

@@ -214,4 +214,66 @@ class TestSchoolController extends ControllerTestCase
         $this->assertEquals(2, count(json_decode($response->content, true)));
 
     }
+
+    public function testGetStudentOrTeachersFromBusRoutes()
+    {
+        $user = $this->getSampleUser();
+        $school = $user->school()->first();
+
+        Auth::login($user->id);
+        $student1 = FactoryMuff::create('Student');
+        $student1->schoolId = $school->id;
+        $student1->morningBusRoute = "400";
+        $student1->eveningBusRoute = '500';
+        $student1->save();
+
+        $student2 = FactoryMuff::create('Student');
+        $student2->schoolId = $school->id;
+        $student2->morningBusRoute = "1000";
+        $student1->eveningBusRoute = '500';
+        $student2->save();
+
+        $teacher1 = FactoryMuff::create('Teacher');
+        $teacher1->schoolId = $user->school()->first()->id;
+        $student1->eveningBusRoute = '400';
+        $teacher1->morningBusRoute = "500";
+        $teacher1->save();
+
+        $teacher2 = FactoryMuff::create('Teacher');
+        $teacher2->schoolId = $user->school()->first()->id;
+        $teacher2->morningBusRoute = "2";
+        $student1->eveningBusRoute = '400';
+        $teacher2->save();
+
+        $parameters = array(
+            'morningBusRoutes' => array($student1->morningBusRoute, $teacher2->mornigBusRoute),
+            'eveningBusRoutes' => array()
+        );
+
+        Input::$json = (object)$parameters;
+
+        $response = $this->post('school@get_students_or_teachers_from_bus_routes', array());
+        $result = json_decode($response->content);
+        $students = $result->students;
+        $teachers = $result->teachers;
+        $this->assertEquals(200, $response->status());
+        $this->assertEquals(1, count($students));
+        $this->assertEquals(0, count($teachers));
+
+        $parameters1 = array(
+            'morningBusRoutes' => array($student1->morningBusRoute, $teacher1->morningBusRoute),
+            'eveningBusRoutes' => array($teacher1->eveningBusRoute)
+        );
+
+        Input::$json = (object)$parameters1;
+
+        $response = $this->post('school@get_students_or_teachers_from_bus_routes', array());
+        $result = json_decode($response->content);
+        $students = $result->students;
+        $teachers = $result->teachers;
+        $this->assertEquals(200, $response->status());
+        $this->assertEquals(1, count($students));
+        $this->assertEquals(1, count($teachers));
+
+    }
 }

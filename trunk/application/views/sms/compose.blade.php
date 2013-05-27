@@ -214,7 +214,7 @@
         </tfoot>
         <tbody>
         <tr ng-repeat="selectedStudent in pagedStudents[currentStudentListPage]">
-            <td>{{selectedStudent.name}}</td>
+            <td><a ng-click="showStudentDetailModal(selectedStudent.code)">{{selectedStudent.name}}</a></td>
             <td>{{selectedStudent.classStandard}}-{{selectedStudent.classSection}}</td>
         </tr>
         </tbody>
@@ -245,7 +245,7 @@
         </tfoot>
         <tbody>
         <tr ng-repeat="selectedTeacher in pagedTeachers[currentTeacherListPage]">
-            <td>{{selectedTeacher.name}}</td>
+            <td><a ng-click="showTeacherDetailModal(selectedTeacher.code)">{{selectedTeacher.name}}</a></td>
             <td>{{selectedTeacher.department}}</td>
         </tr>
         </tbody>
@@ -289,7 +289,7 @@
                             </tfoot>
                             <tbody ng-show="pagedStudents.length>0">
                             <tr ng-repeat="selectedStudent in pagedStudents[currentStudentListPage]">
-                                <td>{{selectedStudent.name}}</td>
+                                <td><a ng-click="showStudentDetailModal(selectedStudent.code)">{{selectedStudent.name}}</a></td>
                                 <td>{{selectedStudent.classStandard}}-{{selectedStudent.classSection}}</td>
                             </tr>
                             </tbody>
@@ -342,7 +342,7 @@
                             </tfoot>
                             <tbody ng-show="pagedTeachers.length>0">
                             <tr ng-repeat="selectedTeacher in pagedTeachers[currentTeacherListPage]">
-                                <td>{{selectedTeacher.name}}</td>
+                                <td><a ng-click="showTeacherDetailModal(selectedTeacher.code)">{{selectedTeacher.name}}</a></td>
                                 <td>{{selectedTeacher.department}}</td>
                             </tr>
                             </tbody>
@@ -370,5 +370,165 @@
 
 </div>
 </div>
+</div>
+<!--    Student Detail Modal-->
+<div id="student-detail" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="student-modal-label"
+     aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 id="student-modal-label">Student Detail</h4>
+    </div>
+    <div class="modal-body">
+        <table class="table table-condensed">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Detail</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Name</td>
+                <td>{{studentDetail.name}}</td>
+            </tr>
+            <tr>
+                <td>Admission No.</td>
+                <td>{{studentDetail.uniqueIdentifier}}</td>
+            </tr>
+            <tr>
+                <td>Class</td>
+                <td>{{studentDetail.classStandard}}-{{studentDetail.classSection}}</td>
+
+            </tr>
+            <tr>
+                <td>DOB</td>
+                <td>{{studentDetail.dob}}</td>
+            </tr>
+            <tr>
+                <td>Gender</td>
+                <td>{{studentDetail.gender}}</td>
+            </tr>
+            <tr>
+                <td>Father Name</td>
+                <td>{{studentDetail.fatherName}}</td>
+            </tr>
+            <tr>
+                <td>Mother Name</td>
+                <td>{{studentDetail.motherName}}</td>
+            </tr>
+            <tr>
+                <td>Email</td>
+                <td>{{studentDetail.email}}</td>
+            </tr>
+            <tr>
+                <td>Mobile1</td>
+                <td>{{studentDetail.mobile1}}</td>
+            </tr>
+            <tr>
+                <td>Mobile2</td>
+                <td>{{studentDetail.mobile2}}</td>
+            </tr>
+            <tr>
+                <td>Mobile3</td>
+                <td>{{studentDetail.mobile3}}</td>
+            </tr>
+            <tr>
+                <td>Mobile4</td>
+                <td>{{studentDetail.mobile4}}</td>
+            </tr>
+            <tr>
+                <td>Mobile5</td>
+                <td>{{studentDetail.mobile5}}</td>
+            </tr>
+            <tr>
+                <td>Morning Bus Route</td>
+                <td>{{studentDetail.morningBusRoute}}</td>
+            </tr>
+            <tr>
+                <td>Evening Bus Route</td>
+                <td>{{studentDetail.eveningBusRoute}}</td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    </div>
+</div>
+
+<!--    Teacher Detail Modal-->
+<div id="teacher-detail" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="teacher-modal-label"
+     aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 id="teacher-modal-label">Teacher Detail</h4>
+    </div>
+    <div class="modal-body">
+        <table class="table table-condensed">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Detail</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Name</td>
+                <td>{{teacherDetail.name}}</td>
+            </tr>
+            <tr>
+                <td>Department</td>
+                <td>{{teacherDetail.department}}</td>
+            </tr>
+            <tr>
+                <td>DOB</td>
+                <td>{{teacherDetail.dob}}</td>
+            </tr>
+            <tr>
+                <td>Gender</td>
+                <td>{{teacherDetail.gender}}</td>
+            </tr>
+            <tr>
+                <td>Email</td>
+                <td>{{teacherDetail.email}}</td>
+            </tr>
+            <tr>
+                <td>Mobile1</td>
+                <td>{{teacherDetail.mobile1}}</td>
+            </tr>
+            <tr>
+                <td>Mobile2</td>
+                <td>{{teacherDetail.mobile2}}</td>
+            </tr>
+            <tr>
+                <td>Mobile3</td>
+                <td>{{studentDetail.mobile3}}</td>
+            </tr>
+            <tr>
+                <td>Mobile4</td>
+                <td>{{studentDetail.mobile4}}</td>
+            </tr>
+            <tr>
+                <td>Mobile5</td>
+                <td>{{studentDetail.mobile5}}</td>
+            </tr>
+            <tr>
+                <td>Morning Bus Route</td>
+                <td>{{studentDetail.morningBusRoute}}</td>
+            </tr>
+            <tr>
+                <td>Evening Bus Route</td>
+                <td>{{studentDetail.eveningBusRoute}}</td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    </div>
 </div>
 </div>

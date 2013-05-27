@@ -162,6 +162,24 @@ angular.module('app')
             })
         }
 
+        $scope.showStudentDetailModal = function (studentCode) {
+            $scope.studentDetail = '';
+            studentService.getStudentsData(studentCode).then(function (result) {
+                $scope.studentDetail = result[0];
+                $('#student-detail').modal('show');
+            });
+
+        }
+
+        $scope.showTeacherDetailModal = function (teacherCode) {
+            $scope.teacherDetail = '';
+            teacherService.getTeachersData(teacherCode).then(function (result) {
+                $scope.teacherDetail = result[0];
+                $('#teacher-detail').modal('show');
+            });
+
+        }
+
         $scope.searchPeople = function () {
 
             //clear previous results before making new search hit
@@ -337,6 +355,8 @@ angular.module('app')
 
 
         $scope.addBySearchResult = function () {
+            $scope.selectedTeachers = [];
+            $scope.selectedStudents = [];
             //get all selected classes
             for (var i = 0; i < $scope.pagedItems.length; ++i) {
                 for (var j = 0; j < $scope.pagedItems[i].length; ++j) {

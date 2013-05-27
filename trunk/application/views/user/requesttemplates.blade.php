@@ -48,17 +48,13 @@
                                    class="validation invalid"><br/><i class="icon-remove padding-right-5"></i>In order to request new template you must verified the above information</span>
                             </label>
 
-                            <div class="alert alert-success margin-top-20" style="width:35%"
-                                 ng-show="successUpdatePassword">
-                                <button type="button" class="close" data-dismiss="alert">×</button>
-                                {{message}}
-                            </div>
                             <div class="alert alert-error margin-top-20" style="width:45%"
-                                 ng-show="errorUpdatePassword">
+                                 ng-show="errorRequestTemplate">
                                 <button type="button" class="close" data-dismiss="alert">×</button>
-                                {{message}}
+                                {{requestTemplateMessage}}
                             </div>
-                            <button type="button" ng-click="requestTemplate()" ng-disabled="form.$invalid || !iAgree || templateBody.length>320"
+                            <button type="button" ng-click="requestTemplate()"
+                                    ng-disabled="form.$invalid || !iAgree || templateBody.length>320"
                                     class="btn btn-success">
                                 Request Now
                             </button>
