@@ -42,4 +42,5 @@ return array(
     'messages' => array('auto' => true),
     'compactor' => array('auto' => true),
     'factorymuff' => array('auto' => true),
+    'httpful' => array('auto' => true),
 );

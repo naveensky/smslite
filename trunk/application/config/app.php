@@ -7,5 +7,8 @@
  * To change this template use File | Settings | File Templates.
  */
 return array(
-    'system_alert_emails' => array("naveen@greenapplesolutions.com", "hmalhotra@greenapplesolutions.com")
+    'system_alert_emails' => array("naveen@greenapplesolutions.com", "hmalhotra@greenapplesolutions.com"),
+    'rest_api_url' => 'http://smslite.localhost.com/rest',
+    'rest_api_key' => 'asdf1234',
 );
+

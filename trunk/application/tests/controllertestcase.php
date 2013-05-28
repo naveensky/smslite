@@ -13,7 +13,7 @@ abstract class ControllerTestCase extends PHPUnit_Framework_TestCase
     protected function tearDownAfterTests()
     {
         $this->removeSession();
-        shell_exec("php artisan migrate:reset --env=testing");
+        shell_exec("php artisan migrate:rollback --env=testing");
         DB::query('DROP TABLE laravel_migrations');
     }
 

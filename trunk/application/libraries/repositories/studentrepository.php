@@ -18,6 +18,14 @@ class StudentRepository
      */
 
 //    public static $hidden = array('id'); //to exclude id from the result
+
+    public static $rules = array(
+        'name' => 'required',
+        'email' => 'email',
+        'mobile1' => 'required|max:10',
+        'admissionNumber' => 'required'
+    );
+
     public function createStudents($schoolCode, $students)
     {
         $school = School::where_code($schoolCode)->get();
@@ -320,8 +328,98 @@ class StudentRepository
             return false;
         }
         return true;
+    }
+
+    private function isStudentExist($admissionNumber)
+    {
+        try {
+            $student = Student::where('uniqueIdentifier', $admissionNumber)->first();
+        } catch (Exception $e) {
+            return false;
+        }
+        return $student;
+    }
+
+    public function insertOrUpdate($studentData)
+    {
+        if (is_array($studentData) && !empty($studentData)) {
+            $admissionNoWithErrors = array();
+            foreach ($studentData as $dataRow) {
+                $input = array(
+                    'admissionNumber' => $dataRow->admissionNumber,
+                    'name' => $dataRow->name,
+                    'email' => $dataRow->email,
+                    'mobile1' => $dataRow->mobile1
+                );
+
+                $validator = Validator::make($input, StudentRepository::$rules);
+                if ($validator->fails()) {
+
+                    if ($validator->errors->has('name') || $validator->errors->has('mobile1') || $validator->errors->has('admissionNumber')) {
+                        if (isset($input['admissionNumber']))
+                            $admissionNoWithErrors[] = $input['admissionNumber'];
+                        continue;
+                    }
+                    if ($validator->errors->has('email')) {
+                        $dataRow->email = "";
+                    }
+
+                }
+
+                $admissionNo = isset($studentData->admissionNumber) ? $studentData->admissionNumber : '';
+                $name = isset($studentData->name) ? $studentData->name : '';
+                $email = isset($studentData->email) ? $studentData->email : '';
+                $fatherName = isset($studentData->fatherName) ? $studentData->fatherName : '';
+                $motherName = isset($studentData->motherName) ? $studentData->motherName : '';
+                $mobile1 = isset($studentData->mobile1) ? $studentData->mobile1 : '';
+                $mobile2 = isset($studentData->mobile2) ? $studentData->mobile2 : '';
+                $mobile3 = isset($studentData->mobile3) ? $studentData->mobile3 : '';
+                $mobile4 = isset($studentData->mobile4) ? $studentData->mobile4 : '';
+                $mobile5 = isset($studentData->mobile5) ? $studentData->mobile5 : '';
+                $dob = isset($studentData->dob) ? $studentData->dob : null;
+                $classStandard = isset($studentData->classStandard) ? $studentData->classStandard : '';
+                $classSection = isset($studentData->classSection) ? $studentData->classSection : '';
+                $morningBusRoute = isset($studentData->morningBusRoute) ? $studentData->morningBusRoute : '';
+                $eveningBusRoute = isset($studentData->eveningBusRoute) ? $studentData->eveningBusRoute : '';
+                $gender = isset($studentData->gender) ? $studentData->gender : '';
 
 
+                $studentData = $this->isStudentExist($admissionNo);
+                if (!is_null($studentData) && $studentData == false)
+                    $admissionNoWithErrors[] = $admissionNo;
+                else if (is_null($studentData)) {
+                    try {
+                        $student = new Student();
+                        $student->name = $name;
+                        $student->email = $email;
+                        $student->classSection = $classSection;
+                        $student->classStandard = $classStandard;
+                        $student->mobile1 = $mobile1;
+                        $student->mobile2 = $mobile2;
+                        $student->mobile3 = $mobile3;
+                        $student->mobile4 = $mobile4;
+                        $student->mobile5 = $mobile5;
+                        $student->morningBusRoute = $morningBusRoute;
+                        $student->eveningBusRoute = $eveningBusRoute;
+                        $student->gender = $gender;
+                        $student->fatherName = $fatherName;
+                        $student->motherName = $motherName;
+                        $student->dob = $dob;
+                        $student->save();
+                    } catch (Exception $e) {
+                        Log::exception($e);
+                        $admissionNoWithErrors[] = $admissionNo;
+                    }
+
+                } else {
+                    //code to update the student detail if the student exist
+                }
+
+            }
+
+        } else {
+            return false;
+        }
     }
 
 
