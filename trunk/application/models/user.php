@@ -15,6 +15,11 @@ class User extends Eloquent
         'password' => 'string',
         'mobile' => 'string',
         'isVerified' => 1,
+        'emailVerificationCode' => 'string',
+        'mobileVerificationCode' => '123456',
+        'isDeleted' => 1,
+        'isDeactivated' => 1,
+        'reactivateCode' => 'string',
         'schoolId' => 'factory|School'
     );
 

@@ -128,14 +128,14 @@
     </div>
 </div>
 <div class="span6">
-    <div class="box">
-        <h3><i class="icon-envelope-alt icon-large"></i>Compose Message</h3>
-        <label>Choose Template</label>
-        <select class="template-select" ng-model="templateSelected" ng-change="templateMessage()"
-                ng-options="template.id as template.name for template in templates "></select>
-        <textarea ng-disabled="checkTemplateSelected()" class="input-block-level" rows="5" ng-model="message"
-                  ng-required="true"
-                  placeholder="enter your message here..."></textarea>
+<div class="box">
+    <h3><i class="icon-envelope-alt icon-large"></i>Compose Message</h3>
+    <label>Choose Template</label>
+    <select class="template-select" ng-model="templateSelected" ng-change="templateMessage()"
+            ng-options="template.id as template.name for template in templates "></select>
+    <textarea ng-disabled="checkTemplateSelected()" class="input-block-level" rows="5" ng-model="message"
+              ng-required="true"
+              placeholder="enter your message here..."></textarea>
             <span ng-show="message.length>0" class="help-block">
                 <i>
                     {{message.length}} character, {{getSingleMessageCredit()}} credit(s) required per person to
@@ -148,46 +148,11 @@
                 </i>
             </span>
 
-    </div>
-    <div class="box" ng-hide="!checkTemplateSelected()">
-        <h3>Placeholders</h3>
-
-        <div ng-include="link"></div>
-    </div>
 </div>
-<div class="span3">
-<div class="box">
-    <h3><i class="icon-cog icon-large"></i>Verify &amp; Send</h3>
+<div class="box" ng-hide="!checkTemplateSelected()">
+    <h3>Placeholders</h3>
 
-    <div class="control-group">
-        <label>Total Individual</label>
-        <input class="input-block-level" type="text" readonly="readonly" value="{{getPeopleCount()}}">
-    </div>
-    <div class="control-group">
-        <label>Total SMS to deliver</label>
-        <input class="input-block-level" type="text" readonly="readonly" value="{{totalSMS()}}">
-    </div>
-    <div class="control-group">
-        <label>Credits Required</label>
-        <input class="input-block-level" type="text" readonly="readonly" value="{{getCreditsRequired()}}">
-    </div>
-    <div class="control-group">
-        <label>Credits Available <a href="#" class="pull-right">
-                <small><a style="float:right" href="http://msngr.in/pricing" target="_blank"><i
-                            class="icon-money"></i> Buy
-                        Credits</small>
-            </a></label>
-
-        <input class="input-block-level" type="text" readonly="readonly" ng-model="creditsAvailable">
-    </div>
-    <div class="control-group">
-        <label class="checkbox">
-            <input type="checkbox" ng-model="sendCopy">Send Copy to Admin
-        </label>
-        <button ng-disabled="checkBeforeSend()" ng-click="queueSMS()" class="btn btn-block btn-success"><i
-                class="icon-add"></i> Add to SMS Queue
-        </button>
-    </div>
+    <div ng-include="link"></div>
 </div>
 <div class="box" ng-show="studentList">
     <h3><i class="icon-cog icon-large"></i>Selected Students List</h3>
@@ -289,7 +254,9 @@
                             </tfoot>
                             <tbody ng-show="pagedStudents.length>0">
                             <tr ng-repeat="selectedStudent in pagedStudents[currentStudentListPage]">
-                                <td><a ng-click="showStudentDetailModal(selectedStudent.code)">{{selectedStudent.name}}</a></td>
+                                <td>
+                                    <a ng-click="showStudentDetailModal(selectedStudent.code)">{{selectedStudent.name}}</a>
+                                </td>
                                 <td>{{selectedStudent.classStandard}}-{{selectedStudent.classSection}}</td>
                             </tr>
                             </tbody>
@@ -342,7 +309,9 @@
                             </tfoot>
                             <tbody ng-show="pagedTeachers.length>0">
                             <tr ng-repeat="selectedTeacher in pagedTeachers[currentTeacherListPage]">
-                                <td><a ng-click="showTeacherDetailModal(selectedTeacher.code)">{{selectedTeacher.name}}</a></td>
+                                <td>
+                                    <a ng-click="showTeacherDetailModal(selectedTeacher.code)">{{selectedTeacher.name}}</a>
+                                </td>
                                 <td>{{selectedTeacher.department}}</td>
                             </tr>
                             </tbody>
@@ -369,6 +338,41 @@
 
 
 </div>
+</div>
+<div class="span3">
+    <div class="box">
+        <h3><i class="icon-cog icon-large"></i>Verify &amp; Send</h3>
+
+        <div class="control-group">
+            <label>Total Individual</label>
+            <input class="input-block-level" type="text" readonly="readonly" value="{{getPeopleCount()}}">
+        </div>
+        <div class="control-group">
+            <label>Total SMS to deliver</label>
+            <input class="input-block-level" type="text" readonly="readonly" value="{{totalSMS()}}">
+        </div>
+        <div class="control-group">
+            <label>Credits Required</label>
+            <input class="input-block-level" type="text" readonly="readonly" value="{{getCreditsRequired()}}">
+        </div>
+        <div class="control-group">
+            <label>Credits Available <a href="#" class="pull-right">
+                    <small><a style="float:right" href="http://msngr.in/pricing" target="_blank"><i
+                                class="icon-money"></i> Buy
+                            Credits</small>
+                </a></label>
+
+            <input class="input-block-level" type="text" readonly="readonly" ng-model="creditsAvailable">
+        </div>
+        <div class="control-group">
+            <label class="checkbox">
+                <input type="checkbox" ng-model="sendCopy">Send Copy to Admin
+            </label>
+            <button ng-disabled="checkBeforeSend()" ng-click="queueSMS()" class="btn btn-block btn-success"><i
+                    class="icon-add"></i> Add to SMS Queue
+            </button>
+        </div>
+    </div>
 </div>
 </div>
 <!--    Student Detail Modal-->

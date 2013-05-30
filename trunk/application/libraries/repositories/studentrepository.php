@@ -333,20 +333,20 @@ class StudentRepository
     private function isStudentExist($admissionNumber)
     {
         try {
-            $student = Student::where('uniqueIdentifier', $admissionNumber)->first();
+            $student = Student::where('uniqueIdentifier', '=', $admissionNumber)->first();
         } catch (Exception $e) {
             return false;
         }
         return $student;
     }
 
-    public function insertOrUpdate($studentData)
+    public function insertOrUpdate($studentData, $schoolId)
     {
         if (is_array($studentData) && !empty($studentData)) {
             $admissionNoWithErrors = array();
             foreach ($studentData as $dataRow) {
                 $input = array(
-                    'admissionNumber' => $dataRow->admissionNumber,
+                    'admissionNumber' => $dataRow->admissionNo,
                     'name' => $dataRow->name,
                     'email' => $dataRow->email,
                     'mobile1' => $dataRow->mobile1
@@ -366,30 +366,31 @@ class StudentRepository
 
                 }
 
-                $admissionNo = isset($studentData->admissionNumber) ? $studentData->admissionNumber : '';
-                $name = isset($studentData->name) ? $studentData->name : '';
-                $email = isset($studentData->email) ? $studentData->email : '';
-                $fatherName = isset($studentData->fatherName) ? $studentData->fatherName : '';
-                $motherName = isset($studentData->motherName) ? $studentData->motherName : '';
-                $mobile1 = isset($studentData->mobile1) ? $studentData->mobile1 : '';
-                $mobile2 = isset($studentData->mobile2) ? $studentData->mobile2 : '';
-                $mobile3 = isset($studentData->mobile3) ? $studentData->mobile3 : '';
-                $mobile4 = isset($studentData->mobile4) ? $studentData->mobile4 : '';
-                $mobile5 = isset($studentData->mobile5) ? $studentData->mobile5 : '';
-                $dob = isset($studentData->dob) ? $studentData->dob : null;
-                $classStandard = isset($studentData->classStandard) ? $studentData->classStandard : '';
-                $classSection = isset($studentData->classSection) ? $studentData->classSection : '';
-                $morningBusRoute = isset($studentData->morningBusRoute) ? $studentData->morningBusRoute : '';
-                $eveningBusRoute = isset($studentData->eveningBusRoute) ? $studentData->eveningBusRoute : '';
-                $gender = isset($studentData->gender) ? $studentData->gender : '';
+                $admissionNo = isset($dataRow->admissionNo) ? $dataRow->admissionNo : '';
+                $name = isset($dataRow->name) ? $dataRow->name : '';
+                $email = isset($dataRow->email) ? $dataRow->email : '';
+                $fatherName = isset($dataRow->fatherName) ? $dataRow->fatherName : '';
+                $motherName = isset($dataRow->motherName) ? $dataRow->motherName : '';
+                $mobile1 = isset($dataRow->mobile1) ? $dataRow->mobile1 : '';
+                $mobile2 = isset($dataRow->mobile2) ? $dataRow->mobile2 : '';
+                $mobile3 = isset($dataRow->mobile3) ? $dataRow->mobile3 : '';
+                $mobile4 = isset($dataRow->mobile4) ? $dataRow->mobile4 : '';
+                $mobile5 = isset($dataRow->mobile5) ? $dataRow->mobile5 : '';
+                $dob = !empty($dataRow->dob) ? $dataRow->dob : null; //DOB
+                $classStandard = isset($dataRow->classStandard) ? $dataRow->classStandard : '';
+                $classSection = isset($dataRow->classSection) ? $dataRow->classSection : '';
+                $morningBusRoute = isset($dataRow->morningBusRoute) ? $dataRow->morningBusRoute : '';
+                $eveningBusRoute = isset($dataRow->eveningBusRoute) ? $dataRow->eveningBusRoute : '';
+                $gender = isset($dataRow->gender) ? $dataRow->gender : '';
 
 
-                $studentData = $this->isStudentExist($admissionNo);
-                if (!is_null($studentData) && $studentData == false)
+                $studentExist = $this->isStudentExist($admissionNo);
+                if (!is_null($studentExist) && $studentExist == false)
                     $admissionNoWithErrors[] = $admissionNo;
-                else if (is_null($studentData)) {
+                else if (is_null($studentExist)) {
                     try {
                         $student = new Student();
+                        $student->uniqueIdentifier = $admissionNo;
                         $student->name = $name;
                         $student->email = $email;
                         $student->classSection = $classSection;
@@ -405,20 +406,32 @@ class StudentRepository
                         $student->fatherName = $fatherName;
                         $student->motherName = $motherName;
                         $student->dob = $dob;
+                        $student->schoolId = $schoolId;
+                        $student->code = Str::random(64, 'alpha');
                         $student->save();
                     } catch (Exception $e) {
                         Log::exception($e);
                         $admissionNoWithErrors[] = $admissionNo;
                     }
-
                 } else {
-                    //code to update the student detail if the student exist
+                    try {
+
+                        Student::update($studentExist->id, array('uniqueIdentifier' => $admissionNo, 'name' => $name, 'email' => $email,
+                            'classSection' => $classSection, 'classStandard' => $classStandard,
+                            'mobile1' => $mobile1, 'mobile2' => $mobile2, 'mobile3' => $mobile3, 'mobile4' => $mobile4,
+                            'mobile5' => $mobile5, 'morningBusRoute' => $morningBusRoute, 'eveningBusRoute' => $eveningBusRoute,
+                            'gender' => $gender, 'fatherName' => $fatherName, 'motherName' => $motherName));
+                    } catch (Exception $e) {
+                        Log::exception($e);
+                        $admissionNoWithErrors[] = $admissionNo;
+                    }
                 }
 
             }
+            return array('status' => true, 'admissionNumbersErrors' => $admissionNoWithErrors);
 
         } else {
-            return false;
+            return array('status' => false);
         }
     }
 

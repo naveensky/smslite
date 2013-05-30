@@ -43,7 +43,13 @@ class Util
     public static function getFormattedTemplate($match)
     {
         $value = rtrim(ltrim($match, '<%'), '%>');
-        return '<% isset(' . $value . ')?' . $value . ':"Not Mentioned";%>';
+        return '<% isset(' . $value . ')?' . $value . ':"";%>';
+    }
+
+    public static function getFormatSMSTemplate($match)
+    {
+        $value = rtrim(ltrim($match, '<%'), '%>');
+        return '<% isset($' . $value . ')?' . '$' . $value . ':"";%>';
     }
 
     public static function convertToAbsoluteURL($filePath)

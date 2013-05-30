@@ -216,9 +216,6 @@ class TestStudentController extends ControllerTestCase
 
     public function testGetStudents()
     {
-        $this->markTestSkipped(
-            'Have to check getStudentCodes test'
-        );
         $user = $this->getSampleUser();
         Auth::login($user->id);
 
@@ -247,9 +244,6 @@ class TestStudentController extends ControllerTestCase
 
     public function testGetStudentCodes()
     {
-        $this->markTestSkipped(
-            'Have to check getStudentCodes test'
-        );
         $user = $this->getSampleUser();
         Auth::login($user->id);
 
@@ -280,9 +274,6 @@ class TestStudentController extends ControllerTestCase
 
     public function testGetStudentByCodes()
     {
-        $this->markTestSkipped(
-            'Have to check getStudentByCodes test'
-        );
         $user = $this->getSampleUser();
         Auth::login($user->id);
 

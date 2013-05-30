@@ -182,15 +182,10 @@ class TestTeacherController extends ControllerTestCase
         File::delete($directory . 'teacher_test_list.csv');
     }
 
-
     public function testGetTeachers()
     {
-        $this->markTestSkipped(
-            'Have to check getTeachers test'
-        );
         $user = $this->getSampleUser();
         Auth::login($user->id);
-
         $teacher = FactoryMuff::create('Teacher');
         $teacher->schoolId = $user->school()->first()->id;
         $teacher->department = "Hindi";

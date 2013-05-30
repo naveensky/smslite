@@ -40,13 +40,18 @@ angular.module('app')
             $scope.totaldepartments = deparments;
         });
 
-        schoolService.getMorningBusRoutes(false, false).then(function (routes) {
-            $scope.morningroutes = routes;
+        teacherService.getBusRoutes().then(function (routes) {
+            $scope.morningroutes = routes.morningRoutes;
+            $scope.eveningroutes = routes.eveningRoutes;
         });
 
-        schoolService.getEveningBusRoutes(false, false).then(function (routes) {
-            $scope.eveningroutes = routes;
-        });
+//        schoolService.getMorningBusRoutes(false, false).then(function (routes) {
+//            $scope.morningroutes = routes;
+//        });
+//
+//        schoolService.getEveningBusRoutes(false, false).then(function (routes) {
+//            $scope.eveningroutes = routes;
+//        });
 
         $scope.getTeachers = function () {
             $scope.pageNumber = 1;

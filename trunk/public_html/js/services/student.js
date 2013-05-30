@@ -160,6 +160,24 @@ module.factory('StudentService', ["$http", "$q", function ($http, $q) {
                     deferred.reject($e);
                 });
             return deferred.promise;
+        },
+        getBusRoutes: function () {
+
+            var deferred = $q.defer();          //defer for data
+
+            $http.get(
+                    '/student/get_bus_routes'
+                ).success(function (data) {
+                    deferred.resolve(data);
+                }
+            ).error(function ($e) {
+                    //if there is an error processing data, reject it and log error
+                    log('error', $e);
+                    deferred.reject($e);
+                }
+            );
+
+            return deferred.promise;
         }
     }
 }]);

@@ -15,7 +15,7 @@ class Rest_Controller extends Base_Controller
             'fatherName' => '', 'motherName' => '', 'mobile1' => '9999999999', 'mobile2' => '9999999999',
             'mobile3' => '9999999999', 'mobile4' => '9999999999', 'mobile5' => '', 'dob' => '', 'classStandard' => '6',
             'classSection' => 'A', 'morningBusRoute' => '400', 'eveningBusRoute' => '500', "gender" => "male");
-        $student2 = array("admissionNo" => 12456, "name" => 'Keshav', 'email' => 'keshav@gmail.com',
+        $student2 = array("admissionNo" => 12457, "name" => 'Keshav', 'email' => 'keshav@gmail.com',
             'fatherName' => '', 'motherName' => '', 'mobile1' => '9999999999', 'mobile2' => '9999999999',
             'mobile3' => '9999999999', 'mobile4' => '9999999999', 'mobile5' => '', 'dob' => '', 'classStandard' => '6',
             'classSection' => 'A', 'morningBusRoute' => '400', 'eveningBusRoute' => '500', "gender" => "male");

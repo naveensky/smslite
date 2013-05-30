@@ -13,7 +13,7 @@ abstract class ControllerTestCase extends PHPUnit_Framework_TestCase
     protected function tearDownAfterTests()
     {
         $this->removeSession();
-        shell_exec("php artisan migrate:rollback --env=testing");
+        $output = shell_exec("php artisan migrate:reset --env=testing");
         DB::query('DROP TABLE laravel_migrations');
     }
 
@@ -33,6 +33,7 @@ abstract class ControllerTestCase extends PHPUnit_Framework_TestCase
         // If there is not a declaration that migrations have been run'd
         shell_exec("php artisan migrate:install --env=testing");
         shell_exec("php artisan migrate:rebuild --env=testing");
+
     }
 
     protected function resetDatabase()
@@ -45,6 +46,13 @@ abstract class ControllerTestCase extends PHPUnit_Framework_TestCase
     {
         $school = FactoryMuff::create('School');
         $school->contactMobile = '1234567890';
+        $school->name = 'test school';
+        $school->address = 'dwarka';
+        $school->city = 'new delhi';
+        $school->state = 'delhi';
+        $school->zip = '110018';
+        $school->senderId = 'abcdef';
+        $school->contactPerson = '';
         $school->code = Str::random(64, 'alpha');
         $school->save();
 

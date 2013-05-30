@@ -63,16 +63,16 @@ class MessageParser
     {
         $viewsDirectory = path('app') . 'views/'; //directory to make temporary files
 
-        foreach ($this->knownVariables as $key => $value) {
-            $template = preg_replace_callback('/<%[^%>]*%>/',
-                function ($match) use ($key, $value) {
-                    if(preg_match('/<%text_[^%>]*%>/',$match[0]))
-                       return $match[0];
-                    return str_replace($key, '$' . $key, $match[0]);
-                },
-                $template
-            );
-        }
+//        foreach ($this->knownVariables as $key => $value) {
+        $template = preg_replace_callback('/<%[^%>]*%>/',
+            function ($match) {
+                if (preg_match('/<%text_[^%>]*%>/', $match[0]))
+                    return $match[0];
+                return Util::getFormatSMSTemplate($match[0]);
+            },
+            $template
+        );
+//        }
         $template = preg_replace_callback('/<%text_[^%>]*%>/',
             function ($match) {
                 return Util::getFormattedTemplate(str_replace('text_', '$text_', $match[0]));
@@ -95,12 +95,12 @@ class MessageParser
         if (!empty($students)) {
 
             foreach ($students as $student) {
-                $data['name'] = $student->name; //name
-                $data['dob'] = $student->dob; //dob
-                $data['class'] = $student->classStandard . '-' . ucfirst($student->classSection);
-                $data['section'] = $student->classSection;
-                $data['mornigbusroute'] = $student->morningBusRoute;
-                $data['eveningbusroute'] = $student->eveningBusRoute;
+                $data['name'] = isset($student->name) ? $student->name : ''; //name
+                $data['dob'] = isset($student->dob) ? $student->dob : ''; //dob
+                $data['class'] = isset($student->classStandard) ? $student->classStandard : '' . '-' . isset($student->classSection) ? ucfirst($student->classSection) : '';
+                $data['section'] = isset($student->classSection) ? $student->classSection : '';
+                $data['mornigbusroute'] = isset($student->morningBusRoute) ? $student->morningBusRoute : '';
+                $data['eveningbusroute'] = isset($student->eveningBusRoute) ? $student->eveningBusRoute : '';
                 $data['today'] = date('d M Y');
                 $completeMessage = View::make($fileName, $data)->render();
                 $studentsData[$student->code] = $completeMessage;
@@ -109,11 +109,11 @@ class MessageParser
 
         if (!empty($teachers)) {
             foreach ($teachers as $teacher) {
-                $data['name'] = $teacher->name;
-                $data['dob'] = $teacher->dob;
-                $data['department'] = $teacher->department;
-                $data['mornigbusroute'] = $teacher->morningBusRoute;
-                $data['eveningbusroute'] = $teacher->eveningBusRoute;
+                $data['name'] = isset($teacher->name) ? $teacher->name : '';
+                $data['dob'] = isset($teacher->dob) ? $teacher->dob : '';
+                $data['department'] = isset($teacher->department) ? $teacher->department : '';
+                $data['mornigbusroute'] = isset($teacher->morningBusRoute) ? $teacher->morningBusRoute : '';
+                $data['eveningbusroute'] = isset($teacher->eveningBusRoute) ? $teacher->eveningBusRoute : '';
                 $data['today'] = date('d M Y');
                 $completeMessage = View::make($fileName, $data)->render();
                 $teachersData[$teacher->code] = $completeMessage;

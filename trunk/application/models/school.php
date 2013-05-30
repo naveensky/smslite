@@ -12,7 +12,7 @@ class School extends Eloquent
 
     public static $factory = array(
         'name' => 'string',
-        'address' => 'text',
+        'address' => 'string',
         'city' => 'string',
         'state' => 'string',
         'zip' => 'string',

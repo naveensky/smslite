@@ -366,4 +366,14 @@ class Student_Controller extends Base_Controller
 
     }
 
+    public function action_get_bus_routes()
+    {
+        $schoolId = Auth::user()->schoolId;
+        $morningBusRoutes = $this->schoolRepo->getMorningBusRoutes($schoolId);
+        $eveningBusRoutes = $this->schoolRepo->getEveningBusRoutes($schoolId);
+
+        return Response::json(array('morningRoutes' => $morningBusRoutes, 'eveningRoutes' => $eveningBusRoutes));
+
+    }
+
 }

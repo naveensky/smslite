@@ -71,12 +71,10 @@ angular.module('app')
             $scope.classes = classes;
         });
 
-        schoolService.getMorningBusRoutes(false, false).then(function (routes) {
-            $scope.morningroutes = routes;
-        });
+        studentService.getBusRoutes().then(function (routes) {
 
-        schoolService.getEveningBusRoutes(false, false).then(function (routes) {
-            $scope.eveningroutes = routes;
+            $scope.morningroutes = routes.morningRoutes;
+            $scope.eveningroutes = routes.eveningRoutes;
         });
 
         $scope.updateNext = function () {

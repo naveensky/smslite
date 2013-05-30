@@ -151,6 +151,26 @@ module.factory('TeacherService', ["$http", "$q", function ($http, $q) {
                     deferred.reject($e);
                 });
             return deferred.promise;
+        },
+        getBusRoutes: function () {
+
+            var deferred = $q.defer();          //defer for data
+
+            $http.get(
+                    '/teacher/get_bus_routes'
+                ).success(function (data) {
+                    //if data is proper array, return data else empty array
+                    deferred.resolve(data);
+
+                }
+            ).error(function ($e) {
+                    //if there is an error processing data, reject it and log error
+                    log('error', $e);
+                    deferred.reject($e);
+                }
+            );
+
+            return deferred.promise;
         }
     }
 }]);

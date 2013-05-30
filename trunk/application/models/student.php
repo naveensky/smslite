@@ -68,7 +68,11 @@ class Student extends Eloquent
             $insertRow['mobile3'] = isset($dataRow[10]) ? $dataRow[10] : ""; //Mobile3
             $insertRow['mobile4'] = isset($dataRow[11]) ? $dataRow[11] : ""; //Mobile4
             $insertRow['mobile5'] = isset($dataRow[12]) ? $dataRow[12] : ""; //Mobile5
-            $insertRow['dob'] = !empty($dataRow[13]) ? $dataRow[13] : null; //DOB
+            try {
+                $insertRow['dob'] = !empty($dataRow[13]) ? new DateTime($dataRow[13]) : null; //DOB
+            } catch (Exception $e) {
+                $insertRow['dob'] = null; //DOB
+            }
             $insertRow['morningBusRoute'] = isset($dataRow[14]) ? $dataRow[14] : ""; //Morning Bus Route
             $insertRow['eveningBusRoute'] = isset($dataRow[15]) ? $dataRow[15] : ""; //Evening Bus Route
             $insertRow['code'] = Str::random(64, 'alpha'); //student Code
