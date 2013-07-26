@@ -12,6 +12,7 @@
                     <li><a href="#/sms"><i class="icon-comments"></i> SMS</a></li>
                     <li><a href="#/report/sms"><i class="icon-bar-chart"></i> Report</a></li>
                     <li><a href="#/user/profile"><i class="icon-cog"></i> Account</a></li>
+                    <li><a href="#/sync/"><i class="icon-exchange"></i> Sync</a></li>
                     @if(Util::is_in_role(Role::USER_ROLE_SUPER_ADMIN))
                     <li><a href="#/admin/allocate_credits"><i class="icon-lock"></i> Admin</a></li>
                     @endif;

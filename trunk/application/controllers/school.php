@@ -303,4 +303,20 @@ class School_Controller extends Base_Controller
         return Response::json($teacherAndStudentData);
     }
 
+    public function action_get_api_data()
+    {
+        try {
+            $schoolId = Auth::user()->schoolId;
+            $school = $this->schoolRepo->getSchoolFromID($schoolId);
+            if (empty($school))
+                return array();
+            return Response::eloquent($school);
+
+        } catch (Exception $e) {
+            return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
+        }
+    }
+
+
+
 }

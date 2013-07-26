@@ -89,5 +89,104 @@ class Admin_Controller extends Base_Controller
         return Response::json(array('status' => true, 'message' => 'credits allocated successfully'));
     }
 
+    public function action_sms_report()
+    {
+        return View::make('admin.smsreport');
+    }
+
+    public function action_post_sms_report()
+    {
+        $data = Input::json();
+        if (empty($data) || count($data) == 0) {
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+        }
+
+        $toDate = isset($data->toDate) && !empty($data->toDate) ? new DateTime($data->toDate) : new DateTime();
+        $fromDate = isset($data->fromDate) && !empty($data->fromDate) ? new DateTime($data->fromDate) : Util::getLast30DaysDate(new DateTime());
+        $status = isset($data->status) ? $data->status : null;
+        $pageCount = isset($data->pageCount) ? $data->pageCount : 25;
+        $pageNumber = isset($data->pageNumber) ? $data->pageNumber : 1;
+        $schoolCode = isset($data->selectedSchool) ? $data->selectedSchool : null;
+        $skip = $pageCount * ($pageNumber - 1);
+
+        try {
+            $smsLog = $this->adminRepo->getSMSLog($toDate, $fromDate, $status, $schoolCode, $skip, $pageCount);
+            return Response::json($smsLog);
+        } catch (Exception $e) {
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+        }
+
+    }
+
+    public function action_post_pie_chart_data()
+    {
+        $data = Input::json();
+        $toDate = isset($data->toDate) && !empty($data->toDate) ? new DateTime($data->toDate) : new DateTime();
+        $fromDate = isset($data->fromDate) && !empty($data->fromDate) ? new DateTime($data->fromDate) : Util::getLast30DaysDate(new DateTime());
+        $status = isset($data->status) ? $data->status : null;
+        $schoolCode = isset($data->selectedSchool) ? $data->selectedSchool : null;
+        try {
+            return Response::json($this->adminRepo->getPieChartData($toDate, $fromDate, $status, $schoolCode));
+        } catch (Exception $e) {
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+        }
+    }
+
+    public function action_schools_list()
+    {
+        return View::make('admin.schoollist');
+    }
+
+    public function action_post_schools_list()
+    {
+        $data = Input::json();
+        if (empty($data) || count($data) == 0) {
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+        }
+        $name = isset($data->name) ? $data->name : null;
+        $email = isset($data->email) ? $data->email : null;
+        $registrationDate = isset($data->registrationDate) && !empty($data->registrationDate) ? new DateTime($data->registrationDate) : null;
+        $pageCount = isset($data->pageCount) ? $data->pageCount : 20;
+        $pageNumber = isset($data->pageNumber) ? $data->pageNumber : 1;
+        $skip = $pageCount * ($pageNumber - 1);
+
+        try {
+            $schoolsData = $this->adminRepo->getListOfSchools($name, $email, $registrationDate, $skip, $pageCount);
+            $schoolWiseData = array();
+            $userIds = array();
+            foreach ($schoolsData as $row) {
+                $schoolWiseData[$row->id]['name'] = $row->name;
+                $schoolWiseData[$row->id]['contactPerson'] = $row->contactPerson;
+                $schoolWiseData[$row->id]['contactMobile'] = $row->contactMobile;
+                $schoolWiseData[$row->id]['email'] = $row->email;
+                $schoolWiseData[$row->id]['created_at'] = $row->created_at;
+                $schoolWiseData[$row->id]['credits'] = $row->credits;
+                $schoolWiseData[$row->id]['pendingSMS'] = 0;
+                $schoolWiseData[$row->id]['sentSMS'] = 0;
+                $userIds[] = $row->id;
+            }
+            if (!empty($userIds)) {
+                $userPendingSMS = $this->smsRepo->getCountPendingSMSForUsers($userIds);
+                $userSentSMS = $this->smsRepo->getCountSentSMSForUsers($userIds);
+                foreach ($userPendingSMS as $dataRow) {
+                    if (!empty($dataRow->userId))
+                        $schoolWiseData[$dataRow->userId]['pendingSMS'] = $dataRow->count;
+                }
+
+                foreach ($userSentSMS as $sentData) {
+                    if (!empty($sentData->userId))
+                        $schoolWiseData[$sentData->userId]['sentSMS'] = $sentData->count;
+
+                }
+            }
+
+            return Response::json(array_values($schoolWiseData));
+
+
+        } catch (Exception $e) {
+            return Response::make(__('responseerror.bad'), HTTPConstants::BAD_REQUEST_CODE);
+        }
+    }
+
 
 }

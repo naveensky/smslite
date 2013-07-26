@@ -418,4 +418,66 @@ class Test_Controller extends Base_Controller
         $user = Auth::user();
         var_dump($user->to_array());
     }
+
+    public function action_smsLog()
+    {
+        $toDate=new DateTime();
+        $dateid = date('Y', $toDate->getTimestamp()) . "-" . date('m', $toDate->getTimestamp()) . "-" . date('d', $toDate->getTimestamp()) . " 00:00:00";
+        $fromDate = new DateTime($dateid);
+        $fromDate->sub(new DateInterval('P30D'));
+        $adminRepo=new AdminRepository();
+        var_dump($adminRepo->getSMSLog($toDate,$fromDate,'failed',0,10));
+
+    }
+
+    public function action_gender()
+    {
+        $test = DB::table('test')->where('Gender', '=', '')->get();
+        foreach ($test as $row) {
+            $fields_string = '';
+            $fields = array(
+                'name' => $row->firstName
+            );
+
+//url-ify the data for the POST
+            foreach ($fields as $key => $value) {
+                $fields_string .= $key . '=' . $value . '&';
+            }
+            rtrim($fields_string, '&');
+
+//open connection
+            $ch = curl_init();
+
+//set the url, number of POST vars, POST data
+            curl_setopt($ch, CURLOPT_URL, 'http://www.i-gender.com/ai');
+            curl_setopt($ch, CURLOPT_POST, count($fields));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+//execute post
+            $result = curl_exec($ch);
+            if ($result) {
+                $data = json_decode($result);
+                $gender = $data->gender;
+                if (empty($gender))
+                    $gender = 'M';
+                else {
+                    if ($gender == 'male' || $gender == 'Male')
+                        $gender = 'M';
+                    else
+                        $gender = 'F';
+                }
+
+            }
+
+            DB::table('test')->where('id', '=', $row->id)->update(array('Gender' => $gender));
+//close connection
+            curl_close($ch);
+        }
+    }
+
+    public function action_sms()
+    {
+        var_dump(DB::query('select userId,count(id) from smsTransactions where userId in(' . implode(',', array('1','2')) . ') and status =\'pending\''));
+    }
 }

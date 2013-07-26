@@ -213,9 +213,9 @@ class TestAuthcontroller extends ControllerTestCase
 
     public function testResendSMS()
     {
-        $this->markTestSkipped(
-            'Have to check resend sms test'
-        );
+//        $this->markTestSkipped(
+//            'Have to check resend sms test'
+//        );
         Bundle::start('messages');
         $school = FactoryMuff::create('School');
         $school->save();

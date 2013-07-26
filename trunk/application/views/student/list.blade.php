@@ -65,13 +65,13 @@
 
                         <tr ng-repeat="student in students">
                             <td>{{ student.uniqueIdentifier }}</td>
-                            <td>{{ student.name }}</td>
+                            <td>{{ student . name }}</td>
                             <td>{{ student.classStandard }}-{{ student.classSection }}</td>
                             <td>{{ student.morningBusRoute }}</td>
                             <td>{{ student.eveningBusRoute }}</td>
                             <td><a href
                                    title="{{getMobileNumbers(student)}}">{{student.mobile1}}</a></td>
-                            <td><a href="#/student/edit/{{student.code}}">Edit</a></td>
+                            <td><a href="#/student/edit/{{student.code}}"><i class="icon-edit icon-large"></a></td>
                             <td><a ng-click="deleteStudent($index)"><i class="icon-trash icon-large"></i></a></td>
                         </tr>
 

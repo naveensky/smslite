@@ -97,7 +97,9 @@ class MessageParser
             foreach ($students as $student) {
                 $data['name'] = isset($student->name) ? $student->name : ''; //name
                 $data['dob'] = isset($student->dob) ? $student->dob : ''; //dob
-                $data['class'] = isset($student->classStandard) ? $student->classStandard : '' . '-' . isset($student->classSection) ? ucfirst($student->classSection) : '';
+                $classStandard = isset($student->classStandard) ? $student->classStandard : '';
+                $classSection = isset($student->classSection) ? ucfirst($student->classSection) : '';
+                $data['class'] = $classStandard . '-' . $classSection;
                 $data['section'] = isset($student->classSection) ? $student->classSection : '';
                 $data['mornigbusroute'] = isset($student->morningBusRoute) ? $student->morningBusRoute : '';
                 $data['eveningbusroute'] = isset($student->eveningBusRoute) ? $student->eveningBusRoute : '';

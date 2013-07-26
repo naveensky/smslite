@@ -204,11 +204,11 @@ class Init
         });
 
         Schema::table('smsTransactions', function ($table) {
-            $table->drop_foreign('smstransactions_userId_foreign');
+            $table->drop_foreign('smsTransactions_userId_foreign');
         });
 
         Schema::table('appSmsTransactions', function ($table) {
-            $table->drop_foreign('appsmstransactions_userId_foreign');
+            $table->drop_foreign('appSmsTransactions_userId_foreign');
         });
 
         Schema::table('smsCredits', function ($table) {

@@ -55,7 +55,6 @@ class SchoolRepository
     public function getSchool($schoolCode)
     {
         return School::where_code($schoolCode)->get();
-
     }
 
     public function deleteSchool($schoolCode)
@@ -100,7 +99,7 @@ class SchoolRepository
     {
         $schoolId = Auth::user()->schoolId;
 
-        $classes = DB::query('select "classSection", "classStandard" from students where "schoolId"=' . $schoolId . ' group by "classSection", "classStandard"');
+        $classes = DB::query('select classSection, classStandard from students where schoolId=' . $schoolId . ' group by classSection, classStandard');
         $classSection = array();
         foreach ($classes as $class) {
             $classWise = array();
@@ -121,10 +120,13 @@ class SchoolRepository
     public function getClasses($schoolId)
     {
         //todo: convert this to eloquent expression
-        $classes = DB::query('select "classSection", "classStandard" from students where "schoolId"=' . $schoolId . ' and "classSection"!=\'\''.' group by "classSection", "classStandard" order by "classStandard","classSection"');
+        $classes = DB::query('select classSection, classStandard from students where schoolId=' . $schoolId . ' and classSection!=\'\'' . ' group by classSection, classStandard order by classStandard,classSection');
         $data = array();
         foreach ($classes as $class) {
-            $data[] = ucfirst($class->classStandard) . '-' . ucfirst($class->classSection);
+
+            $value = ucfirst($class->classStandard) . '-' . ucfirst($class->classSection);
+            if (!in_array($value, $data))
+                $data[] = $value;
         }
         return $data;
     }
@@ -132,8 +134,9 @@ class SchoolRepository
     public function getMorningBusRoutes($schoolId)
     {
         $query = Student::where('schoolId', '=', $schoolId);
-        $query = $query->where('morningBusRoute','!=','');
+        $query = $query->where('morningBusRoute', '!=', '');
         $query = $query->distinct('morningBusRoute');
+        $query = $query->order_by('morningBusRoute');
         $routes = $query->get('morningBusRoute');
         $morningRoutes = array();
         foreach ($routes as $route) {
@@ -145,8 +148,9 @@ class SchoolRepository
     public function getEveningBusRoutes($schoolId)
     {
         $query = Student::where('schoolId', '=', $schoolId);
-        $query = $query->where('eveningBusRoute','!=','');
+        $query = $query->where('eveningBusRoute', '!=', '');
         $query = $query->distinct('eveningBusRoute');
+        $query = $query->order_by('eveningBusRoute');
         $routes = $query->get('eveningBusRoute');
         $eveningRoutes = array();
         foreach ($routes as $route) {
@@ -158,10 +162,10 @@ class SchoolRepository
     public function getDepartments($schoolId)
     {
         //todo: convert this to eloquent expression
-        $departments = DB::query('SELECT DISTINCT lower("department") as department FROM "teachers" WHERE "schoolId" = ' . $schoolId.'and "department"!=\'\'');
+        $departments = DB::query('SELECT DISTINCT lower(department) as department FROM teachers WHERE schoolId = ' . $schoolId . ' and department!=\'\'');
         $departmentsData = array();
         foreach ($departments as $department) {
-            $departmentsData[] = $department->department;
+            $departmentsData[] = ucfirst($department->department);
         }
         return $departmentsData;
     }
@@ -169,8 +173,9 @@ class SchoolRepository
     public function getMorningBusRoutesOfTeachers($schoolId)
     {
         $query = Teacher::where('schoolId', '=', $schoolId);
-        $query = $query->where('morningBusRoute','!=','');
+        $query = $query->where('morningBusRoute', '!=', '');
         $query = $query->distinct('morningBusRoute');
+        $query = $query->order_by('morningBusRoute');
         $routes = $query->get('morningBusRoute');
         $morningRoutes = array();
         foreach ($routes as $route) {
@@ -182,8 +187,9 @@ class SchoolRepository
     public function getEveningBusRoutesOfTeachers($schoolId)
     {
         $query = Teacher::where('schoolId', '=', $schoolId);
-        $query = $query->where('eveningBusRoute','!=','');
+        $query = $query->where('eveningBusRoute', '!=', '');
         $query = $query->distinct('eveningBusRoute');
+        $query = $query->order_by('eveningBusRoute');
         $routes = $query->get('eveningBusRoute');
         $eveningRoutes = array();
         foreach ($routes as $route) {
@@ -214,5 +220,26 @@ class SchoolRepository
     {
         $schools = School::all();
         return $schools;
+    }
+
+    public function getSchoolFromID($schoolID)
+    {
+        try {
+            return School::find($schoolID);
+        } catch (Exception $e) {
+            Log::exception($e);
+            throw $e;
+        }
+    }
+
+    public function addApiData($schoolId, $data)
+    {
+        try {
+            School::where('id', '=', $schoolId)->update($data);
+            return School::find($schoolId);
+        } catch (Exception $e) {
+            Log::exception($e);
+            throw $e;
+        }
     }
 }

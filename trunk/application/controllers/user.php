@@ -20,7 +20,7 @@ class User_Controller extends Base_Controller
                     'post_register', 'forgot_password',
                     'post_forgot_password', 'send_password_mobile',
                     'password_reset_success', 'reset_password',
-                    'invalid_code', 'post_set_password', 'restore_account', 'invalid_activation_code'));
+                    'invalid_code', 'post_set_password', 'restore_account', 'invalid_activation_code', 'check_login'));
         //add mobile verified check
         $this->filter('before', 'checkmobile')->only(array('transaction_history', 'update_password', 'post_update_password', 'profile', 'get_user_profile'));
         $this->userRepo = new UserRepository();
@@ -542,6 +542,7 @@ class User_Controller extends Base_Controller
     {
         return View::make('user/requesttemplates');
     }
+
     public function action_request_templates_history()
     {
         return View::make('user/requesttemplatehistory');
@@ -568,5 +569,12 @@ class User_Controller extends Base_Controller
         //sending email to admin of the system for this new template request
         Event::fire(ListenerConstants::APP_ADMIN_REQUEST_NEW_TEMPLATE, array($adminEmailData));
         return Response::json(array('status' => true, 'message' => Lang::line('responsemessages.request_new_template_success')->get()), HTTPConstants::SUCCESS_CODE);
+    }
+
+    public function action_check_login()
+    {
+        if (Auth::guest())
+            return Response::json(array('status' => false));
+        return Response::json(array('status' => true));
     }
 }

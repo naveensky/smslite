@@ -36,7 +36,7 @@
                                 <i class="icon-upload"></i> Upload Another File</a>
                         </div>
                         <div class="control-group" ng-hide="showError || importStatus">
-                            <button type="submit" class="btn" ng-disabled="{{path==''}}" ng-click="importStudents()">
+                            <button type="submit" class="btn" ng-disabled="path==''" ng-click="importStudents()">
                                 <i class="icon-upload icon-large padding-right-5"></i>Import
                             </button>
                         </div>

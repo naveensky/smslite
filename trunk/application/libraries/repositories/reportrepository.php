@@ -54,18 +54,18 @@ class ReportRepository
 
         if (!empty($studentName) && empty($teacherName)) {
             $studentName = Str::lower($studentName);
-            $query = $query->where(("smsTransactions.name"), '~*', ".*$studentName.*"); //todo:check for match alternative use like
+            $query = $query->where(("smsTransactions.name"), 'like', "%$studentName%"); //todo:check for match alternative use like
         }
 
         if (!empty($teacherName) && empty($studentName)) {
             $teacherName = Str::lower($teacherName);
-            $query = $query->where('smsTransactions.name', '~*', ".*$teacherName.*"); //todo:check for match alternative use like
+            $query = $query->where('smsTransactions.name', 'like', "%$teacherName%"); //todo:check for match alternative use like
         }
 
         if (!empty($teacherName) && !empty($studentName)) {
             $query = $query->where(function ($query) use ($teacherName, $studentName) {
-                $query->where("smsTransactions.name", '~*', ".*$studentName.*"); //todo:check for match alternative use like
-                $query->or_where("smsTransactions.name", '~*', ".*$teacherName.*"); //todo:check for match alternative use like
+                $query->where("smsTransactions.name", 'like', "%$studentName%"); //todo:check for match alternative use like
+                $query->or_where("smsTransactions.name", 'like', "%$teacherName%"); //todo:check for match alternative use like
             });
         }
 
@@ -83,7 +83,7 @@ class ReportRepository
         }
 
         try {
-            $smsLog = $query->skip($skip)->take($perPage)->order_by(DB::raw('"smsTransactions"."created_at"'), 'Desc')->get(array('smsTransactions.name', 'smsTransactions.mobile', 'smsTransactions.message', 'smsTransactions.status', 'smsTransactions.created_at as queue_time', 'smsTransactions.updated_at as sent_time'));
+            $smsLog = $query->skip($skip)->take($perPage)->order_by(DB::raw('smsTransactions.created_at'), 'Desc')->get(array('smsTransactions.name', 'smsTransactions.mobile', 'smsTransactions.message', 'smsTransactions.status', 'smsTransactions.created_at as queue_time', 'smsTransactions.updated_at as sent_time'));
         } catch (Exception $e) {
             Log::exception($e);
             return false;
@@ -101,9 +101,9 @@ class ReportRepository
             $toDate = Util::getFromDate($toDate);
         }
         $fromDate = Util::getToDate(new DateTime())->format("Y-m-d");
-        $count = DB::query('select "smsTransactions"."updated_at"::date,count("smsTransactions"."id") as countSMS from "smsTransactions" join "users" on "smsTransactions"."userId"="users"."id" where "schoolId" =' . $schoolId . ' and "status"=\'' . SMSTransaction::SMS_STATUS_SENT . '\'and "smsTransactions"."updated_at" >= ' . '\'' . $toDate->format("Y-m-d") . '\' and "smsTransactions"."updated_at" < \'' . $fromDate . ' \' group by "smsTransactions"."updated_at"::date order by "smsTransactions"."updated_at"::date DESC');
+        $count = DB::query('select date(smsTransactions.updated_at) as updated_at,count(smsTransactions.id) as countSMS from smsTransactions join users on smsTransactions.userId=users.id where schoolId =' . $schoolId . ' and status=\'' . SMSTransaction::SMS_STATUS_SENT . '\'and smsTransactions.updated_at >= ' . '\'' . $toDate->format("Y-m-d") . '\' and smsTransactions.updated_at < \'' . $fromDate . ' \' group by date(smsTransactions.updated_at) order by date(smsTransactions.updated_at) DESC');
         foreach ($count as $row) {
-            $dateWiseData[$row->updated_at] = $row->countsms;
+            $dateWiseData[$row->updated_at] = intVal($row->countSMS);
         }
 
         return array_reverse($dateWiseData, true);
@@ -119,9 +119,9 @@ class ReportRepository
             $toDate = Util::getFromDate($toDate);
         }
         $fromDate = Util::getToDate(new DateTime())->format("Y-m-d");
-        $count = DB::query('select "smsTransactions"."updated_at"::date,count("smsTransactions"."id") as countSMS from "smsTransactions" join "users" on "smsTransactions"."userId"="users"."id" where "schoolId" =' . $schoolId . ' and "status"=\'' . SMSTransaction::SMS_STATUS_FAIL . '\'and "smsTransactions"."updated_at" >= ' . '\'' . $toDate->format("Y-m-d") . '\' and "smsTransactions"."updated_at" < \'' . $fromDate . ' \' group by "smsTransactions"."updated_at"::date order by "smsTransactions"."updated_at"::date DESC');
+        $count = DB::query('select date(smsTransactions.updated_at) as updated_at,count(smsTransactions.id) as countSMS from smsTransactions join users on smsTransactions.userId=users.id where schoolId =' . $schoolId . ' and status=\'' . SMSTransaction::SMS_STATUS_FAIL . '\'and smsTransactions.updated_at >= ' . '\'' . $toDate->format("Y-m-d") . '\' and smsTransactions.updated_at < \'' . $fromDate . ' \' group by date(smsTransactions.updated_at) order by date(smsTransactions.updated_at) DESC');
         foreach ($count as $row) {
-            $dateWiseData[$row->updated_at] = $row->countsms;
+            $dateWiseData[$row->updated_at] = intVal($row->countSMS);
         }
 
         return array_reverse($dateWiseData, true);
@@ -139,9 +139,9 @@ class ReportRepository
             $toDate = Util::getFromDate($toDate);
         }
         $fromDate = Util::getToDate(new DateTime())->format("Y-m-d");
-        $count = DB::query('select "smsTransactions"."created_at"::date,count("smsTransactions"."id") as countSMS from "smsTransactions" join "users" on "smsTransactions"."userId"="users"."id" where "schoolId" =' . $schoolId . 'and "smsTransactions"."created_at" >= ' . '\'' . $toDate->format("Y-m-d") . '\' and "smsTransactions"."created_at" < \'' . $fromDate . ' \' group by "smsTransactions"."created_at"::date order by "smsTransactions"."created_at"::date DESC');
+        $count = DB::query('select date(smsTransactions.created_at) as created_at,count(smsTransactions.id) as countSMS from smsTransactions join users on smsTransactions.userId=users.id where schoolId =' . $schoolId . ' and smsTransactions.created_at >= ' . '\'' . $toDate->format("Y-m-d") . '\' and smsTransactions.created_at < \'' . $fromDate . ' \' group by date(smsTransactions.created_at) order by date(smsTransactions.created_at) DESC');
         foreach ($count as $row) {
-            $dateWiseData[$row->created_at] = $row->countsms;
+            $dateWiseData[$row->created_at] = intval($row->countSMS);
         }
         return array_reverse($dateWiseData, true);
     }

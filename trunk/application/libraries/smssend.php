@@ -25,6 +25,7 @@ class SMSSend
             curl_setopt($ch, CURLOPT_HEADER, true);
             curl_setopt($ch, CURLOPT_TIMEOUT, '6');
             $result = curl_exec($ch);
+            $error = curl_error($ch);
             $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             curl_close($ch);
             if ($http_status == HTTPConstants::SUCCESS_CODE)

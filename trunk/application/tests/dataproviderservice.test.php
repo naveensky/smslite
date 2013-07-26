@@ -19,44 +19,41 @@ class TestDataProviderService extends ControllerTestCase
         $this->tearDownAfterTests();
     }
 
-    public function testGetSyncData()
+    public function testGetSyncStudentData()
     {
         Bundle::start('httpful');
-        $dataProvider = new DataProviderService();
-        $data = $dataProvider->getStudentsData();
-        $studentRepo = new StudentRepository();
         $user = $this->getSampleUser();
         Auth::login($user->id);
+        $user = $this->getSampleUser();
+        $school = $user->school()->first();
 
-        $firstStudent = FactoryMuff::create('Student');
-        $firstStudent->schoolId = $user->school()->first()->id;
-        $firstStudent->classStandard = "6";
-        $firstStudent->classSection = "A";
-        $firstStudent->save();
-        $studentRepo->insertOrUpdate($data, $user->school()->first()->id);
-        $student = Student::all();
-        $this->assertEquals(3, count($student));
+        Auth::login($user->id);
+        $parameters = array(
+            'APIKey' => "asdf1234",
+            'studentAPIUrl' => "http://demo.ccesoft.in/api/students/",
+            'teacherAPIUrl' => "http://demo.ccesoft.in/api/teachers/",
+            'fetchStudents' => true,
+            'fetchTeachers' => false
+        );
+
+        Input::$json = (object)$parameters;
+        $response = $this->post('sync@post_save', array());
+        $result = json_decode($response);
+        if (!$result->validationError) {
+            if ($result->student->fetchStudent) {
+                if (!$result->student->urlError) {
+                    $totalFromAPI = $result->student->syncStatus->totalStudentsFromApi;
+                    $importedStudents = $result->student->syncStatus->studentsImported;
+                    $updatedStudents = $result->student->syncStatus->studentsUpdated;
+                    $errors = $result->student->syncStatus->importKeys;
+                    $this->assertEquals($totalFromAPI, $importedStudents + $updatedStudents + $errors);
+                }
+            }
+        }
 
     }
 
-    public function testUpdateSyncData()
-    {
-        Bundle::start('httpful');
-        $dataProvider = new DataProviderService();
-        $data = $dataProvider->getStudentsData();
-        $studentRepo = new StudentRepository();
-        $user = $this->getSampleUser();
-        Auth::login($user->id);
 
-        $firstStudent = FactoryMuff::create('Student');
-        $firstStudent->schoolId = $user->school()->first()->id;
-        $firstStudent->classStandard = "6";
-        $firstStudent->classSection = "A";
-        $firstStudent->uniqueIdentifier = 12456;
-        $firstStudent->save();
-        $studentRepo->insertOrUpdate($data, $user->school()->first()->id);
-        $student = Student::all();
-        $this->assertEquals(2, count($student));
-    }
+
 
 }

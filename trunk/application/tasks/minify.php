@@ -13,14 +13,13 @@ class Minify_Task
     public function run($arguments)
     {
         Bundle::start('compactor');
-
         $compactor = new Compactor();
-
         $cssPath = path('public') . "css/";
         $jsPath = path('public') . "js/";
         $jsControllers = path('public') . "js/controllers/";
         $jsServices = path('public') . "js/services/";
 //        $jsIgnored=array("$jsPath.'application.js'");
+
 
         $cssFiles = array(
             $cssPath . 'fonts.css',
@@ -41,6 +40,7 @@ class Minify_Task
             ->combine_directory($jsControllers . "report/")
             ->combine_directory($jsControllers . "admin/")
             ->combine_directory($jsControllers . "sms/")
+            ->combine_directory($jsControllers . "sync/")
             ->save_file($jsPath . "application.js");
     }
 }

@@ -42,7 +42,7 @@ return array(
 	|
 	*/
 
-	'default' => 'pgsql',
+	'default' => 'mysql',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -70,9 +70,9 @@ return array(
 		'mysql' => array(
 			'driver'   => 'mysql',
 			'host'     => 'localhost',
-			'database' => 'sms_lite',
+			'database' => 'smslite_test',
 			'username' => 'root',
-			'password' => '',
+			'password' => 'asdf',
 			'charset'  => 'utf8',
 			'prefix'   => '',
 		),

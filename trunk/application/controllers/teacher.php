@@ -47,10 +47,12 @@ class Teacher_Controller extends Base_Controller
         File::delete($path . $filePath);
         $contents = trim($contents);
         $result = Teacher::parseFromCSV($contents);
+        if (!is_array($result) && $result == false)
+            return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
         $teacherInserted = count($result['bulkTeachers']);
         if (empty($result['bulkTeachers'])) {
             $teacherInserted = 0;
-            return Response::json(array('numberOfTeacherInserted' => $teacherInserted, 'rowNumbersError' => $result['errorRows']));
+            return Response::json(array('numberOfTeacherInserted' => $teacherInserted, 'rowNumbersError' => implode(', ', $result['errorRows'])));
         }
         try {
             $this->teacherRepo->bulkTeachersInsert($result['bulkTeachers']);
@@ -58,7 +60,7 @@ class Teacher_Controller extends Base_Controller
             log::exception($pdo);
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
         }
-        return Response::json(array('numberOfTeacherInserted' => $teacherInserted, 'rowNumbersError' => $result['errorRows']));
+        return Response::json(array('numberOfTeacherInserted' => $teacherInserted, 'rowNumbersError' => implode(', ', $result['errorRows'])));
     }
 
     public function action_edit()

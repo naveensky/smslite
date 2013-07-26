@@ -368,13 +368,16 @@ class SMSRepository
     {
         $user = User::find($userId);
         $schoolId = $user->schoolId;
-        $users = School::find($schoolId)->users;
+        $school = School::find($schoolId);
         $message = $this->formatMessage($message);
         $credits = $this->countCredits($message);
         $appSms = new SMSTransaction();
         $appSms->mobile = $mobile;
         $appSms->message = $message;
-        $appSms->name = empty($users) ? $users[0]->name : '';
+        $name = '';
+        if (!empty($school))
+            $name = $school->contactPerson;
+        $appSms->name = $name;
         $appSms->studentId = NULL;
         $appSms->teacherId = NULL;
         $appSms->priority = SMSTransaction::SMS_HIGH_PRIORITY;
@@ -390,6 +393,26 @@ class SMSRepository
         }
 
         return true;
+    }
+
+    public function getCountPendingSMSForUsers($userIds)
+    {
+        try {
+            return DB::query('select userId,count(*) as count from smsTransactions where userId in(' . implode(',', $userIds) . ') and status =\'pending\' group by UserId');
+        } catch (Exception $e) {
+            Log::error($e);
+            throw $e;
+        }
+    }
+
+    public function getCountSentSMSForUsers($userIds)
+    {
+        try {
+            return DB::query('select userId,count(*) as count from smsTransactions where userId in(' . implode(',', $userIds) . ') and status =\'sent\' group by userId');
+        } catch (Exception $e) {
+            Log::error($e);
+            throw $e;
+        }
     }
 
 

@@ -69,7 +69,7 @@
                             <td>{{ teacher.eveningBusRoute }}</td>
                             <td><a href
                                    title="{{getMobileNumbers(teacher)}}">{{teacher.mobile1}}</a></td>
-                            <td><a href="#/teacher/edit/{{teacher.code}}">Edit</a></td>
+                            <td><a href="#/teacher/edit/{{teacher.code}}"><i class="icon-edit icon-large"></i></a></td>
                             <td><a ng-click="deleteTeacher($index)"><i class="icon-trash icon-large"></i></a></td>
                         </tr>
                         </tbody>

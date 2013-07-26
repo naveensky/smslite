@@ -9,6 +9,13 @@
 class TeacherRepository
 {
 
+    public static $rules = array(
+        'name' => 'required',
+        'email' => 'email',
+        'mobile1' => 'required|max:10',
+        'id' => 'required'
+    );
+
     public function createTeachers($schoolCode, $teachers)
     {
         $school = School::where_code($schoolCode)->get();
@@ -100,14 +107,14 @@ class TeacherRepository
         $schoolId = Auth::user()->schoolId;
         $query = Teacher::where('schoolId', '=', $schoolId);
         if (!empty($department))
-            $query = $query->where_in(DB::raw('lower("department")'), $department);
+            $query = $query->where_in(DB::raw('lower(department)'), $department);
         if (!empty($morningBusRoute))
             $query = $query->where_in("morningBusRoute", $morningBusRoute);
         if (!empty($eveningBusRoute))
             $query = $query->where_in("eveningBusRoute", $eveningBusRoute);
 
         try {
-            $teacher = $query->skip($skip)->take($perPage)->order_by(DB::raw('"id"'))->get();
+            $teacher = $query->skip($skip)->take($perPage)->order_by('id')->order_by('name')->get();
         } catch (Exception $e) {
             log::exception($e);
             return false;
@@ -120,7 +127,7 @@ class TeacherRepository
         $schoolId = Auth::user()->schoolId;
         $query = Teacher::where('schoolId', '=', $schoolId);
         if (!empty($department))
-            $query = $query->where_in(DB::raw('lower("department")'), $department);
+            $query = $query->where_in(DB::raw('lower(department)'), $department);
         if (!empty($morningBusRoute))
             $query = $query->where_in("morningBusRoute", $morningBusRoute);
         if (!empty($eveningBusRoute))
@@ -189,7 +196,7 @@ class TeacherRepository
     {
         $schoolId = Auth::user()->schoolId;
         $query = Teacher::where('schoolId', '=', $schoolId);
-        $query = $query->where_in(DB::raw('lower("department")'), $departments);
+        $query = $query->where_in(DB::raw('lower(department)'), $departments);
         $codes = $query->distinct('code')->get('code');
         $teacherCodes = array();
         foreach ($codes as $code) {
@@ -201,9 +208,9 @@ class TeacherRepository
     public function getTeacherByNameOrMobile($schoolId, $searchValue)
     {
         $query = Teacher::where_schoolId($schoolId)->where(function ($query) use ($searchValue) {
-            $query->where('name', '~*', ".*$searchValue.*");
+            $query->where('name', 'like', "%$searchValue%");
             for ($i = 1; $i <= 5; $i++) {
-                $query->or_where("mobile$i", '~*', ".*$searchValue.*");
+                $query->or_where("mobile$i", 'like', "%$searchValue%");
             }
         });
         try {
@@ -240,8 +247,108 @@ class TeacherRepository
             return false;
         }
         return true;
-
-
     }
 
+    private function isTeacherExist($importKey, $schoolId)
+    {
+        try {
+            $teacher = Teacher::where('schoolId', '=', $schoolId)->where('importKey', '=', $importKey)->first();
+        } catch (Exception $e) {
+            return false;
+        }
+        return $teacher;
+    }
+
+    public function insertOrUpdate($teacherData, $schoolId)
+    {
+        if (is_array($teacherData) && !empty($teacherData)) {
+            $teacherImportKeysWithErrors = array();
+            $totalTeachersImported = 0;
+            $totalTeachersUpdated = 0;
+            foreach ($teacherData as $dataRow) {
+                $input = array(
+                    'id' => $dataRow->TeacherMaster->Id,
+                    'name' => $dataRow->TeacherMaster->FullName,
+                    'email' => $dataRow->TeacherMaster->EmailId,
+                    'mobile1' => $dataRow->TeacherMaster->MobileNo
+                );
+
+                $validator = Validator::make($input, TeacherRepository::$rules);
+                if ($validator->fails()) {
+
+                    if ($validator->errors->has('name') || $validator->errors->has('mobile1') || $validator->errors->has('id')) {
+                        if (isset($input['id']))
+                            $teacherImportKeysWithErrors[] = $input['id'];
+                        continue;
+                    }
+                    if ($validator->errors->has('email')) {
+                        $dataRow->TeacherMaster->EmailId = "";
+                    }
+                }
+
+
+                $name = isset($dataRow->TeacherMaster->FullName) ? $dataRow->TeacherMaster->FullName : '';
+                $email = !empty($dataRow->TeacherMaster->EmailId) ? $dataRow->TeacherMaster->EmailId : '';
+                $mobile1 = isset($dataRow->TeacherMaster->MobileNo) ? $dataRow->TeacherMaster->MobileNo : '';
+                $mobile2 = isset($dataRow->mobile2) ? $dataRow->mobile2 : '';
+                $mobile3 = isset($dataRow->mobile3) ? $dataRow->mobile3 : '';
+                $mobile4 = isset($dataRow->mobile4) ? $dataRow->mobile4 : '';
+                $mobile5 = isset($dataRow->mobile5) ? $dataRow->mobile5 : '';
+                $importKey = isset($dataRow->TeacherMaster->Id) ? $dataRow->TeacherMaster->Id : '';
+                $dob = !empty($dataRow->TeacherMaster->DOB) ? $dataRow->TeacherMaster->DOB : null; //DOB
+                $department = isset($dataRow->department) ? $dataRow->department : '';
+                $morningBusRoute = isset($dataRow->morningBusRoute) ? $dataRow->morningBusRoute : '';
+                $eveningBusRoute = isset($dataRow->eveningBusRoute) ? $dataRow->eveningBusRoute : '';
+
+                if (isset($dataRow->TeacherMaster->Gender)) {
+                    $gender = 'Female';
+                    if ($dataRow->TeacherMaster->Gender == true || $dataRow->TeacherMaster->Gender = 'true')
+                        $gender = 'Male';
+                } else
+                    $gender = '';
+                $teacherExist = $this->isTeacherExist($importKey, $schoolId);
+                if (!is_null($teacherExist) && $teacherExist == false)
+                    $teacherImportKeysWithErrors[] = $importKey;
+                else if (is_null($teacherExist)) {
+                    try {
+                        $teacher = new Teacher();
+                        $teacher->name = $name;
+                        $teacher->email = $email;
+                        $teacher->mobile1 = $mobile1;
+                        $teacher->mobile2 = $mobile2;
+                        $teacher->mobile3 = $mobile3;
+                        $teacher->mobile4 = $mobile4;
+                        $teacher->mobile5 = $mobile5;
+                        $teacher->department = $department;
+                        $teacher->importKey = $importKey;
+                        $teacher->morningBusRoute = $morningBusRoute;
+                        $teacher->eveningBusRoute = $eveningBusRoute;
+                        $teacher->gender = $gender;
+                        $teacher->dob = $dob;
+                        $teacher->schoolId = $schoolId;
+                        $teacher->code = Str::random(64, 'alpha');
+                        $teacher->save();
+                        $totalTeachersImported += 1;
+                    } catch (Exception $e) {
+                        Log::exception($e);
+                        $teacherImportKeysWithErrors[] = $importKey;
+                    }
+                } else {
+                    try {
+
+                        Teacher::update($teacherExist->id, array('name' => $name, 'email' => $email,
+                            'mobile1' => $mobile1, 'mobile2' => $mobile2, 'mobile3' => $mobile3, 'mobile4' => $mobile4,
+                            'mobile5' => $mobile5, 'morningBusRoute' => $morningBusRoute, 'eveningBusRoute' => $eveningBusRoute,
+                            'gender' => $gender, 'department' => $department));
+                        $totalTeachersUpdated+=1;
+                    } catch (Exception $e) {
+                        Log::exception($e);
+                        $teacherImportKeysWithErrors[] = $importKey;
+                    }
+                }
+
+            }
+            return array('status' => true, 'teachersImported' => $totalTeachersImported, 'teachersUpdated' => $totalTeachersUpdated, 'importErrors' => $teacherImportKeysWithErrors);
+        }
+    }
 }

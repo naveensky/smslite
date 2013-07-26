@@ -12,7 +12,7 @@ class Delete_App_Sms_Transaction_Alter_Sms_Transaction
     {
         //
         Schema::table('appSmsTransactions', function ($table) {
-            $table->drop_foreign('appsmstransactions_userId_foreign');
+            $table->drop_foreign('appSmsTransactions_userId_foreign');
         });
 
         Schema::drop('appSmsTransactions');

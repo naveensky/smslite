@@ -68,4 +68,11 @@ class Util
         $fileName = Str::random(64, 'alnum');
         return "tmp/$fileName.$extension";
     }
+
+    public static function getLast30DaysDate($toDate)
+    {
+        $dateid = date('Y', $toDate->getTimestamp()) . "-" . date('m', $toDate->getTimestamp()) . "-" . date('d', $toDate->getTimestamp()) . " 00:00:00";
+        $fromDate = new DateTime($dateid);
+        return $fromDate->sub(new DateInterval('P30D'));
+    }
 }

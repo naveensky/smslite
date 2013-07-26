@@ -18,72 +18,75 @@ class Student extends Eloquent
     public static $rules = array(
         'name' => 'required',
         'email' => 'email',
-        'mobile1' => 'required|max:10'
+        'mobile1' => 'required|min:8|numeric'
     );
 
     public static function parseFromCSV($csvData, $skipHeaderRow = true)
     {
-        $data = array_map("str_getcsv", preg_split('/\r*\n+|\r+/', $csvData));
-        $BulkStudents = array();
-        $errorRows = array(); //array containing the row numbers of the csv containg errors
-        $errorRowCount = 1; //if do not want to skip header row from the csv
-        if ($skipHeaderRow) {
-            $errorRowCount = 2; //skip the header row
-            unset($data[0]);
-        }
-        //get the current logined user id and find the school Id from that
-        $schoolId = Auth::user()->schoolId;
-
-        foreach ($data as $dataRow) {
-            $input = array(
-                'name' => $dataRow[1],
-                'email' => $dataRow[7],
-                'mobile1' => $dataRow[8]
-
-            );
-
-            $validator = Validator::make($input, static::$rules);
-            if ($validator->fails()) {
-
-                if ($validator->errors->has('name') || $validator->errors->has('mobile1')) {
-                    $errorRows[] = $errorRowCount;
-                    $errorRowCount++;
-                    continue;
-                }
-                if ($validator->errors->has('email')) {
-                    $dataRow[7] = "";
-                }
-
+        try {
+            $data = array_map("str_getcsv", preg_split('/\r*\n+|\r+/', $csvData));
+            $BulkStudents = array();
+            $errorRows = array(); //array containing the row numbers of the csv containing errors
+            $errorRowCount = 1; //if do not want to skip header row from the csv
+            if ($skipHeaderRow) {
+                $errorRowCount = 2; //skip the header row
+                unset($data[0]);
             }
-            $insertRow['uniqueIdentifier'] = isset($dataRow[0]) ? $dataRow[0] : "";
-            $insertRow['name'] = isset($dataRow[1]) ? $dataRow[1] : ""; //Full Name
-            $insertRow['classStandard'] = isset($dataRow[2]) ? $dataRow[2] : ""; //Class Standard
-            $insertRow['classSection'] = isset($dataRow[3]) ? $dataRow[3] : ""; //Class Section
-            $insertRow['gender'] = isset($dataRow[4]) ? $dataRow[4] : ""; //Gender
-            $insertRow['fatherName'] = isset($dataRow[5]) ? $dataRow[5] : ""; //Father Name
-            $insertRow['motherName'] = isset($dataRow[6]) ? $dataRow[6] : ""; //Mother Name
-            $insertRow['email'] = $dataRow[7];
-            $insertRow['mobile1'] = isset($dataRow[8]) ? $dataRow[8] : ""; //Mobile1
-            $insertRow['mobile2'] = isset($dataRow[9]) ? $dataRow[9] : ""; //Mobile2
-            $insertRow['mobile3'] = isset($dataRow[10]) ? $dataRow[10] : ""; //Mobile3
-            $insertRow['mobile4'] = isset($dataRow[11]) ? $dataRow[11] : ""; //Mobile4
-            $insertRow['mobile5'] = isset($dataRow[12]) ? $dataRow[12] : ""; //Mobile5
-            try {
-                $insertRow['dob'] = !empty($dataRow[13]) ? new DateTime($dataRow[13]) : null; //DOB
-            } catch (Exception $e) {
-                $insertRow['dob'] = null; //DOB
-            }
-            $insertRow['morningBusRoute'] = isset($dataRow[14]) ? $dataRow[14] : ""; //Morning Bus Route
-            $insertRow['eveningBusRoute'] = isset($dataRow[15]) ? $dataRow[15] : ""; //Evening Bus Route
-            $insertRow['code'] = Str::random(64, 'alpha'); //student Code
-            $insertRow['schoolId'] = $schoolId; //school Id
-            $insertRow['created_at'] = 'Now';
-            $insertRow['updated_at'] = 'Now';
-            $BulkStudents[] = $insertRow;
-            $errorRowCount++;
-        }
+            //get the current logined user id and find the school Id from that
+            $schoolId = Auth::user()->schoolId;
 
-        return array('bulkStudents' => $BulkStudents, 'errorRows' => $errorRows);
+            foreach ($data as $dataRow) {
+                $input = array(
+                    'name' => isset($dataRow[1]) ? $dataRow[1] : "",
+                    'email' => isset($dataRow[7]) ? $dataRow[7] : "",
+                    'mobile1' => isset($dataRow[8]) ? $dataRow[8] : ""
+
+                );
+                $validator = Validator::make($input, static::$rules);
+                if ($validator->fails()) {
+
+                    if ($validator->errors->has('name') || $validator->errors->has('mobile1')) {
+                        $errorRows[] = $errorRowCount;
+                        $errorRowCount++;
+                        continue;
+                    }
+                    if ($validator->errors->has('email')) {
+                        $dataRow[7] = "";
+                    }
+                }
+                $insertRow['uniqueIdentifier'] = isset($dataRow[0]) ? $dataRow[0] : "";
+                $insertRow['name'] = isset($dataRow[1]) ? $dataRow[1] : ""; //Full Name
+                $insertRow['classStandard'] = isset($dataRow[2]) ? $dataRow[2] : ""; //Class Standard
+                $insertRow['classSection'] = isset($dataRow[3]) ? strtoupper($dataRow[3]) : ""; //Class Section
+                $insertRow['gender'] = isset($dataRow[4]) ? $dataRow[4] : ""; //Gender
+                $insertRow['fatherName'] = isset($dataRow[5]) ? $dataRow[5] : ""; //Father Name
+                $insertRow['motherName'] = isset($dataRow[6]) ? $dataRow[6] : ""; //Mother Name
+                $insertRow['email'] = $dataRow[7];
+                $insertRow['mobile1'] = isset($dataRow[8]) ? $dataRow[8] : ""; //Mobile1
+                $insertRow['mobile2'] = isset($dataRow[9]) ? $dataRow[9] : ""; //Mobile2
+                $insertRow['mobile3'] = isset($dataRow[10]) ? $dataRow[10] : ""; //Mobile3
+                $insertRow['mobile4'] = isset($dataRow[11]) ? $dataRow[11] : ""; //Mobile4
+                $insertRow['mobile5'] = isset($dataRow[12]) ? $dataRow[12] : ""; //Mobile5
+                try {
+                    $insertRow['dob'] = !empty($dataRow[13]) ? new DateTime($dataRow[13]) : null; //DOB
+                } catch (Exception $e) {
+                    $insertRow['dob'] = null; //DOB
+                }
+                $insertRow['morningBusRoute'] = isset($dataRow[14]) ? $dataRow[14] : ""; //Morning Bus Route
+                $insertRow['eveningBusRoute'] = isset($dataRow[15]) ? $dataRow[15] : ""; //Evening Bus Route
+                $insertRow['code'] = Str::random(64, 'alpha'); //student Code
+                $insertRow['schoolId'] = $schoolId; //school Id
+                $insertRow['created_at'] = 'Now';
+                $insertRow['updated_at'] = 'Now';
+                $BulkStudents[] = $insertRow;
+                $errorRowCount++;
+            }
+
+            return array('bulkStudents' => $BulkStudents, 'errorRows' => $errorRows);
+        } catch (Exception $e) {
+            Log::exception($e);
+            return false;
+        }
     }
 
     public static function parseToCSV($students)

@@ -1,12 +1,11 @@
 <!--All links for left hand side menus-->
 <?php $leftMenu = array(
-    '/admin/allocate_credits' => 'Allocate Credits',
-    '/admin/schools_list' => 'Schools List',
-    '/admin/sms_report' => 'SMS Report'
+    '/sync' => 'Sync Data'
 );
 ?>
+
 <ul class="nav nav-list">
-    <li class="nav-header">Admin</li>
+    <li class="nav-header">Synchronization</li>
     @foreach($leftMenu as $key => $value)
     <li class="<% (strpos(URL::current(), $key)) ? "active" : "" %>"><a href='<% "#$key" %>'><% $value %></a></li>
     @endforeach

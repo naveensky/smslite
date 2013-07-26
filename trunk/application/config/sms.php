@@ -9,14 +9,14 @@
 
 return array(
 
-//    'url' => "http://dndopen.dove-sms.com/SMSAPI.jsp",
+    'url' => "http://admin.dove-sms.com/TransSMS/SMSAPI.jsp",
 
-    'url' => "http://smslite.localhost.com/cron/test",
-    'username' => 'NaveenG',
+//    'url' => "http://smslite.localhost.com/cron/test",
+    'username' => 'GreenApple1',
 
-    'password' => 'NaveenG',
+    'password' => 'GreenApple1',
 
-    'senderid' => 'INFOIN',
+    'senderid' => 'MSNGRi',
     'cutoff' => 10800
 
 );

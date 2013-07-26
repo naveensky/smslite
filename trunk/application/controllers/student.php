@@ -47,11 +47,13 @@ class Student_Controller extends Base_Controller
         File::delete($path . $filePath);
         $contents = trim($contents);
         $result = Student::parseFromCSV($contents);
+        if (!is_array($result) && $result == false)
+            return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
 
         $studentInserted = count($result['bulkStudents']);
         if (empty($result['bulkStudents'])) {
             $studentInserted = 0;
-            return Response::json(array('numberOfStudentInserted' => $studentInserted, 'rowNumbersError' => $result['errorRows']));
+            return Response::json(array('numberOfStudentInserted' => $studentInserted, 'rowNumbersError' => implode(', ', $result['errorRows'])));
         }
         try {
             $isInserted = $this->studentRepo->bulkStudentsInsert($result['bulkStudents']);
@@ -62,7 +64,7 @@ class Student_Controller extends Base_Controller
         if (!$isInserted)
             return Response::make(__('responseerror.database'), HTTPConstants::DATABASE_ERROR_CODE);
 
-        return Response::json(array('numberOfStudentInserted' => $studentInserted, 'rowNumbersError' => $result['errorRows']));
+        return Response::json(array('numberOfStudentInserted' => $studentInserted, 'rowNumbersError' => implode(', ', $result['errorRows'])));
     }
 
     public function action_edit()
@@ -146,7 +148,7 @@ class Student_Controller extends Base_Controller
         if (isset($update_data->ClassStandard))
             $updateData['classStandard'] = $update_data->ClassStandard;
         if (isset($update_data->ClassSection))
-            $updateData['classSection'] = $update_data->ClassSection;
+            $updateData['classSection'] = strtoupper($update_data->ClassSection);
         if (isset($update_data->MorningBusRoute))
             $updateData['morningBusRoute'] = $update_data->MorningBusRoute;
         if (isset($update_data->EveningBusRoute))
@@ -194,7 +196,7 @@ class Student_Controller extends Base_Controller
         $studentData['mobile5'] = isset($data->Mobile5) ? $data->Mobile5 : "";
         $studentData['dob'] = !empty($data->DOB) ? $data->DOB : null;
         $studentData['classStandard'] = isset($data->ClassStandard) ? $data->ClassStandard : "";
-        $studentData['classSection'] = isset($data->ClassSection) ? $data->ClassSection : "";
+        $studentData['classSection'] = isset($data->ClassSection) ? strtoupper($data->ClassSection) : "";
         $studentData['morningBusRoute'] = isset($data->MorningBusRoute) ? $data->MorningBusRoute : "";
         $studentData['eveningBusRoute'] = isset($data->EveningBusRoute) ? $data->EveningBusRoute : "";
         $studentData['gender'] = isset($data->gender) ? $data->gender : "";
@@ -361,9 +363,7 @@ class Student_Controller extends Base_Controller
             $row['mobileCount'] = $mobileCount;
             $studentData[] = $row;
         }
-
         return Response::json($studentData);
-
     }
 
     public function action_get_bus_routes()

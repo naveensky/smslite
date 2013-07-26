@@ -23,7 +23,7 @@ class StudentRepository
         'name' => 'required',
         'email' => 'email',
         'mobile1' => 'required|max:10',
-        'admissionNumber' => 'required'
+        'id' => 'required'
     );
 
     public function createStudents($schoolCode, $students)
@@ -174,6 +174,8 @@ class StudentRepository
             foreach ($classSections as $classSection) {
                 $class = strstr($classSection, '-', true);
                 $section = preg_replace('/[^-]*-/', "", $classSection);
+                //lower case to compare
+                $section = strtoupper($section);
                 if ($count == 1) {
                     $query = $query->where(function ($query) use ($class, $section) {
                         $query->where("classStandard", '=', $class);
@@ -194,7 +196,7 @@ class StudentRepository
             $query = $query->where_in("eveningBusRoute", $eveningBusRoute);
 
         try {
-            $student = $query->skip($skip)->take($perPage)->order_by(DB::raw('"classStandard"'))->order_by(DB::raw('"classSection"'))->order_by(DB::raw('"uniqueIdentifier"'))->get();
+            $student = $query->skip($skip)->take($perPage)->order_by('classStandard')->order_by('classSection')->order_by('name')->get();
         } catch (Exception $e) {
             Log::exception($e);
             return false;
@@ -286,9 +288,9 @@ class StudentRepository
     public function getStudentByNameOrMobileOrAdmissionNumber($schoolId, $searchValue)
     {
         $query = Student::where_schoolId($schoolId)->where(function ($query) use ($searchValue) {
-            $query->where('name', '~*', ".*$searchValue.*")->or_where('uniqueIdentifier', '=', "$searchValue");
+            $query->where('name', 'like', "%$searchValue%")->or_where('uniqueIdentifier', '=', "$searchValue");
             for ($i = 1; $i <= 5; $i++) {
-                $query->or_where("mobile$i", '~*', ".*$searchValue.*");
+                $query->or_where("mobile$i", 'like', "%$searchValue%");
             }
         });
         try {
@@ -330,10 +332,10 @@ class StudentRepository
         return true;
     }
 
-    private function isStudentExist($admissionNumber)
+    private function isStudentExist($importKey, $schoolId)
     {
         try {
-            $student = Student::where('uniqueIdentifier', '=', $admissionNumber)->first();
+            $student = Student::where('schoolId', '=', $schoolId)->where('importKey', '=', $importKey)->first();
         } catch (Exception $e) {
             return false;
         }
@@ -343,50 +345,56 @@ class StudentRepository
     public function insertOrUpdate($studentData, $schoolId)
     {
         if (is_array($studentData) && !empty($studentData)) {
-            $admissionNoWithErrors = array();
+            $studentImportKeyWithErrors = array();
+            $totalStudentsImported = 0;
+            $totalStudentsUpdated = 0;
             foreach ($studentData as $dataRow) {
                 $input = array(
-                    'admissionNumber' => $dataRow->admissionNo,
-                    'name' => $dataRow->name,
-                    'email' => $dataRow->email,
-                    'mobile1' => $dataRow->mobile1
+                    'id' => $dataRow->StudentMaster->Id,
+                    'name' => $dataRow->StudentMaster->FullName,
+                    'email' => $dataRow->StudentMaster->EmailId,
+                    'mobile1' => $dataRow->StudentMaster->MobileNo
                 );
 
                 $validator = Validator::make($input, StudentRepository::$rules);
                 if ($validator->fails()) {
 
-                    if ($validator->errors->has('name') || $validator->errors->has('mobile1') || $validator->errors->has('admissionNumber')) {
-                        if (isset($input['admissionNumber']))
-                            $admissionNoWithErrors[] = $input['admissionNumber'];
+                    if ($validator->errors->has('name') || $validator->errors->has('mobile1') || $validator->errors->has('id')) {
+                        if (isset($input['id']))
+                            $studentImportKeyWithErrors[] = $input['id'];
                         continue;
                     }
                     if ($validator->errors->has('email')) {
-                        $dataRow->email = "";
+                        $dataRow->StudentMaster->EmailId = "";
                     }
-
                 }
 
-                $admissionNo = isset($dataRow->admissionNo) ? $dataRow->admissionNo : '';
-                $name = isset($dataRow->name) ? $dataRow->name : '';
-                $email = isset($dataRow->email) ? $dataRow->email : '';
-                $fatherName = isset($dataRow->fatherName) ? $dataRow->fatherName : '';
-                $motherName = isset($dataRow->motherName) ? $dataRow->motherName : '';
-                $mobile1 = isset($dataRow->mobile1) ? $dataRow->mobile1 : '';
+                $admissionNo = isset($dataRow->StudentMaster->AdmissionNo) ? $dataRow->StudentMaster->AdmissionNo : '';
+                $name = isset($dataRow->StudentMaster->FullName) ? $dataRow->StudentMaster->FullName : '';
+                $email = !empty($dataRow->StudentMaster->EmailId) ? $dataRow->StudentMaster->EmailId : '';
+                $fatherName = isset($dataRow->StudentMaster->FatherName) ? $dataRow->StudentMaster->FatherName : '';
+                $motherName = isset($dataRow->StudentMaster->MotherName) ? $dataRow->StudentMaster->MotherName : '';
+                $mobile1 = isset($dataRow->StudentMaster->MobileNo) ? $dataRow->StudentMaster->MobileNo : '';
                 $mobile2 = isset($dataRow->mobile2) ? $dataRow->mobile2 : '';
                 $mobile3 = isset($dataRow->mobile3) ? $dataRow->mobile3 : '';
                 $mobile4 = isset($dataRow->mobile4) ? $dataRow->mobile4 : '';
                 $mobile5 = isset($dataRow->mobile5) ? $dataRow->mobile5 : '';
-                $dob = !empty($dataRow->dob) ? $dataRow->dob : null; //DOB
-                $classStandard = isset($dataRow->classStandard) ? $dataRow->classStandard : '';
-                $classSection = isset($dataRow->classSection) ? $dataRow->classSection : '';
+                $importKey = isset($dataRow->StudentMaster->Id) ? $dataRow->StudentMaster->Id : '';
+                $dob = !empty($dataRow->StudentMaster->DOB) ? $dataRow->StudentMaster->DOB : null; //DOB
+                $classStandard = isset($dataRow->Class->ClassLabel->NumericCode) ? $dataRow->Class->ClassLabel->NumericCode : '';
+                $classSection = isset($dataRow->Class->SectionLabel->Name) ? $dataRow->Class->SectionLabel->Name : '';
                 $morningBusRoute = isset($dataRow->morningBusRoute) ? $dataRow->morningBusRoute : '';
                 $eveningBusRoute = isset($dataRow->eveningBusRoute) ? $dataRow->eveningBusRoute : '';
-                $gender = isset($dataRow->gender) ? $dataRow->gender : '';
 
-
-                $studentExist = $this->isStudentExist($admissionNo);
+                if (isset($dataRow->StudentMaster->Gender)) {
+                    $gender = 'Female';
+                    if ($dataRow->StudentMaster->Gender == true || $dataRow->StudentMaster->Gender = 'true')
+                        $gender = 'Male';
+                } else
+                    $gender = '';
+                $studentExist = $this->isStudentExist($importKey, $schoolId);
                 if (!is_null($studentExist) && $studentExist == false)
-                    $admissionNoWithErrors[] = $admissionNo;
+                    $studentImportKeyWithErrors[] = $importKey;
                 else if (is_null($studentExist)) {
                     try {
                         $student = new Student();
@@ -400,6 +408,7 @@ class StudentRepository
                         $student->mobile3 = $mobile3;
                         $student->mobile4 = $mobile4;
                         $student->mobile5 = $mobile5;
+                        $student->importKey = $importKey;
                         $student->morningBusRoute = $morningBusRoute;
                         $student->eveningBusRoute = $eveningBusRoute;
                         $student->gender = $gender;
@@ -409,9 +418,10 @@ class StudentRepository
                         $student->schoolId = $schoolId;
                         $student->code = Str::random(64, 'alpha');
                         $student->save();
+                        $totalStudentsImported += 1;
                     } catch (Exception $e) {
                         Log::exception($e);
-                        $admissionNoWithErrors[] = $admissionNo;
+                        $studentImportKeyWithErrors[] = $importKey;
                     }
                 } else {
                     try {
@@ -421,19 +431,15 @@ class StudentRepository
                             'mobile1' => $mobile1, 'mobile2' => $mobile2, 'mobile3' => $mobile3, 'mobile4' => $mobile4,
                             'mobile5' => $mobile5, 'morningBusRoute' => $morningBusRoute, 'eveningBusRoute' => $eveningBusRoute,
                             'gender' => $gender, 'fatherName' => $fatherName, 'motherName' => $motherName));
+                        $totalStudentsUpdated += 1;
                     } catch (Exception $e) {
                         Log::exception($e);
-                        $admissionNoWithErrors[] = $admissionNo;
+                        $studentImportKeyWithErrors[] = $importKey;
                     }
                 }
 
             }
-            return array('status' => true, 'admissionNumbersErrors' => $admissionNoWithErrors);
-
-        } else {
-            return array('status' => false);
+            return array('status' => true, 'studentsImported' => $totalStudentsImported, 'studentsUpdated' => $totalStudentsUpdated, 'importErrors' => $studentImportKeyWithErrors);
         }
     }
-
-
 }

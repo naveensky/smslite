@@ -27,13 +27,15 @@
 
         <hr>
         <div id="filter-individual" ng-show="filterType=='individualFilter'">
+            <form ng-submit="searchPeople()">
             <label>Search by Name, Mobile or Admission No. </label>
 
             <div class="input-append">
                 <input type="text" ng-model="searchValue" class="span2">
-                <button class="btn" ng-disabled="searchValue.length==0" ng-click="searchPeople()" type="button">
-                    <i
-                        class="icon-search"></i></button>
+                <input type="submit" class="btn btn-primary" ng-disabled="searchValue.length==0" value="Filter">
+
+
+                </form>
             </div>
             <table ng-show="searchResults.length>0" class="table table-condensed">
                 <thead>

@@ -25,6 +25,7 @@ class UserRepository
             throw new InvalidArgumentException("Empty School ID");
         }
         $school = School::where_code($schoolCode)->get();
+
         if (empty($school))
             throw new InvalidArgumentException("Invalid School ID $schoolCode");
 

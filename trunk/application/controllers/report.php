@@ -58,6 +58,5 @@ class Report_Controller extends Base_Controller
         $schoolId = Auth::user()->schoolId;
         $result = $this->reportRepo->getLast30DaysSMS($schoolId);
         return Response::json($result);
-
     }
 }
