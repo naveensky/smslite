@@ -64,27 +64,20 @@ class TestAdmincontroller extends ControllerTestCase
         $role->save();
         $user->roles()->attach($role->id);
         Auth::login($user->id);
+        $smsCredit = FactoryMuff::create('SmsCredit');
+        $smsCredit->schoolId = $school->id;
+        $smsCredit->credits = 50;
+        $smsCredit->save();
+
         $parameters = array(
             'name' => '',
             'email' => '',
-            'registrationDate' => '2013-07-01'
         );
 
         Input::$json = (object)$parameters;
         $response = $this->post('admin@post_schools_list', array());
         $result = json_decode($response->content);
         $this->assertEquals(1, count($result));
-        $parameters = array(
-            'name' => '',
-            'email' => '',
-            'registrationDate' => '2013-07-30'
-        );
-
-        Input::$json = (object)$parameters;
-        $response = $this->post('admin@post_schools_list', array());
-        $result = json_decode($response->content);
-        $this->assertEquals(0, count($result));
-
     }
 
     public function testGetSMSLog()
