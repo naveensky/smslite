@@ -72,7 +72,7 @@ return array(
 			'host'     => 'localhost',
 			'database' => 'smslite_test',
 			'username' => 'root',
-			'password' => 'asdf',
+			'password' => '',
 			'charset'  => 'utf8',
 			'prefix'   => '',
 		),
