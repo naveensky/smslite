@@ -6,4 +6,4 @@ php:
 script: "php trunk/artisan test"
 
 before_script:
-  - psql -c 'create database smslite_test;' -U postgres
+  - mysql -e 'create database smslite_test;'
