@@ -22,7 +22,6 @@ class StudentRepository
     public static $rules = array(
         'name' => 'required',
         'email' => 'email',
-        'mobile1' => 'required|max:10',
         'id' => 'required'
     );
 
@@ -349,17 +348,17 @@ class StudentRepository
             $totalStudentsImported = 0;
             $totalStudentsUpdated = 0;
             foreach ($studentData as $dataRow) {
+
                 $input = array(
                     'id' => $dataRow->StudentMaster->Id,
                     'name' => $dataRow->StudentMaster->FullName,
-                    'email' => $dataRow->StudentMaster->EmailId,
-                    'mobile1' => $dataRow->StudentMaster->MobileNo
+                    'email' => $dataRow->StudentMaster->EmailId
                 );
 
                 $validator = Validator::make($input, StudentRepository::$rules);
                 if ($validator->fails()) {
 
-                    if ($validator->errors->has('name') || $validator->errors->has('mobile1') || $validator->errors->has('id')) {
+                    if ($validator->errors->has('name') || $validator->errors->has('id')) {
                         if (isset($input['id']))
                             $studentImportKeyWithErrors[] = $input['id'];
                         continue;
@@ -368,17 +367,43 @@ class StudentRepository
                         $dataRow->StudentMaster->EmailId = "";
                     }
                 }
+                $mobile1 = '';
+                $mobile2 = '';
+                $mobile3 = '';
+                $mobile4 = '';
+                $mobile5 = '';
+                $mobile = $dataRow->StudentMaster->MobileNo;
+                if (empty($mobile)) {
+                    if (isset($input['id']))
+                        $studentImportKeyWithErrors[] = $input['id'];
+                    continue;
+                }
 
+                $splitMobilePhones = explode(',', $mobile);
+                foreach ($splitMobilePhones as $mobileInfo) {
+                    ltrim(str_replace('+91', '', trim($mobileInfo, ' ')), '0');
+                    if (strlen($mobileInfo) != 10) {
+                        continue;
+                    }
+
+                    for ($i = 1; $i <= 5; $i++) {
+                        if (empty(${"mobile$i"})) {
+                            ${"mobile$i"} = $mobileInfo;
+                            break;
+                        }
+                    }
+                }
+
+                if (empty($mobile1)) {
+                    if (isset($input['id']))
+                        $studentImportKeyWithErrors[] = $input['id'];
+                    continue;
+                }
                 $admissionNo = isset($dataRow->StudentMaster->AdmissionNo) ? $dataRow->StudentMaster->AdmissionNo : '';
                 $name = isset($dataRow->StudentMaster->FullName) ? $dataRow->StudentMaster->FullName : '';
                 $email = !empty($dataRow->StudentMaster->EmailId) ? $dataRow->StudentMaster->EmailId : '';
                 $fatherName = isset($dataRow->StudentMaster->FatherName) ? $dataRow->StudentMaster->FatherName : '';
                 $motherName = isset($dataRow->StudentMaster->MotherName) ? $dataRow->StudentMaster->MotherName : '';
-                $mobile1 = isset($dataRow->StudentMaster->MobileNo) ? $dataRow->StudentMaster->MobileNo : '';
-                $mobile2 = isset($dataRow->mobile2) ? $dataRow->mobile2 : '';
-                $mobile3 = isset($dataRow->mobile3) ? $dataRow->mobile3 : '';
-                $mobile4 = isset($dataRow->mobile4) ? $dataRow->mobile4 : '';
-                $mobile5 = isset($dataRow->mobile5) ? $dataRow->mobile5 : '';
                 $importKey = isset($dataRow->StudentMaster->Id) ? $dataRow->StudentMaster->Id : '';
                 $dob = !empty($dataRow->StudentMaster->DOB) ? $dataRow->StudentMaster->DOB : null; //DOB
                 $classStandard = isset($dataRow->Class->ClassLabel->NumericCode) ? $dataRow->Class->ClassLabel->NumericCode : '';

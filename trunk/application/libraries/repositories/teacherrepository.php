@@ -12,7 +12,6 @@ class TeacherRepository
     public static $rules = array(
         'name' => 'required',
         'email' => 'email',
-        'mobile1' => 'required|max:10',
         'id' => 'required'
     );
 
@@ -269,14 +268,13 @@ class TeacherRepository
                 $input = array(
                     'id' => $dataRow->TeacherMaster->Id,
                     'name' => $dataRow->TeacherMaster->FullName,
-                    'email' => $dataRow->TeacherMaster->EmailId,
-                    'mobile1' => $dataRow->TeacherMaster->MobileNo
+                    'email' => $dataRow->TeacherMaster->EmailId
                 );
 
                 $validator = Validator::make($input, TeacherRepository::$rules);
                 if ($validator->fails()) {
 
-                    if ($validator->errors->has('name') || $validator->errors->has('mobile1') || $validator->errors->has('id')) {
+                    if ($validator->errors->has('name') || $validator->errors->has('id')) {
                         if (isset($input['id']))
                             $teacherImportKeysWithErrors[] = $input['id'];
                         continue;
@@ -285,15 +283,41 @@ class TeacherRepository
                         $dataRow->TeacherMaster->EmailId = "";
                     }
                 }
+                $mobile1 = '';
+                $mobile2 = '';
+                $mobile3 = '';
+                $mobile4 = '';
+                $mobile5 = '';
+                $mobile = $dataRow->TeacherMaster->MobileNo;
+                if (empty($mobile)) {
+                    if (isset($input['id']))
+                        $teacherImportKeysWithErrors[] = $input['id'];
+                    continue;
+                }
 
+                $splitMobilePhones = explode(',', $mobile);
+                foreach ($splitMobilePhones as $mobileInfo) {
+                    ltrim(str_replace('+91', '', trim($mobileInfo, ' ')), '0');
+                    if (strlen($mobileInfo) != 10) {
+                        continue;
+                    }
+                    for ($i = 1; $i <= 5; $i++) {
+                        if (empty(${"mobile$i"})) {
+                            ${"mobile$i"} = $mobileInfo;
+                            break;
+                        }
+
+                    }
+                }
+
+                if (empty($mobile1)) {
+                    if (isset($input['id']))
+                        $teacherImportKeysWithErrors[] = $input['id'];
+                    continue;
+                }
 
                 $name = isset($dataRow->TeacherMaster->FullName) ? $dataRow->TeacherMaster->FullName : '';
                 $email = !empty($dataRow->TeacherMaster->EmailId) ? $dataRow->TeacherMaster->EmailId : '';
-                $mobile1 = isset($dataRow->TeacherMaster->MobileNo) ? $dataRow->TeacherMaster->MobileNo : '';
-                $mobile2 = isset($dataRow->mobile2) ? $dataRow->mobile2 : '';
-                $mobile3 = isset($dataRow->mobile3) ? $dataRow->mobile3 : '';
-                $mobile4 = isset($dataRow->mobile4) ? $dataRow->mobile4 : '';
-                $mobile5 = isset($dataRow->mobile5) ? $dataRow->mobile5 : '';
                 $importKey = isset($dataRow->TeacherMaster->Id) ? $dataRow->TeacherMaster->Id : '';
                 $dob = !empty($dataRow->TeacherMaster->DOB) ? $dataRow->TeacherMaster->DOB : null; //DOB
                 $department = isset($dataRow->department) ? $dataRow->department : '';
@@ -340,7 +364,7 @@ class TeacherRepository
                             'mobile1' => $mobile1, 'mobile2' => $mobile2, 'mobile3' => $mobile3, 'mobile4' => $mobile4,
                             'mobile5' => $mobile5, 'morningBusRoute' => $morningBusRoute, 'eveningBusRoute' => $eveningBusRoute,
                             'gender' => $gender, 'department' => $department));
-                        $totalTeachersUpdated+=1;
+                        $totalTeachersUpdated += 1;
                     } catch (Exception $e) {
                         Log::exception($e);
                         $teacherImportKeysWithErrors[] = $importKey;
