@@ -12,11 +12,11 @@ return array(
     'url' => "http://admin.dove-sms.com/TransSMS/SMSAPI.jsp",
 
 //    'url' => "http://smslite.localhost.com/cron/test",
-    'username' => 'GreenApple1',
+    'username' => 'abcd',
 
-    'password' => 'GreenApple1',
+    'password' => 'abcd',
 
-    'senderid' => 'MSNGRi',
+    'senderid' => '1234',
     'cutoff' => 10800
 
 );

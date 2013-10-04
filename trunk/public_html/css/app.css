@@ -194,3 +194,7 @@ ul.nav i {
     height: 200px;
     overflow-y: scroll;
 }
+
+.overflow_hidden {
+    overflow: hidden;
+}

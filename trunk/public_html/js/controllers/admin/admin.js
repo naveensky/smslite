@@ -131,7 +131,7 @@ angular.module('app')
                         text: 'Last 30 Days SMS Report'
                     },
                     tooltip: {
-                        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b><br/>Count:<b>({point.y})</b>'
                     },
                     plotOptions: {
                         pie: {
@@ -141,7 +141,7 @@ angular.module('app')
                                 enabled: true,
                                 color: '#000000',
                                 connectorColor: '#000000',
-                                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                                format: '<b>{point.name} ({point.y})</b>: {point.percentage:.1f} %'
                             }
                         }
                     },
@@ -149,7 +149,7 @@ angular.module('app')
                     series: [
                         {
                             type: 'pie',
-                            name: 'Status',
+                            name: 'Percentage',
                             data: $scope.smsReportData
                         }
                     ]
@@ -266,7 +266,7 @@ angular.module('app')
                     text: 'Last 30 Days SMS Report'
                 },
                 tooltip: {
-                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b><br/>Count:<b>({point.y})</b>'
                 },
                 plotOptions: {
                     pie: {
@@ -276,14 +276,14 @@ angular.module('app')
                             enabled: true,
                             color: '#000000',
                             connectorColor: '#000000',
-                            format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                            format: '<b>{point.name} ({point.y})</b>:{point.percentage:.1f}%'
                         }
                     }
                 },
                 series: [
                     {
                         type: 'pie',
-                        name: 'Status',
+                        name: 'Percentage',
                         data: $scope.smsReportData
                     }
                 ]

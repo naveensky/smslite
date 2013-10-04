@@ -303,6 +303,18 @@ class SMSRepository
             ->update(array('status' => $status, 'updated_at' => new DateTime()));
     }
 
+    public function updateSMSStatus($id, $status)
+    {
+        try {
+            DB::table('smsTransactions')
+                ->where('id', '=', $id)
+                ->update(array('status' => $status, 'updated_at' => new DateTime()));
+        } catch (Exception $e) {
+            Log::exception($e);
+            throw $e;
+        }
+    }
+
     public function updateFailedSMSStatus($priority)
     {
         $cutoff = Config::get('sms.cutoff');

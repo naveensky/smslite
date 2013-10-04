@@ -13,7 +13,6 @@
                     <div class="span4">
                         <label for="admission">Admission Number</label>
                         <input type="text" ng-model="studentData.uniqueIdentifier" name="admission"
-                               ng-required="true"
                                id="admission"
                                placeholder="Enter admission number"
                                class="span4">

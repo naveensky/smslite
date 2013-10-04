@@ -14,39 +14,41 @@
     </div>
 </div>
 <div class="row">
-<div class="span3">
-    <div class="box">
-        <h3><i class="icon-group icon-large"></i> Select People</h3>
-        <label>Choose Filter</label>
-        <select class="filter" ng-model="filterType" ng-change="changeFilterSelection(filterType)">
-            <option value="classFilter">By Classes</option>
-            <option value="routeFilter">By Bus Routes</option>
-            <option value="departmentFilter">By Departments</option>
-            <option value="individualFilter">Search Individual</option>
-        </select>
+    <div class="span3">
+        <div class="box">
+            <h3><i class="icon-group icon-large"></i> Select People</h3>
+            <label>Choose Filter</label>
+            <select class="filter" ng-model="filterType" ng-change="changeFilterSelection(filterType)">
+                <option value="classFilter">By Classes</option>
+                <option value="routeFilter">By Bus Routes</option>
+                <option value="departmentFilter">By Departments</option>
+                <option value="individualFilter">Search Individual</option>
+            </select>
 
-        <hr>
-        <div id="filter-individual" ng-show="filterType=='individualFilter'">
-            <form ng-submit="searchPeople()">
-            <label>Search by Name, Mobile or Admission No. </label>
+            <hr>
+            <div id="filter-individual" ng-show="filterType=='individualFilter'">
+                <form ng-submit="searchPeople()">
+                    <label>Search by Name, Mobile or Admission No. </label>
 
-            <div class="input-append">
-                <input type="text" ng-model="searchValue" class="span2">
-                <input type="submit" class="btn btn-primary" ng-disabled="searchValue.length==0" value="Filter">
-
-
+                    <div class="input-append">
+                        <input type="text" ng-model="searchValue" class="span2">
+                        <button type="submit" class="btn" ng-disabled="searchValue.length==0">
+                            <i class="icon-search"></i>
+                        </button>
+<!--                        <input type="submit" class="btn" ng-disabled="searchValue.length==0" value='<i class="icon-cog icon-large"></i>'>-->
                 </form>
             </div>
-            <table ng-show="searchResults.length>0" class="table table-condensed">
+            <table ng-show="searchResults.length>0" class="table table-condensed" style="table-layout: fixed">
                 <thead>
                 <tr>
-                    <th>&nbsp;</th>
-                    <th>Name</th>
-                    <th>Admission No.</th>
+                    <th class="overflow_hidden" style="width:10%">&nbsp;</th>
+                    <th class="overflow_hidden" style="width:40%">Name</th>
+                    <th class="overflow_hidden" style="width:20%">Class</th>
+                    <th class="overflow_hidden" style="width:30%">Admission No.</th>
                 </tr>
                 </thead>
                 <tfoot>
-                <td colspan="6">
+                <td colspan="6" class="overflow_hidden">
                     <div class="pagination pull-right">
                         <ul>
                             <li ng-class="{disabled: currentPage == 0}">
@@ -61,9 +63,10 @@
                 </tfoot>
                 <tbody>
                 <tr ng-class="getStatusCss(people)" ng-repeat="people in pagedItems[currentPage]">
-                    <td><input ng-model="people.searchPeople.selected" type="checkbox"></td>
-                    <td>{{people.searchPeople.name}}</td>
-                    <td>{{people.searchPeople.admissionNumber}}</td>
+                    <td class="overflow_hidden"><input ng-model="people.searchPeople.selected" type="checkbox"></td>
+                    <td class="overflow_hidden">{{people.searchPeople.name}}</td>
+                    <td class="overflow_hidden">{{people.searchPeople.classStandard}}-{{people.searchPeople.classSection}}</td>
+                    <td class="overflow_hidden">{{people.searchPeople.admissionNumber}}</td>
                 </tr>
                 </tbody>
             </table>

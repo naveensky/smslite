@@ -66,8 +66,8 @@ class SMSTemplate_Task
             'Objectionable Items' => 'We regret to inform you that your ward <%name%> of class <%class%> has been found carrying objectionable items.You are requested to meet the Vice Principal/Educational Supervisor on <%text_date%> at <%text_time%> to discuss about the same',
             'Wishes/Greetings For Festivals' => 'Warm Greetings/Good Wishes to you and your family on the occasion of the <%text_event%>',
             'Formalities For Class XI Stream' => 'Eligibility Criteria for stream of class XI are displayed.Formalities should be completed within <%text_days%> days',
-            'NON-SUBMISSION OF ASSIGNMENTS/PROJECTS' => 'This is to inform you that your ward <%name%> of class <%class%> has not submitted his/her project/assignment in <%text_subject_name%>.'
-
+            'NON-SUBMISSION OF ASSIGNMENTS/PROJECTS' => 'This is to inform you that your ward <%name%> of class <%class%> has not submitted his/her project/assignment in <%text_subject_name%>.',
+            'Sorry'=>'Dear Parents, Please ignore the previous message sent to you.'
         );
 
         $schoolId = $arguments[0];

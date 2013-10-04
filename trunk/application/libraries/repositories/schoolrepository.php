@@ -120,7 +120,7 @@ class SchoolRepository
     public function getClasses($schoolId)
     {
         //todo: convert this to eloquent expression
-        $classes = DB::query('select classSection, classStandard from students where schoolId=' . $schoolId . ' and classSection!=\'\'' . ' group by classSection, classStandard order by classStandard,classSection');
+        $classes = DB::query('select classSection, classStandard from students where schoolId=' . $schoolId . ' and classStandard!=\'\'' . ' group by classSection, classStandard order by classStandard,classSection');
         $data = array();
         foreach ($classes as $class) {
 
